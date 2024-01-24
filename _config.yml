@@ -7,7 +7,7 @@
 
 # Site Settings
 locale                   : "en-US"
-title                    : "Yang Xu's Personal Website
+title                    : "Yang Xu's Personal Website"
 title_separator          : "-"
 name                     : &name "Yang Xu"
 description              : &description "Student, Hangzhou Dianzi University"
