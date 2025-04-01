@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.22.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="TimesURL: Self-supervised Contrastive Learning for Universal Time Series Representation Learning 黄色：现象       红色：疑问      绿色：解答     橙色：创新点  动机 最近，研究人员尝试利用计算机视觉（CV）和自然语言处理（NLP）中自监督对比学习（SSCL）的成功来解决时间序列表示">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://example.com/2025/04/01/%E3%80%8ATimesURL%20Self-supervised%20Contrastive%20Learning%20for%20Universal%20Time%20Series%20Representation%20Learning%E3%80%8B%E8%AE%BA%E6%96%87/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="TimesURL: Self-supervised Contrastive Learning for Universal Time Series Representation Learning 黄色：现象       红色：疑问      绿色：解答     橙色：创新点  动机 最近，研究人员尝试利用计算机视觉（CV）和自然语言处理（NLP）中自监督对比学习（SSCL）的成功来解决时间序列表示">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZDNkZWFiMjMwYmVkOTA2NmEzZjQyMWMyMjQwODVlZDdfVnpsWnR0WkRXV242aTJFT2ZseFhrRXlrM1RxY2hVMm5fVG9rZW46WHBYdWJQc3hHb0ZXSXl4NjhVYmNvUzk5bmhiXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZTUzZGNiMjZhMDFmOGQ4ZWFkOTFiMjg4MWRkMzA5OWZfTGFycFpNRlJRMWNtMEJ0d0g1TlVST2JvVnhpZnpDUm5fVG9rZW46RzY3dGJvOThvb1hKcUx4TVJGYmNGb1pVbjJiXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ODJhMjBjMzJkNTA4MWNmODc5NDFkN2MxM2Y3YTdiZWNfNU10WEdlOWUwUFhQams1dkt6WGp3OE9RWDRHV1pvTDZfVG9rZW46RWp3NGJaWUVkb1RaQXN4bUo4WWNJdEEybkliXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MzM5NzAyY2U1OTZmYWY0ZjM2OWM1NzNiOTNkMGQxMmJfSndpdUNIRWRobzNTcnhhaW9CQjNkM3hIVGI1ZnpyRERfVG9rZW46WW92bmJkOFh3b1pWVnF4UmM2VGNURXdubndjXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MTE4MDE3MzJhYmQxMDkzMzY0YjI2YzczNzMxMTM3Y2ZfNk91QjJmUUhnYlNZaXIzWk14a1VKYWpzbXRqS0gzckVfVG9rZW46QkFSYmJiQ0Zub1BFNDN4NzFDd2N2TGNhbmZlXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NWI1M2E5OTg3N2I3OGZjN2I4YmY4OGNmNWQ3NDlmNDhfRDByQWZGNnR1Q3RKRXh4TG9uR1dkU2JSNjQ5dWVSbUZfVG9rZW46SWVDamJ4ck1hb0hzczN4NGg3NGNhVGpSbmNkXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NDJmNWI1ODYwNDgyMzEzODdkODQxMTQyNGI5ZDhkYzRfYnZLYnBDaGhaNEczRUFwdlA2bjg5dDZjSjFvZ3FtUE5fVG9rZW46SnZMSmJnTWZPb2xla0N4Y0V2ZWM4QzNYbmNlXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NTEzMjQ4MTAzYjY4OWYyNTQ2OWVjMzc1MjgzYmE4Y2FfWWloZVUwQ1o0Vk13OGZvTGxlZFBNTTlkN0N0NmlMWm9fVG9rZW46TTdvTGJZRGIzb3ZXcE14M3pqMWNHZVFGbjdYXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZmM1NDI0ZTVmYWRkODU0MWUxM2ZjZjA4MmJhOWNjMWFfQWFwZVZJc2hNTUhrbmo3QnRIY2UxdGFPTTlMdHlzRzJfVG9rZW46WGNnUmJYQ0NOb3FpU054WGo3a2NWalNkbkViXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Zjg1YzVlZmZiOWYxMWE1NTBiODYyM2NhYTEzNmVlZGJfWk9YVFpRZWI0aWs1T1dZU1dVV0c2ZXlxT2xQQ2pERmZfVG9rZW46VWU2d2I2V2wzb2xKbHB4c3hDUmNlYUN2blliXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZDAyZTI4NWMyZDVjMDRhZjdiZGMyMDM5OWQzYmJlYjlfakE1WUNDSXlEdFhpUmRQdEJsQnJjUEF6bXpLWWJMS1lfVG9rZW46WDJFTGJRcUMwb0d6ODJ4M21acGM2TFpZbjFkXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZTdhODRhODg5YTJmNmY4ODYyMjY1YzA0OTI4ZDMwZTZfU0lkRm11RHp0b3JQZmY3VlBJRGpZNnlGS0daR3NiQjFfVG9rZW46SEFTMmI4Umhob2VhUkp4cUpndGNwMDVvbnNoXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Y2E3YjZlMTM3Nzg5ODA1NDQwMWRjMzNlOWE0ZmQ4MzBfTkZOTXZKQnVOMW00RTBxMDRiRVVsalZ4OWNXY3hCSDlfVG9rZW46U29KZmJlMHlQb0pCcXJ4YzA4ZmM5emhnbkJjXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=M2FkYmI0ZmNjNDJjYzExNGVlOTE1Y2U0YzY5OTAyODRfSnBCYXQ0dzNBSThBUWtPU0U2NjY4NmFJVDcydUxxd2NfVG9rZW46SnA0RmJpT1Blb3dIaTh4ZHZoMWNkRzBPbk5jXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Zjc2YjViM2E0NzIwMmJmZjM5NTIwZWQ4ODNmMDc0ZTBfbFhoWXRmcjVrNXhwS1BCcjZOR3NSdHBXVEptajlIQmhfVG9rZW46VzM3d2JtRmZtb0FMYmN4Z0RnSWNXMUV2bmJjXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA">
+<meta property="article:published_time" content="2025-04-01T09:58:50.169Z">
+<meta property="article:modified_time" content="2025-04-01T09:58:03.833Z">
+<meta property="article:author" content="Xu Yang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZDNkZWFiMjMwYmVkOTA2NmEzZjQyMWMyMjQwODVlZDdfVnpsWnR0WkRXV242aTJFT2ZseFhrRXlrM1RxY2hVMm5fVG9rZW46WHBYdWJQc3hHb0ZXSXl4NjhVYmNvUzk5bmhiXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA">
+
+
+<link rel="canonical" href="http://example.com/2025/04/01/%E3%80%8ATimesURL%20Self-supervised%20Contrastive%20Learning%20for%20Universal%20Time%20Series%20Representation%20Learning%E3%80%8B%E8%AE%BA%E6%96%87/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2025/04/01/%E3%80%8ATimesURL%20Self-supervised%20Contrastive%20Learning%20for%20Universal%20Time%20Series%20Representation%20Learning%E3%80%8B%E8%AE%BA%E6%96%87/","path":"2025/04/01/《TimesURL Self-supervised Contrastive Learning for Universal Time Series Representation Learning》论文/","title":""}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title> | Hexo</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Hexo</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#timesurl-self-supervised-contrastive-learning-for-universal-time-series-representation-learning"><span class="nav-number">1.</span> <span class="nav-text"> TimesURL: Self-supervised Contrastive Learning for Universal Time Series Representation Learning</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%9C%BA"><span class="nav-number">1.1.</span> <span class="nav-text"> 动机</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1%E8%AE%BE%E8%AE%A1%E6%AD%A3%E5%AF%B9%E7%9A%84%E5%A2%9E%E5%BC%BA%E6%96%B9%E6%B3%95"><span class="nav-number">1.1.0.1.</span> <span class="nav-text"> 1）设计正对的增强方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2%E6%9E%84%E5%BB%BAhard%E8%B4%9F%E5%AF%B9"><span class="nav-number">1.1.0.2.</span> <span class="nav-text"> 2）构建（hard）负对</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3%E8%AE%BE%E8%AE%A1-sscl-%E6%8D%9F%E5%A4%B1"><span class="nav-number">1.1.0.3.</span> <span class="nav-text"> 3）设计 SSCL 损失</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="nav-number">1.2.</span> <span class="nav-text"> 解决方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#timeurl-%E6%A1%86%E6%9E%B6"><span class="nav-number">1.2.1.</span> <span class="nav-text"> TimeURL 框架</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E8%A1%A8%E8%BF%B0"><span class="nav-number">1.2.1.1.</span> <span class="nav-text"> 问题表述</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.2.1.2.</span> <span class="nav-text"> 方法介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ftaug-%E6%96%B9%E6%B3%95"><span class="nav-number">1.2.1.3.</span> <span class="nav-text"> FTAug 方法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B7%B7%E9%A2%91"><span class="nav-number">1.2.1.3.1.</span> <span class="nav-text"> 混频</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%9A%8F%E6%9C%BA%E8%A3%81%E5%89%AA"><span class="nav-number">1.2.1.3.2.</span> <span class="nav-text"> 随机裁剪</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#double-universum%E5%AD%A6%E4%B9%A0"><span class="nav-number">1.2.1.4.</span> <span class="nav-text"> Double Universum学习</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E6%AE%B5%E7%BA%A7%E4%BF%A1%E6%81%AF%E7%9A%84%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0"><span class="nav-number">1.2.1.5.</span> <span class="nav-text"> 分段级信息的对比学习</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E4%BE%8B%E7%BA%A7%E4%BF%A1%E6%81%AF%E7%9A%84%E6%97%B6%E9%97%B4%E9%87%8D%E5%BB%BA"><span class="nav-number">1.2.1.6.</span> <span class="nav-text"> 实例级信息的时间重建</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9C%8B%E6%B3%95"><span class="nav-number">1.3.</span> <span class="nav-text"> 看法</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Xu Yang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hduyangxu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hduyangxu" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/04/01/%E3%80%8ATimesURL%20Self-supervised%20Contrastive%20Learning%20for%20Universal%20Time%20Series%20Representation%20Learning%E3%80%8B%E8%AE%BA%E6%96%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Xu Yang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | Hexo">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-04-01 17:58:50 / 修改时间：17:58:03" itemprop="dateCreated datePublished" datetime="2025-04-01T17:58:50+08:00">2025-04-01</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="timesurl-self-supervised-contrastive-learning-for-universal-time-series-representation-learning"><a class="markdownIt-Anchor" href="#timesurl-self-supervised-contrastive-learning-for-universal-time-series-representation-learning"></a> TimesURL: Self-supervised Contrastive Learning for Universal Time Series Representation Learning</h1>
+<p>黄色：现象       红色：疑问      绿色：解答     橙色：创新点</p>
+<h2 id="动机"><a class="markdownIt-Anchor" href="#动机"></a> 动机</h2>
+<p>最近，研究人员尝试利用计算机视觉（CV）和自然语言处理（NLP）中自监督对比学习（SSCL）的成功来解决时间序列表示问题。然而，由于时间特征的特殊性，仅仅依靠其他领域的经验指导可能对时间序列无效，并且难以适应多个下游任务。</p>
+<p>为此，作者回顾了 SSCL 涉及的三个部分，包括</p>
+<h4 id="1设计正对的增强方法"><a class="markdownIt-Anchor" href="#1设计正对的增强方法"></a> 1）设计正对的增强方法</h4>
+<p>大多数增强方法在应用于时间序列数据时，可能会引入不适当的归纳偏差，因为它们直接借鉴了 CV 和 NLP 领域的思想。例如，Flipping (Luo et al. 2023) 翻转原始时间序列的符号，假设时间序列在上下方向之间具有对称性。然而，这可能会破坏原始时间序列中固有存在的时间变化，例如趋势和峰谷。排列（Um et al. 2017）会重新排列时间序列中片段的顺序以生成新的序列，但前提是底层语义信息在不同顺序下保持不变。然而，这会扰乱时间依赖性，从而影响过去和未来时间戳信息之间的关系。因此，由于时间序列的有价值的语义信息主要存在于时间变化和依赖性中，因此这种增强无法捕获有效的通用表示学习所需的适当特征。</p>
+<h4 id="2构建hard负对"><a class="markdownIt-Anchor" href="#2构建hard负对"></a> 2）构建（hard）负对</h4>
+<p>困难负样本选择的重要性已在其他领域得到证明（Kalantidis et al. 2020；Robinson et al. 2020），但在时间序列文献中仍未得到充分探索。由于局部平滑性和马尔可夫性质，大多数时间序列片段可以被视为简单负样本。这些片段往往表现出与锚点的语义差异，并且仅贡献较小的梯度，因此无法提供有用的区分信息。尽管会包含少量的被证明有助于改进和加速学习的困难负样本与锚点具有相似但不相同的语义，但其可发挥的有效性被大量的简单负样本所掩盖。</p>
+<blockquote>
+<p>局部平滑性和马尔可夫性质：局部平滑性是指一个函数或者信号在局部范围内的变化相对较小或者连续的性质。局部平滑性的概念通常用于平滑数据、降噪、边缘检测等任务中。例如，通过在图像中的像素点之间进行平滑操作，可以减少图像中的噪声并保留图像的细节。马尔可夫性质是一个在概率论和随机过程中常见的概念，描述了一个随机过程的状态在给定其当前状态时，其未来状态不依赖于过去状态的性质。换句话说，给定当前状态，未来状态的概率只依赖于当前状态，而与过去状态无关。马尔可夫性质是一种“无记忆性”的性质，它在很多情况下都提供了简化模型的可能性。马尔可夫链是一个常见的应用马尔可夫性质的随机过程，它的状态转移满足马尔可夫性。在机器学习和自然语言处理中，马尔可夫性质常被用于建模序列数据，例如自然语言中的词语序列、时间序列数据等。通过假设未来的状态只与当前状态相关，可以简化模型并减少计算复杂度。总的来说，局部平滑性和马尔可夫性质是两个不同领域的重要概念，它们在不同的上下文中具有不同的含义和应用。</p>
+</blockquote>
+<p>简单负样本表现出与锚点的语义差异（容易看出与锚点不相似）</p>
+<p>困难负样本具有与锚点相似但不相同的语义</p>
+<h4 id="3设计-sscl-损失"><a class="markdownIt-Anchor" href="#3设计-sscl-损失"></a> 3）设计 SSCL 损失</h4>
+<p>使用分段和实例级别的信息不足以学习通用表示。先前的研究通常将上述任务分为两类（Yue et al. 2022）。</p>
+<p>第一类包括预测、异常检测和插补，它们更多地依赖于在分段级别捕获的细粒度信息（Yue 等人，2022 年；Woo 等人，2022 年；Luo 等人，2023 年），因为这些任务需要推断特定的时间戳或子序列。</p>
+<p>第二类包括优先考虑实例级信息（即粗粒度信息）的分类和聚类（Eldele et al. 2021, 2022；Liu and wei Liu 2022），旨在推断整个系列的目标。</p>
+<p>因此，当面对在预训练阶段缺乏先验知识的任务时，片段级和实例级信息对于实现有效的通用时间序列表示学习都是不可或缺的。</p>
+<h2 id="解决方法"><a class="markdownIt-Anchor" href="#解决方法"></a> 解决方法</h2>
+<p>为了解决上述问题，作者提出了一种新颖的自监督框架，名为 TimesURL，为了应对这些挑战，在本文中，我们提出了一种名为 TimesURL 的新型自监督框架，以学习能够有效支持各种下游任务的通用表示。</p>
+<p>具体来说，我们首先引入基于频率-时间的增强以保持时间属性不变。然后，我们构建双重 Universums作为一种特殊的负样本，以指导更好的对比学习。此外，我们引入时间重建作为联合优化目标与对比学习来捕获段级和实例级信息。</p>
+<p>作者首先进行实例级和时间对比学习，以纳入时间变化和样本多样性。具体来说，为了保持时间变化和依赖性，作者设计了一种新的基于频率-时间的增强方法，称为 FTAug，它是在时域进行裁剪和在频域进行频率混合的组合。此外，受互斥学习概念的启发，我们精心设计了双重 Universums作为硬负样本。它是嵌入空间中的一种针对锚点的混合，每次将特定的正样本（锚点）与负样本混合。我们设计的双重 Universums分别在实例级和时间维度上生成，作为特殊的高质量困难负样本，提高对比学习的性能。此外，作者观察到单独的对比学习仅限于捕获一层信息。因此，在论文中，作者联合优化对比学习和时间重建，以捕获和利用分段和实例级别的信息。</p>
+<h3 id="timeurl-框架"><a class="markdownIt-Anchor" href="#timeurl-框架"></a> TimeURL 框架</h3>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZDNkZWFiMjMwYmVkOTA2NmEzZjQyMWMyMjQwODVlZDdfVnpsWnR0WkRXV242aTJFT2ZseFhrRXlrM1RxY2hVMm5fVG9rZW46WHBYdWJQc3hHb0ZXSXl4NjhVYmNvUzk5bmhiXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA" alt="img" /></p>
+<h4 id="问题表述"><a class="markdownIt-Anchor" href="#问题表述"></a> 问题表述</h4>
+<p>目标是学习一个非嵌入线性函数f_θ将x_i投射到 r_i，其中 x_i的维度为 T<em>F，r_i的维度为 T</em>K，K 是表示向量的维度。之后用学习到的表示 r 来完成下游任务。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZTUzZGNiMjZhMDFmOGQ4ZWFkOTFiMjg4MWRkMzA5OWZfTGFycFpNRlJRMWNtMEJ0d0g1TlVST2JvVnhpZnpDUm5fVG9rZW46RzY3dGJvOThvb1hKcUx4TVJGYmNGb1pVbjJiXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA" alt="img" /></p>
+<h4 id="方法介绍"><a class="markdownIt-Anchor" href="#方法介绍"></a> 方法介绍</h4>
+<p>方法介绍。如图 1 所示，我们首先通过 FTAug 分别为原始序列 X和X_M屏蔽序列 X 生成增强集 X’ 和 X’_M。然后我们得到两对原始序列集和增强序列集，第一对（X，X’）用于对比学习，而第二对（X_M，X’_M）用于时间重建。</p>
+<p>之后，我们将上述集合与 fθ 进行映射以获得相应的表示。我们鼓励 R 和 R’ 具有变换一致性，并设计一种重建方法，使用 R_M 和 R_M’ 精确恢复原始数据集 X。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ODJhMjBjMzJkNTA4MWNmODc5NDFkN2MxM2Y3YTdiZWNfNU10WEdlOWUwUFhQams1dkt6WGp3OE9RWDRHV1pvTDZfVG9rZW46RWp3NGJaWUVkb1RaQXN4bUo4WWNJdEEybkliXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA" alt="img" /></p>
+<p>上述模型的有效性是通过以下方式保证的：</p>
+<p>1）使用合适的增强方法进行正对构建（FTAug）</p>
+<p>2）具有一定数量的困难负样本用于模型泛化</p>
+<p>3）通过对比学习和时间重建损失联合优化编码器fθ用于捕获两个级别的信息。</p>
+<h4 id="ftaug-方法"><a class="markdownIt-Anchor" href="#ftaug-方法"></a> FTAug 方法</h4>
+<p>FTAug 方法对比学习的一个关键组成部分是选择适当的增强，这些增强可以施加一些先验来构建可行的正样本，以便编码器可以被训练来学习鲁棒性和判别性的表示（Chen 等人，2020 年；Grill 等人，2020 年；Yue 等人，2022年）。大多数增强策略都是依赖于任务的（Luo et al. 2023），并且可能会引入对数据分布的强烈假设。更严重的是，它们可能会扰乱对于预测等任务至关重要的时间关系和语义一致性。因此，我们选择上下文一致性策略（Yue et al. 2022），它将两个增强上下文中相同时间戳的表示视为正对。我们的 FTAug 结合了频域和时域的优势，通过频率混合和随机裁剪生成增强上下文。</p>
+<h5 id="混频"><a class="markdownIt-Anchor" href="#混频"></a> 混频</h5>
+<p>混频用于通过将经快速傅里叶变换（FFT）运算计算出的一个训练实例 xi 中的一定比例的频率分量替换为同一批次中的另一随机训练实例 x_k 的相同频率分量来产生新的上下文视图。然后我们使用逆 FFT 进行转换以获得新的时域时间序列（Chen et al. 2023）在样本之间交换频率分量不会引入意外的噪声或人为周期性，并且可以提供更可靠的增强来保留时间序列的语义特征数据。</p>
+<h5 id="随机裁剪"><a class="markdownIt-Anchor" href="#随机裁剪"></a> 随机裁剪</h5>
+<p>随机裁剪是上下文一致性策略的关键步骤。对于每个实例 xi，我们随机采样两个重叠时间段 [a1, b1], [a2, b2]，使得 0 &lt; a1 ≤ a2 ≤ b1 ≤ b2 ≤ T 。对比学习和时间重建进一步优化了重叠段[a2，b1]中的表示。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MzM5NzAyY2U1OTZmYWY0ZjM2OWM1NzNiOTNkMGQxMmJfSndpdUNIRWRobzNTcnhhaW9CQjNkM3hIVGI1ZnpyRERfVG9rZW46WW92bmJkOFh3b1pWVnF4UmM2VGNURXdubndjXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA" alt="img" /></p>
+<p>最终，所提出的 FTAug 对各种任务都有帮助，因为它可以保持时间序列的重要时间关系和语义一致性。值得一提的是，FTAug 仅应用于训练过程。</p>
+<h4 id="double-universum学习"><a class="markdownIt-Anchor" href="#double-universum学习"></a> Double Universum学习</h4>
+<p>正如最近的研究（Kalantidis et al. 2020；Robinson et al. 2020；Cai et al. 2020）所揭示的，困难负样本在对比学习中发挥着重要作用，但从未在时间序列领域进行过探索。此外，由于时间序列中的局部平滑性和马尔可夫特性，大多数负样本都是简单负样本，不足以捕获时间信息，因为它们从根本上缺乏驱动对比学习所需的学习信号。作为图 2 中 UEA 档案 (Bagnall et al. 2018) 中 ERing 数据集的真实示例，对于每个正锚点（红色方块），相应的负样本（灰色标记）包含许多简单的负样本和很少的困难负样本，即许多负样本太远，无法用于对比损失。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MTE4MDE3MzJhYmQxMDkzMzY0YjI2YzczNzMxMTM3Y2ZfNk91QjJmUUhnYlNZaXIzWk14a1VKYWpzbXRqS0gzckVfVG9rZW46QkFSYmJiQ0Zub1BFNDN4NzFDd2N2TGNhbmZlXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA" alt="img" /></p>
+<p>我们的double Universums在实例级和时间戳级都是混合形成的Universums（Han and Chen 2023；Vapnik 2006；Chapelle et al. 2007），这是专用于锚点的在嵌入空间中混合，将特定的正特征（锚点）与未标注数据集的负特征混合在一起。</p>
+<p>令 i 为输入时间序列样本的索引，t 为时间戳。 r_i,t 和 r_i,t’ 表示相同时间戳 t 但来自 x_i 的两次增强后的表示。时间戳 t 处第 i 个时间序列的综合时间Universums可以表示为</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NWI1M2E5OTg3N2I3OGZjN2I4YmY4OGNmNWQ3NDlmNDhfRDByQWZGNnR1Q3RKRXh4TG9uR1dkU2JSNjQ5dWVSbUZfVG9rZW46SWVDamJ4ck1hb0hzczN4NGg3NGNhVGpSbmNkXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA" alt="img" /></p>
+<p>其中 t′ 是从 Ω 中随机选择的，Ω 是两个子序列重叠范围内(上面提到的[b1,a2])的时间戳集合，并且 t′≠ t。同时 与用 (i, t) 索引的实例级Universums相似，可表述为</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NDJmNWI1ODYwNDgyMzEzODdkODQxMTQyNGI5ZDhkYzRfYnZLYnBDaGhaNEczRUFwdlA2bjg5dDZjSjFvZ3FtUE5fVG9rZW46SnZMSmJnTWZPb2xla0N4Y0V2ZWM4QzNYbmNlXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA" alt="img" /></p>
+<p>其中j表示batch β中除了i之外的任何其他实例。这里，λ1，λ2 ∈ (0, 0.5]是随机选择的anchor的混合系数，并且λ1，λ2≤0.5保证锚点的贡献总是小于负样本。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NTEzMjQ4MTAzYjY4OWYyNTQ2OWVjMzc1MjgzYmE4Y2FfWWloZVUwQ1o0Vk13OGZvTGxlZFBNTTlkN0N0NmlMWm9fVG9rZW46TTdvTGJZRGIzb3ZXcE14M3pqMWNHZVFGbjdYXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA" alt="img" /></p>
+<p>如图 2(a) 所示，大多数 Universum（蓝色三角形）距离锚点更近，因此可以被视为困难负样本。此外，我们利用代理任务来指示困难负样本的难度 (Kalantidis et al. 2020 ），即 Universums。代理任务性能如图2(b)所示，即在使用和不使用universum在ERing数据集上训练我们的TimesURL时，锚点百分比即正面样本被评价为整体负面。尽管代理任务性能有所下降，但是在 TimesURL 中，线性分类任务的性能进一步提升，从 0.896（没有 Universums）到 0.985（有 Universums），这意味着额外的 Universum 使代理任务更难解决，可以进一步提高下游任务中的模型性能。因此，TimesURL中的Univerums可以被视为高质量的底片。综上所述，我们的Universums可以被视为一种高质量的硬负样本。</p>
+<p>通过与anchor样本混合，将Universum数据落入数据空间中目标区域的可能性降到最低，从而保证了Universum的困难负性。此外，双Universum集包含所有其他有利于学习判别样本信息以提高模型能力的负样本。</p>
+<h4 id="分段级信息的对比学习"><a class="markdownIt-Anchor" href="#分段级信息的对比学习"></a> 分段级信息的对比学习</h4>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZmM1NDI0ZTVmYWRkODU0MWUxM2ZjZjA4MmJhOWNjMWFfQWFwZVZJc2hNTUhrbmo3QnRIY2UxdGFPTTlMdHlzRzJfVG9rZW46WGNnUmJYQ0NOb3FpU054WGo3a2NWalNkbkViXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA" alt="img" /></p>
+<p>我们使用一种简单的方法将double Universums注入对比学习中，分别作为时间和实例对比损失中的附加困难负样本。第 i 个时间序列在时间戳 t 处的两个损失可以表示为</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Zjg1YzVlZmZiOWYxMWE1NTBiODYyM2NhYTEzNmVlZGJfWk9YVFpRZWI0aWs1T1dZU1dVV0c2ZXlxT2xQQ2pERmZfVG9rZW46VWU2d2I2V2wzb2xKbHB4c3hDUmNlYUN2blliXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA" alt="img" /></p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZDAyZTI4NWMyZDVjMDRhZjdiZGMyMDM5OWQzYmJlYjlfakE1WUNDSXlEdFhpUmRQdEJsQnJjUEF6bXpLWWJMS1lfVG9rZW46WDJFTGJRcUMwb0d6ODJ4M21acGM2TFpZbjFkXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA" alt="img" /></p>
+<p>上面|B|表示批量大小。这两种损失是互补的，可以捕获实例特定的特征和时间变化。我们使用分层对比损失（Yue et al. 2022）进行多尺度信息学习，方法是在方程（3）和（4）中沿时间轴对学习到的表示使用最大池化。在这里，我们必须提到，重要的时间变化信息，例如趋势和季节，在多次最大池化操作后会丢失，因此顶层对比实际上无法为下游任务捕获足够的实例级信息</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZTdhODRhODg5YTJmNmY4ODYyMjY1YzA0OTI4ZDMwZTZfU0lkRm11RHp0b3JQZmY3VlBJRGpZNnlGS0daR3NiQjFfVG9rZW46SEFTMmI4Umhob2VhUkp4cUpndGNwMDVvbnNoXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA" alt="img" /></p>
+<h4 id="实例级信息的时间重建"><a class="markdownIt-Anchor" href="#实例级信息的时间重建"></a> 实例级信息的时间重建</h4>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Y2E3YjZlMTM3Nzg5ODA1NDQwMWRjMzNlOWE0ZmQ4MzBfTkZOTXZKQnVOMW00RTBxMDRiRVVsalZ4OWNXY3hCSDlfVG9rZW46U29KZmJlMHlQb0pCcXJ4YzA4ZmM5emhnbkJjXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA" alt="img" /></p>
+<p>自监督学习中的屏蔽自动编码技术已被证明在各个领域都表现良好，例如 NLP 中基于 BERT 的预训练模型（Kenton 和 Toutanova 2019）以及 CV 中的 MAE（He et al. 2022）。此类方法的主要思想是在给定部分观测的情况下重建原始信号，在屏蔽自动编码技术的推动下，我们设计了一个重建模块来保留重要的时间变化信息。我们的方法使用上述嵌入函数 fθ 作为编码器，将屏蔽实例映射到潜在表示，然后从潜在表示重建完整实例。在这里，我们使用随机掩蔽策略。我们的损失函数计算每个时间戳的重建值和原始值之间的均方误差（MSE）。此外，与 BERT 和 MAE 类似，我们仅在等式（6）中的屏蔽时间戳上计算 MSE 损失。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=M2FkYmI0ZmNjNDJjYzExNGVlOTE1Y2U0YzY5OTAyODRfSnBCYXQ0dzNBSThBUWtPU0U2NjY4NmFJVDcydUxxd2NfVG9rZW46SnA0RmJpT1Blb3dIaTh4ZHZoMWNkRzBPbk5jXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA" alt="img" /></p>
+<p>在这里，我们将 m_i ∈ {0, 1}^T ×F 表示为第 i 个实例的观察掩模，其中如果 xi,t 缺失，则 mi,t = 0；如果观察到 xi,t，则 m_i,t = 1，而 ̃ xi 是生成的重建实例。与上面的符号类似，m′ i 、̃ x′ i 和x′ i 具有相同的含义。</p>
+<p>0,1 写反了</p>
+<p>最后，总体损失定义为</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Zjc2YjViM2E0NzIwMmJmZjM5NTIwZWQ4ODNmMDc0ZTBfbFhoWXRmcjVrNXhwS1BCcjZOR3NSdHBXVEptajlIQmhfVG9rZW46VzM3d2JtRmZtb0FMYmN4Z0RnSWNXMUV2bmJjXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA" alt="img" /></p>
+<p>其中 α 是平衡两个损失的超参数。</p>
+<h2 id="看法"><a class="markdownIt-Anchor" href="#看法"></a> 看法</h2>
+<p>时序数据傅里叶变换到频域，做数据增强，再还原为时序数据的思路很有意思，和之前老师与我讨论的想法重叠了，证明了该方法的有效性。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/04/01/%E3%80%8ALearning%20to%20Embed%20Time%20Series%20Patches%20Independently%E3%80%8B%20%E8%AE%BA%E6%96%87/" rel="prev" title="">
+                  <i class="fa fa-angle-left"></i> 
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/04/01/%E3%80%8ATS2Vec%20Towards%20Universal%20Representation%20of%20Time%20Series%E3%80%8B%E8%AE%BA%E6%96%87%20AAAI22/" rel="next" title="">
+                   <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Xu Yang</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

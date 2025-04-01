@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.22.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="《Cost: Contrastive learning of disentangled seasonal-trend representations for time series forecasting》 ICLR22 论文 *斜体：*疑问  &amp; 解答 ｜  **加粗：**现象  ｜   下划线：解决方法、创新点  摘要 深度学习在时间序列预测方面得到了积极的研究，主流范式是基于神经网">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://example.com/2025/04/01/%E3%80%8ACost%20Contrastive%20learning%20of%20disentangled%20seasonal-trend%20representations%20for%20time%20series%20forecasting%E3%80%8B%20ICLR22%20%E8%AE%BA%E6%96%87/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="《Cost: Contrastive learning of disentangled seasonal-trend representations for time series forecasting》 ICLR22 论文 *斜体：*疑问  &amp; 解答 ｜  **加粗：**现象  ｜   下划线：解决方法、创新点  摘要 深度学习在时间序列预测方面得到了积极的研究，主流范式是基于神经网">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YWQyZDNjNDE1ODNjZGQ0Y2RkODdjYTg1MzEzODA1YTJfQVFEaGFFNzB6NTRsNmZwMldhWnZxZ2VPWEltS2pIZlFfVG9rZW46Unp0cWI4b2pQb1NiRE14d0ZpeGNyMWE1bnhkXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ODcxM2YyODQyZmE4ZWJiMGNlNGZlNTRmYjAzYjQzYWRfNG0xZFlETWx4Q2xYc2xFaTdhYVVxQTlRc2VIRWY0VUtfVG9rZW46Qm1XSmJXVjVxb212cHh4M2JvdGN3a0dlbkhjXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=N2FiYTNlYWM5YTc3Zjg1NDI0M2Y1Y2RmZmMyMDQ3NDZfUDZEUmZ4OU1CY2pQb1J0WERpRW9MU1RGb2NPSDRaTWhfVG9rZW46WDE2UmJ3c2Jub1FKeEF4YXJRbmNpZFJyblptXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MTlmN2E0ZDMwYzUxZWY3YTNkOWM4ZTMzMTVkY2I1ZjFfYW03aUd0NllmNFBkNHBjd2M0c0ZrVWVSOUI4bUFwUjJfVG9rZW46SXBGSWI4Q1kwb0oxRzN4YmJKaWN4bzZYblNjXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YjI5ZDMwMGM3NDNjMDRlNGZlYTA0MGFiYWZiYTRiOGNfOW13UERQZmRYM3Z2b3cycUhEVFphRlQ2azBiWnZVc2tfVG9rZW46QjJiRWJBRmVybzlCNHF4cmlnWGNIbFdabkJlXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZmU3ZmZmODZkMmZjMzgyNjY0ZjRmNTk3MzQ5NTMzMDVfdnY4YmEzcHd5b2Z4clB4dmh5dnV4UG1ISEp3NDE5aERfVG9rZW46UDZOdWIxYnptb2g0Rk14WFlwV2NZMWNtbktiXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Y2Q5OGNiMzQzYzNkZGQxOWE2ODFhOTAzN2Y0YjJhNWNfMEF4ZFVVOElhNzZDTWdGdGlRZ1hlNTFaTTVTY0dhbGtfVG9rZW46QmFVSmJpVnJFbzJIRFN4OFRuYmNiakhwbk1lXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MDQ1NDU3MmQ0NjQ0YmQ0OGFiNzMxYjk0NzIzY2M5ZTVfcDJ3OVRpYzNrM3ZSUXZ3cWthWXlTU1oybkc5M0dFZjNfVG9rZW46S2NsQ2Ixc09rb0JoVDF4bFVrRWNJN2VObkpnXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MDY3ZjM0ZWE5MDEyNWI3Zjc3OWIxODE0N2I5YmIyMjZfZHM3aGt6d216MWlUZHpTdkJLMklZZGZqSXFYVUhmdHVfVG9rZW46T3VNRWJtRnd0b1pPd3J4RHFVNmNIb2hKbk5iXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ODBkYzQzZDQyMGM0MTgyYWMwNWEyMTk0MDY5YTIzYzlfR1hNd0NnRXkxTlIyQ3lHam9OMDg2eG5yUnpDcTVSOFNfVG9rZW46REQ2NWJSVmxGbzBjZ1V4UHJyZGNvMEJNbkZlXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Yzc5MTYxMWZlOWY2OGRjZWM5NDliY2NkMmE4MmIyZTVfRHpITzk1NmdVcGQwMXk0N0NyaGFBQUp3Q3hZTFd2RUxfVG9rZW46V09LU2JpM1Rrb3VxNTl4dWMzdGN1VGtzbnBqXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZTZiMDg4ZWE3NDY3YmIyMDFkYzQxYmQzNmY1MjJlOGVfVzFKcEl4UnFMVDJlYVJIQXZLamRRVWNJQ1ZjSlNIRGZfVG9rZW46Rk5XOWJqWVlsb0NlYWV4Z0tCOGM0NWVZbnRmXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NTZmMTM2ZjBhZGMyNzcwYjM5NzJiNjc2NmIwMTFjOTlfcThpQmQ3RE9wdUxmdm9QdnZYOG8wSHB0SFdZcTJQOENfVG9rZW46S3BHdWJiWlc3b3BKUzF4Nlg0V2MzMkNQbmdIXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Mjc1ZjhhZDQ2ODQ5YzZkZDI3ODg1YmM3NzBhZTQ1ZGJfUHhDMjlid0RSQ0czZlNZYnFuS0FFY1M4dWJsR3JWQVdfVG9rZW46QzRXc2JreGcyb0hNWVl4aTFuN2NGZWhXbjk5XzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=OTlhNjcyNDRiNGQ3NDEzYmVjNzIxOTRlYWQ1YWIwYTVfd1VqYVhBVWtaeWNlenk2WTZwbDBxaDZrVGRJWmplc3lfVG9rZW46VW1kM2J4eGtOb0FQNmt4RVhJQ2N3VGkxbjVmXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NjRkM2EyM2FhM2FhYWNiYWRiMTM2OGE0ZWQxMTQ2MjJfNWRlMGtDdlVWSjI0WnlURjI4RHpSMlR0VDJwUHZ5U3NfVG9rZW46UzFEZGJjZVV5b0Jabkl4OU5nMGNmVHRWbjBuXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NDgxNzE4ZTdkZWU3NTkzZWI2MWMyMDg4M2Y0NGYwY2ZfOVJXMVlOZTZuU2pyWEVnTG9mcHlEMTZ2V2NRclBtTW1fVG9rZW46RlNwaWJQZjRjb3RWSGN4cDdkSWMyQmk1bmtoXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NDU5MDY2NTg0MGFlZTVmMDM0MjJlZTYxZDhlMmE2ODZfR3drQU5ST1pjV2VQQXo0VnQ3aFZrbVdlc0l3cEJtclNfVG9rZW46UVpqZmJ1Z3Jrb281blR4a2NkS2NtVnFnbm1mXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YzcwYWZhYWY4YjY0ZmJmODIxMTA3MzBmZjhhYmRmNjRfWVA4bDFreFJ6b09nSWpNUWF1SlFuMzBDbGVTZGx6SGZfVG9rZW46UGRLRGJsWDN1b2Vxc2J4aWp0SmNOQ1ZzbkpmXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NDNjZGVmMWZmNTVmNWM1NDA2NGI0NjU3NjlhMjhjNzhfVk1XWnpiN1NyTElobDNqZE04blQwREJEQ0IybVVRYzlfVG9rZW46S2E2M2JrSDNSbzVKZ2d4UU5sSWN6Z3cwblVmXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YjAxODE1ZGU2OGQyY2JhNTAzMDAyNjJhYjJmZWRiMmJfWDNkNmhsa29yb2RRcWhvSjAxSmdTeERTY0VYYU0yeUlfVG9rZW46Tm5FN2JEMDRTb2pXRUR4Y1p4ZGNaWjg1bkZkXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YjE1ZDIyNDM0MDliOTlmNGUwOWNlYmYxMGE5NmRkZGJfMmVVUGo0NUFKS1JiSTVKU25COEY1VXNGTEJYZ1QwOVdfVG9rZW46TmppN2JzS2RKb0xoSnN4RlJ1UGNJSDJpbkdmXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NDM0NjkxZGYwZDMwMmU5ZGZlNDdhODQ0ZDhhOGE0NThfVjNQa3Qycll0ZnlLeTQ2TUV4aDU5VzBRRWpZeFBuS05fVG9rZW46TDF6MWJQN2FGbzNyUGh4dmlPeWMycjZDbkRoXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=N2UzY2VjZWNlNTNhYjliYTc2ZmY3MzQyMWFmYzRhMTVfeHRHQmNPQ1pHSnpVZEVhSk4yVGRqdzFjTGtlcjFINXdfVG9rZW46Q1hmcWJjZUFZbzBoS2p4STZaTmN0WUE1bldlXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NDIzZmQ5ZWI3NGM3OTlhOWU0ODkyMTFmZTZjZjYyNTBfcWZhODAybXY1bFUxSXpvdXMzeXc1VmhJQ1ZScDZpTWpfVG9rZW46SzNBR2JqSm1zbzNycnJ4WWVxZWNhYWJ4bkZiXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=OTU4OGI3N2JhYTYxZjM4MzdjMDMyNzFmYjAyNjE0NmZfNTVsNkxSOVpKTFhWZTZiSVhUZ2tXUnltdWJOT1AzcFhfVG9rZW46SThwbGJ3alZCb201a0N4TlBkd2NURHhybm1jXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA">
+<meta property="article:published_time" content="2025-04-01T09:58:50.189Z">
+<meta property="article:modified_time" content="2025-04-01T09:58:03.023Z">
+<meta property="article:author" content="Xu Yang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YWQyZDNjNDE1ODNjZGQ0Y2RkODdjYTg1MzEzODA1YTJfQVFEaGFFNzB6NTRsNmZwMldhWnZxZ2VPWEltS2pIZlFfVG9rZW46Unp0cWI4b2pQb1NiRE14d0ZpeGNyMWE1bnhkXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA">
+
+
+<link rel="canonical" href="http://example.com/2025/04/01/%E3%80%8ACost%20Contrastive%20learning%20of%20disentangled%20seasonal-trend%20representations%20for%20time%20series%20forecasting%E3%80%8B%20ICLR22%20%E8%AE%BA%E6%96%87/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2025/04/01/%E3%80%8ACost%20Contrastive%20learning%20of%20disentangled%20seasonal-trend%20representations%20for%20time%20series%20forecasting%E3%80%8B%20ICLR22%20%E8%AE%BA%E6%96%87/","path":"2025/04/01/《Cost Contrastive learning of disentangled seasonal-trend representations for time series forecasting》 ICLR22 论文/","title":""}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title> | Hexo</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Hexo</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#cost-contrastive-learning-of-disentangled-seasonal-trend-representations-for-time-series-forecasting-iclr22-%E8%AE%BA%E6%96%87"><span class="nav-number">1.</span> <span class="nav-text"> 《Cost: Contrastive learning of disentangled seasonal-trend representations for time series forecasting》 ICLR22 论文</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-number">1.1.</span> <span class="nav-text"> 摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.2.</span> <span class="nav-text"> 1.介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.2.1.</span> <span class="nav-text"> 背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%9C%A8%E9%97%AE%E9%A2%98"><span class="nav-number">1.2.2.</span> <span class="nav-text"> 存在问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%80%9D%E8%B7%AF"><span class="nav-number">1.2.3.</span> <span class="nav-text"> 解决思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%88%E6%9E%9C%E5%8F%8A%E8%B4%A1%E7%8C%AE"><span class="nav-number">1.2.4.</span> <span class="nav-text"> 效果及贡献</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E7%9A%84%E5%AD%A3%E8%8A%82-%E8%B6%8B%E5%8A%BF%E8%A1%A8%E7%A4%BA"><span class="nav-number">1.3.</span> <span class="nav-text"> 2.时间序列的季节-趋势表示</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%AE%9A%E4%B9%89"><span class="nav-number">1.3.1.</span> <span class="nav-text"> 问题定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E8%80%A6%E7%9A%84%E5%AD%A3%E8%8A%82-%E8%B6%8B%E5%8A%BF%E8%A1%A8%E5%BE%81%E5%AD%A6%E4%B9%A0%E5%8F%8A%E5%85%B6%E5%9B%A0%E6%9E%9C%E8%A7%A3%E9%87%8A"><span class="nav-number">1.3.2.</span> <span class="nav-text"> 解耦的季节-趋势表征学习及其因果解释</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E5%AD%A3%E8%8A%82-%E8%B6%8B%E5%8A%BF%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0%E6%A1%86%E6%9E%B6"><span class="nav-number">1.4.</span> <span class="nav-text"> 3.季节-趋势对比学习框架</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#31-%E8%B6%8B%E5%8A%BF%E7%89%B9%E5%BE%81%E8%A1%A8%E7%A4%BA"><span class="nav-number">1.4.1.</span> <span class="nav-text"> 3.1 趋势特征表示</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B6%8B%E5%8A%BF%E7%89%B9%E5%BE%81%E8%A7%A3%E7%BC%A0%E5%99%A8-tfd"><span class="nav-number">1.4.1.1.</span> <span class="nav-text"> 趋势特征解缠器 (TFD)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%B6%E5%9F%9F%E5%AF%B9%E6%AF%94%E6%8D%9F%E5%A4%B1"><span class="nav-number">1.4.1.2.</span> <span class="nav-text"> 时域对比损失</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#32%E5%AD%A3%E8%8A%82%E7%89%B9%E5%BE%81%E8%A1%A8%E7%A4%BA"><span class="nav-number">1.4.2.</span> <span class="nav-text"> 3.2季节特征表示</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%A3%E8%8A%82%E6%80%A7%E7%89%B9%E5%BE%81%E8%A7%A3%E7%BC%A0%E5%99%A8sfd"><span class="nav-number">1.4.2.1.</span> <span class="nav-text"> 季节性特征解缠器(SFD)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%91%E5%9F%9F%E5%AF%B9%E6%AF%94%E6%8D%9F%E5%A4%B1"><span class="nav-number">1.4.2.2.</span> <span class="nav-text"> 频域对比损失</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4%E5%AE%9E%E9%AA%8C%E6%95%88%E6%9E%9C"><span class="nav-number">1.5.</span> <span class="nav-text"> 4.实验效果</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#41%E5%AE%9E%E9%AA%8C%E8%AE%BE%E7%BD%AE"><span class="nav-number">1.5.0.1.</span> <span class="nav-text"> 4.1实验设置</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">1.5.0.1.1.</span> <span class="nav-text"> 数据集</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%AF%84%E4%BC%B0%E8%AE%BE%E7%BD%AE"><span class="nav-number">1.5.0.1.2.</span> <span class="nav-text"> 评估设置</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%9E%E6%96%BD%E7%BB%86%E8%8A%82"><span class="nav-number">1.5.0.1.3.</span> <span class="nav-text"> 实施细节</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#42%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C"><span class="nav-number">1.5.0.2.</span> <span class="nav-text"> 4.2实验结果</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#43%E5%8F%82%E6%95%B0%E7%81%B5%E6%95%8F%E5%BA%A6"><span class="nav-number">1.5.0.3.</span> <span class="nav-text"> 4.3参数灵敏度</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#44%E6%B6%88%E8%9E%8D%E7%A0%94%E7%A9%B6"><span class="nav-number">1.5.0.4.</span> <span class="nav-text"> 4.4消融研究</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#45-%E6%A1%88%E4%BE%8B%E5%88%86%E6%9E%90"><span class="nav-number">1.5.0.5.</span> <span class="nav-text"> 4.5 案例分析</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5%E7%9B%B8%E5%85%B3%E5%B7%A5%E4%BD%9C"><span class="nav-number">1.6.</span> <span class="nav-text"> 5.相关工作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E7%BB%93%E8%AE%BA"><span class="nav-number">1.7.</span> <span class="nav-text"> 6 结论</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Xu Yang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hduyangxu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hduyangxu" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/04/01/%E3%80%8ACost%20Contrastive%20learning%20of%20disentangled%20seasonal-trend%20representations%20for%20time%20series%20forecasting%E3%80%8B%20ICLR22%20%E8%AE%BA%E6%96%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Xu Yang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | Hexo">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-04-01 17:58:50 / 修改时间：17:58:03" itemprop="dateCreated datePublished" datetime="2025-04-01T17:58:50+08:00">2025-04-01</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="cost-contrastive-learning-of-disentangled-seasonal-trend-representations-for-time-series-forecasting-iclr22-论文"><a class="markdownIt-Anchor" href="#cost-contrastive-learning-of-disentangled-seasonal-trend-representations-for-time-series-forecasting-iclr22-论文"></a> 《Cost: Contrastive learning of disentangled seasonal-trend representations for time series forecasting》 ICLR22 论文</h1>
+<p>*斜体：*疑问  &amp; 解答 ｜  **加粗：**现象  ｜   下划线：解决方法、创新点</p>
+<h2 id="摘要"><a class="markdownIt-Anchor" href="#摘要"></a> 摘要</h2>
+<p>深度学习在时间序列预测方面得到了积极的研究，主流范式是基于神经网络架构的端到端训练，从经典的 LSTM/RNN 到最近的 TCN 和 Transformer。受计算机视觉和自然语言处理领域表示学习近期成功的启发，我们认为时间序列预测的一个更有前途的范式是：首先，学习解耦特征表示；其次，是简单的回归微调步骤 - 我们从因果角度证明了这种范式的合理性。遵循这一原则，我们提出了一种用于长序列时间序列预测的时间序列表示学习新框架，名为 CoST，它应用对比学习方法来学习解耦的季节性趋势表示。 CoST 包括时域和频域对比损失，分别用于学习判别趋势和季节表示。对现实世界数据集的大量实验表明，CoST 始终大幅优于最先进的方法，在多变量基准上实现了 MSE 21.3% 的改进。它对于主干编码器以及下游回归器的各种选择也具有鲁棒性。</p>
+<h2 id="1介绍"><a class="markdownIt-Anchor" href="#1介绍"></a> 1.介绍</h2>
+<h3 id="背景"><a class="markdownIt-Anchor" href="#背景"></a> 背景</h3>
+<p>时间序列预测已广泛应用于各个领域，例如电价（Cuaresma等，2004）、需求预测（Carbonneau等，2008）、容量规划和管理（Kim，2003）以及异常检测（Laptev）等人，2017）。最近，应用深度学习进行预测的探索激增（Wen et al., 2017; Bai et al., 2018; Zhou et al., 2021），并且由于数据可用性和计算资源的增加，这些在预测文献中，这些方法比传统方法提供了有潜力的性能。与传统方法相比，这些方法能够通过堆叠一系列非线性层来执行特征提取，然后是专注于预测的回归层，从而联合学习特征表示和预测函数。</p>
+<h3 id="存在问题"><a class="markdownIt-Anchor" href="#存在问题"></a> 存在问题</h3>
+<p>然而，从观测数据中端到端地联合学习这些层可能会导致模型过度拟合并捕获观测数据中包含的不可预测噪声的虚假相关性。当学习到的表示纠缠在一起时（当特征表示的单个维度对来自数据生成过程的多个局部独立模块的信息进行编码时）并且局部独立模块经历分布变化时，这种情况会加剧。图 1 是这种情况的一个示例，其中观察到的时间序列是由季节性模块和非线性趋势模块生成的。<strong>如果我们知道季节性模块经历了分布偏移，我们仍然可以基于不变趋势模块做出合理的预测</strong>。然而，<strong>如果我们从观察到的数据中学习纠缠特征表示，那么学习模型处理这种分布变化将是一个挑战，即使该分布变化只发生在数据生成过程的部分组件中</strong>。<strong>总之，当数据是从非平稳环境（<strong><strong>时间序列分析</strong></strong>中非常常见的场景）生成时，从端到端训练方法中学到的表示和预测关联无法很好地迁移或泛化</strong>。因此，在这项工作中，我们退后一步，旨在学习对时间序列预测更有用的解耦季节性趋势表示。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YWQyZDNjNDE1ODNjZGQ0Y2RkODdjYTg1MzEzODA1YTJfQVFEaGFFNzB6NTRsNmZwMldhWnZxZ2VPWEltS2pIZlFfVG9rZW46Unp0cWI4b2pQb1NiRE14d0ZpeGNyMWE1bnhkXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<h3 id="解决思路"><a class="markdownIt-Anchor" href="#解决思路"></a> 解决思路</h3>
+<p>为了实现这一目标，我们利用结构时间序列模型的思想（Scott &amp; Varian，2015；Qiu 等人，2018），该模型将时间序列表示为趋势、季节和误差变量的总和，并利用此类先验知识来学习时间序列表示。首先，我们提出通过因果视角学习解耦的季节性趋势表征的必要性，并证明这种表征在误差变量的干预下是鲁棒的。然后，受到 Mitrovic 等人的启发。 （2020），我们建议通过数据增强来模拟对误差变量的干预，并通过对比学习来学习解耦的季节性趋势表示。</p>
+<p>基于上述动机，我们提出了一种新颖的对比学习框架，用于学习长序列时间序列预测（LSTF）任务的解耦的季节性趋势表示（Zhou et al., 2021）。具体来说，CoST 利用模型架构中的归纳偏差来学习解耦的季节性趋势表示。 CoST 有效地学习趋势表示，通过引入自回归experts的混合来缓解回溯窗口选择的问题。它还通过利用可学习的傅立叶层来学习更强大的季节表示，该傅立叶层可实现频率内交互。趋势和季节性表示都是通过对比损失函数学习的。趋势表示是在时域中学习的，而季节表示是通过一种新颖的频域对比损失来学习的，这种损失鼓励有区别的季节表示，并回避确定数据中存在的季节模式周期的问题。</p>
+<h3 id="效果及贡献"><a class="markdownIt-Anchor" href="#效果及贡献"></a> 效果及贡献</h3>
+<ol>
+<li>我们从因果角度展示了通过对比学习学习解耦的季节性趋势表示对于时间序列预测的好处。</li>
+<li>我们提出了CoST，一种时间序列表示学习方法，它利用模型架构中的归纳偏差来学习解耦的季节和趋势表示，并结合一种新颖的频域对比损失来鼓励有区别的季节表示。</li>
+<li>CoST 在现实世界基准上明显优于现有最先进的方法 – 多变量设置的 MSE 提高了 21.3%。我们还分析了每个提出的模块的优点，并通过广泛的消融研究确定 CoST 对于骨干编码器和下游回归器的各种选择具有鲁棒性。</li>
+</ol>
+<h2 id="2时间序列的季节-趋势表示"><a class="markdownIt-Anchor" href="#2时间序列的季节-趋势表示"></a> 2.时间序列的季节-趋势表示</h2>
+<h3 id="问题定义"><a class="markdownIt-Anchor" href="#问题定义"></a> 问题定义</h3>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ODcxM2YyODQyZmE4ZWJiMGNlNGZlNTRmYjAzYjQzYWRfNG0xZFlETWx4Q2xYc2xFaTdhYVVxQTlRc2VIRWY0VUtfVG9rZW46Qm1XSmJXVjVxb212cHh4M2JvdGN3a0dlbkhjXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>不是联合学习表示和预测，而是先学习表示，再进行预测，如下图所示</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=N2FiYTNlYWM5YTc3Zjg1NDI0M2Y1Y2RmZmMyMDQ3NDZfUDZEUmZ4OU1CY2pQb1J0WERpRW9MU1RGb2NPSDRaTWhfVG9rZW46WDE2UmJ3c2Jub1FKeEF4YXJRbmNpZFJyblptXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<h3 id="解耦的季节-趋势表征学习及其因果解释"><a class="markdownIt-Anchor" href="#解耦的季节-趋势表征学习及其因果解释"></a> 解耦的季节-趋势表征学习及其因果解释</h3>
+<p>正如 Bengio 等人所讨论的，复杂的数据源于多个来源的丰富交互——<strong>良好的表示应该能够理清各种解释来源，使其对复杂且结构丰富的变化具有鲁棒性</strong>。不这样做可能会导致捕获在非独立同分布下不能很好传输的虚假特征。数据分布设置。</p>
+<p>为了实现这一目标，有必要引入时间序列的结构先验。在这里，我们借鉴了贝叶斯结构时间序列模型的想法。如图 2 中的因果图所示，我们假设观测到的时间序列数据 X 是由误差变量 E 和无误差潜在变量 X<em>生成的。 反过来，X</em>是由趋势变量 T 和季节变量 S 生成的。由于E 是不可预测的，因此如果我们能够发现 仅取决于 T 和 S的X*就能实现最佳预测。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MTlmN2E0ZDMwYzUxZWY3YTNkOWM4ZTMzMTVkY2I1ZjFfYW03aUd0NllmNFBkNHBjd2M0c0ZrVWVSOUI4bUFwUjJfVG9rZW46SXBGSWI4Q1kwb0oxRzN4YmJKaWN4bzZYblNjXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>图二 时间序列数据生成过程的因果图</p>
+<p>首先，我们强调现有的工作使用<em>端到端深度预测方法</em>来直接对观测数据 X 上的时滞关系和多变量交互进行建模。不幸的是，每个 X 都包含不可预测的噪声 E，这可能导致捕获虚假的相关性。因此，我们的目标是学习无误差的潜在变量 X*。</p>
+<blockquote>
+<p>端到端：说人话就是黑盒，从输入数据到输出数据经过一个一体的神经网络</p>
+<p>非端到端：通常分为多个步骤，包括数据预处理、特征提取、模型训练和预测。这些步骤可以由不同的算法或模型来完成，通常需要手工设计和调优。</p>
+</blockquote>
+<p>其次，通过独立机制假设（他人提出的），我们可以看到季节模块和趋势模块不会相互影响。因此，即使一种机制因分配变化而发生变化，另一种机制也保持不变。解开季节性和趋势的设计可以在非平稳环境中实现更好的迁移或泛化。此外，独立的季节和趋势机制可以独立学习并灵活地重用和重新提出。</p>
+<p>我们可以看到，对E的干预并不影响条件分布P(X*|T,S)，即</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YjI5ZDMwMGM3NDNjMDRlNGZlYTA0MGFiYWZiYTRiOGNfOW13UERQZmRYM3Z2b3cycUhEVFphRlQ2azBiWnZVc2tfVG9rZW46QjJiRWJBRmVybzlCNHF4cmlnWGNIbFdabkJlXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>因此，S 和 T 在 E 变化的情况下保持不变。学习 S 和 T 的表示使我们能够找到X<em>的最优预测，就各种类型的错误而言。既然目标X</em>是未知的，我们构建了一个代理对比学习任务。具体来说，我们使用数据增强作为对误差 E 的干预，并通过对比学习学习 T 和 S 的不变表示。由于不可能生成所有可能的错误变化，因此我们选择了三种典型的增强：放缩、移位和抖动，它们可以模拟大量且多样化的错误，有利于学习更好的表示。</p>
+<h2 id="3季节-趋势对比学习框架"><a class="markdownIt-Anchor" href="#3季节-趋势对比学习框架"></a> 3.季节-趋势对比学习框架</h2>
+<p>在本节中，我们将介绍我们提出的 CoST 框架，以学习解耦的季节性趋势表示。我们的目标是学习表示，以便对于每个时间步长，我们都有季节性和趋势分量的解耦表示，即</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZmU3ZmZmODZkMmZjMzgyNjY0ZjRmNTk3MzQ5NTMzMDVfdnY4YmEzcHd5b2Z4clB4dmh5dnV4UG1ISEp3NDE5aERfVG9rZW46UDZOdWIxYnptb2g0Rk14WFlwV2NZMWNtbktiXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>VT 表示趋势，VS表示季节性</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Y2Q5OGNiMzQzYzNkZGQxOWE2ODFhOTAzN2Y0YjJhNWNfMEF4ZFVVOElhNzZDTWdGdGlRZ1hlNTFaTTVTY0dhbGtfVG9rZW46QmFVSmJpVnJFbzJIRFN4OFRuYmNiakhwbk1lXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>图 3a 说明了我们的整体框架。首先，我们利用主干编码器</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MDQ1NDU3MmQ0NjQ0YmQ0OGFiNzMxYjk0NzIzY2M5ZTVfcDJ3OVRpYzNrM3ZSUXZ3cWthWXlTU1oybkc5M0dFZjNfVG9rZW46S2NsQ2Ixc09rb0JoVDF4bFVrRWNJN2VObkpnXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>将观测值映射到潜在空间。接下来，我们从这些中间表示构建趋势和季节性表示。具体来说，</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MDY3ZjM0ZWE5MDEyNWI3Zjc3OWIxODE0N2I5YmIyMjZfZHM3aGt6d216MWlUZHpTdkJLMklZZGZqSXFYVUhmdHVfVG9rZW46T3VNRWJtRnd0b1pPd3J4RHFVNmNIb2hKbk5iXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>傅里叶层是通过频域对比损失来学习的，频域对比损失包括幅度分量 Lamp 和相位分量 Lphase。该模型以端到端的方式学习，整体损失函数为</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ODBkYzQzZDQyMGM0MTgyYWMwNWEyMTk0MDY5YTIzYzlfR1hNd0NnRXkxTlIyQ3lHam9OMDg2eG5yUnpDcTVSOFNfVG9rZW46REQ2NWJSVmxGbzBjZ1V4UHJyZGNvMEJNbkZlXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>其中 α 是一个超参数，用于平衡趋势因素和季节性因素之间的权衡。最后，我们连接趋势和季节性特征解缠器的输出以获得最终的输出表示。</p>
+<h3 id="31-趋势特征表示"><a class="markdownIt-Anchor" href="#31-趋势特征表示"></a> 3.1 趋势特征表示</h3>
+<p>提取潜在趋势对于时间序列建模至关重要。自回归过滤是一种广泛使用的方法，因为它能够从过去的观察中捕获滞后的因果关系。一个具有挑战性的问题是选择合适的回溯窗口——较小的窗口会导致欠拟合，而较大的模型会导致过度拟合和过度参数化问题。一个简单的解决方案是通过训练或验证损失的网格搜索来优化这个超参数（Hyndman &amp; Khandakar，2008），但这种方法的计算成本太高。因此，我们建议使用自回归专家的混合，它可以自适应地选择适当的回顾窗口。</p>
+<h4 id="趋势特征解缠器-tfd"><a class="markdownIt-Anchor" href="#趋势特征解缠器-tfd"></a> 趋势特征解缠器 (TFD)</h4>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Yzc5MTYxMWZlOWY2OGRjZWM5NDliY2NkMmE4MmIyZTVfRHpITzk1NmdVcGQwMXk0N0NyaGFBQUp3Q3hZTFd2RUxfVG9rZW46V09LU2JpM1Rrb3VxNTl4dWMzdGN1VGtzbnBqXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>如图 3b 所示，TFD 是 L + 1 个自回归专家的混合Mixture of L+1 autoregressive experts，其中 L = log2(h/2)。每个专家都被实现为具有 d 个输入通道和 d_T 输出通道的 1d <em>因果卷积</em>，其中第 i 个专家的内核大小为 2^i。每个专家输出一个矩阵。最后，对输出执行平均池操作以获得最终的趋势表示。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZTZiMDg4ZWE3NDY3YmIyMDFkYzQxYmQzNmY1MjJlOGVfVzFKcEl4UnFMVDJlYVJIQXZLamRRVWNJQ1ZjSlNIRGZfVG9rZW46Rk5XOWJqWVlsb0NlYWV4Z0tCOGM0NWVZbnRmXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<blockquote>
+<p>因果卷积（Causal Convolution）是一种特殊类型的卷积运算，通常用于时间序列数据的建模中，特别是在一维卷积神经网络（1D CNN）和生成对抗网络（GAN）等模型中。其主要特点是保证卷积操作的因果性，即输出时刻仅依赖于当前及之前的输入，而不依赖于未来的输入。</p>
+</blockquote>
+<h4 id="时域对比损失"><a class="markdownIt-Anchor" href="#时域对比损失"></a> 时域对比损失</h4>
+<p>我们在时域中采用对比损失来学习判别性趋势表示。具体来说，我们应用对比学习的 MoCo (He et al., 2020) 变体，它<strong>利用动量编码器来获取正对的表示</strong>，并<strong>使用带有队列的动态字典来获取负对</strong>。然后，给定N个样本和K个负样本，时域对比损失为</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NTZmMTM2ZjBhZGMyNzcwYjM5NzJiNjc2NmIwMTFjOTlfcThpQmQ3RE9wdUxmdm9QdnZYOG8wSHB0SFdZcTJQOENfVG9rZW46S3BHdWJiWlc3b3BKUzF4Nlg0V2MzMkNQbmdIXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>给定样本V^(T)，我们首先选择随机时间步 t 作为对比损失，并应用投影头（单层 MLP）来获取 q，k ，分别对应由<em>动量编码器和动态词典</em>生成的相应样本的增强版本。</p>
+<h3 id="32季节特征表示"><a class="markdownIt-Anchor" href="#32季节特征表示"></a> 3.2季节特征表示</h3>
+<p>频域频谱分析已广泛应用于季节性检测（Shumway et al., 2000）。因此，我们转向频域来处理季节表示的学习。为此，我们的目标是解决两个问题：</p>
+<p>（1）我们如何支持频率内交互（在特征维度之间），从而允许表示更轻松地编码周期性信息</p>
+<p>（2）学习需要什么样的学习信号用以区分不同季节性模式的表示</p>
+<p>标准主干架构无法轻松捕获频率内级别的交互，因此，我们引入了利用可学习傅里叶层的 SFD。</p>
+<p>然后，为了在事先不知道周期性的情况下学习这些季节性特征，为每个频率引入频域对比损失。</p>
+<h4 id="季节性特征解缠器sfd"><a class="markdownIt-Anchor" href="#季节性特征解缠器sfd"></a> 季节性特征解缠器(SFD)</h4>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Mjc1ZjhhZDQ2ODQ5YzZkZDI3ODg1YmM3NzBhZTQ1ZGJfUHhDMjlid0RSQ0czZlNZYnFuS0FFY1M4dWJsR3JWQVdfVG9rZW46QzRXc2JreGcyb0hNWVl4aTFuN2NGZWhXbjk5XzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>如图 3c 所示，SFD 主要由离散傅里叶变换 (DFT) 组成，用于将中间特征映射到频域，然后是可学习的傅里叶层。-DFT 沿时间维度应用，并将时域表示映射到频域</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=OTlhNjcyNDRiNGQ3NDEzYmVjNzIxOTRlYWQ1YWIwYTVfd1VqYVhBVWtaeWNlenk2WTZwbDBxaDZrVGRJWmplc3lfVG9rZW46VW1kM2J4eGtOb0FQNmt4RVhJQ2N3VGkxbjVmXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>接下来，可学习的傅立叶层通过每元素线性层实现，该层实现频域交互。它对每个频率应用仿射变换，并为每个频率提供一组唯一的复值参数，因为我们不期望该层具有平移不变性。最后，我们使用逆 DFT 运算将表示变换回时域。该层的最终输出矩阵是季节表示，V (S) ∈ Rh×dS 。形式上，我们可以将输出的第 i, k 个元素表示为</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NjRkM2EyM2FhM2FhYWNiYWRiMTM2OGE0ZWQxMTQ2MjJfNWRlMGtDdlVWSjI0WnlURjI4RHpSMlR0VDJwUHZ5U3NfVG9rZW46UzFEZGJjZVV5b0Jabkl4OU5nMGNmVHRWbjBuXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NDgxNzE4ZTdkZWU3NTkzZWI2MWMyMDg4M2Y0NGYwY2ZfOVJXMVlOZTZuU2pyWEVnTG9mcHlEMTZ2V2NRclBtTW1fVG9rZW46RlNwaWJQZjRjb3RWSGN4cDdkSWMyQmk1bmtoXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>是每元素线性层的参数。</p>
+<h4 id="频域对比损失"><a class="markdownIt-Anchor" href="#频域对比损失"></a> 频域对比损失</h4>
+<p>如图 3c 所示，频域损失函数的输入是 iFFT 前的表示，</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NDU5MDY2NTg0MGFlZTVmMDM0MjJlZTYxZDhlMmE2ODZfR3drQU5ST1pjV2VQQXo0VnQ3aFZrbVdlc0l3cEJtclNfVG9rZW46UVpqZmJ1Z3Jrb281blR4a2NkS2NtVnFnbm1mXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>这些是频域中的复值表示。为了学习能够区分不同季节模式的表示，我们引入了频域损失函数。由于我们的数据增强可以解释为对误差变量的干预，因此季节性信息不会改变，因此频域中的对比损失对应于在给定频率的不同周期性模式之间进行区分。为了克服用复值表示构建损失函数的问题，每个频率都可以通过其幅度和相位表示来唯一表示，</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YzcwYWZhYWY4YjY0ZmJmODIxMTA3MzBmZjhhYmRmNjRfWVA4bDFreFJ6b09nSWpNUWF1SlFuMzBDbGVTZGx6SGZfVG9rZW46UGRLRGJsWDN1b2Vxc2J4aWp0SmNOQ1ZzbkpmXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>然后，损失函数表示为</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NDNjZGVmMWZmNTVmNWM1NDA2NGI0NjU3NjlhMjhjNzhfVk1XWnpiN1NyTElobDNqZE04blQwREJEQ0IybVVRYzlfVG9rZW46S2E2M2JrSDNSbzVKZ2d4UU5sSWN6Z3cwblVmXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YjAxODE1ZGU2OGQyY2JhNTAzMDAyNjJhYjJmZWRiMmJfWDNkNmhsa29yb2RRcWhvSjAxSmdTeERTY0VYYU0yeUlfVG9rZW46Tm5FN2JEMDRTb2pXRUR4Y1p4ZGNaWjg1bkZkXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<h2 id="4实验效果"><a class="markdownIt-Anchor" href="#4实验效果"></a> 4.实验效果</h2>
+<h4 id="41实验设置"><a class="markdownIt-Anchor" href="#41实验设置"></a> 4.1实验设置</h4>
+<h5 id="数据集"><a class="markdownIt-Anchor" href="#数据集"></a> 数据集</h5>
+<p>我们对五个现实世界的公共基准数据集进行了广泛的实验。</p>
+<p>ETT（电力变压器温度）由两个小时级数据集（ETTh）和一个 15 分钟级数据集（ETTm）组成，测量六种电力负荷特征和“oil temperature”作为单变量预测的目标值。</p>
+<p>Electricity测量了321个客户的用电量，按照流行的基准，我们将数据集转换为每小时的测量值，并将“MT 320”设置为单变量预测的目标值。</p>
+<p>Weather是一个每小时级别的数据集，包含来自美国近1,600个地点的11个气候特征，我们以“wet bulb”作为单变量预测的目标值。</p>
+<h5 id="评估设置"><a class="markdownIt-Anchor" href="#评估设置"></a> 评估设置</h5>
+<p>继之前的工作之后，我们在两种设置上进行了实验——多变量和单变量预测。多变量设置涉及多变量输入和输出，考虑数据集的所有维度。单变量设置涉及单变量输入和输出，即上述目标值。</p>
+<p>我们使用 MSE 和 MAE 作为评估指标，并执行 60/20/20 的训练/验证/测试分配。输入是零均值归一化的，并在不同的预测长度上进行评估。遵循 Yue 等人，首先在训练集分割上训练自监督学习方法，并在学习到的表示之上训练岭回归模型以直接预测整个预测长度。验证集用于在搜索空间 {0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000} 上选择适当的岭回归正则化项 α。评估结果在测试集上报告。</p>
+<h5 id="实施细节"><a class="markdownIt-Anchor" href="#实施细节"></a> 实施细节</h5>
+<p>对于 CoST 和所有其他表示学习方法，所使用的主干编码器是时间卷积网络（遵循 TS2Vec（Yue 等人，2021）中的类似实践）。使用的所有方法的表示维度均为 320。我们在所有数据集上使用标准超参数设置 - 批量大小为 256，学习率为 1E−3，动量为 0.9，权重衰减为 1E−4，使用 SGD 优化器和余弦退火。时域对比损失的 MoCo 实现使用队列大小 256、动量 0.999 和温度 0.07。对于样本少于 100,000 的数据集，我们训练 200 次迭代，否则训练 600 次迭代。</p>
+<h4 id="42实验结果"><a class="markdownIt-Anchor" href="#42实验结果"></a> 4.2实验结果</h4>
+<p>在基线中，我们在主要结果中报告了表示学习技术的性能，包括 TS2Vec、TNC 和 MoCo 的时间序列适应。由于空间限制，可以在附录 H 中找到基于特征的预测方法的更广泛的基准。有关基线的更多详细信息可以在附录 E 中找到。我们包括监督预测方法 - 两种基于 Transformer 的模型，Informer（Zhou 等人，2021）和 LogTrans（Li 等人，2020），以及主干 TCN 直接接受端到端预测损失训练。端到端预测方法的比较可以在附录一中找到。</p>
+<p>表 1 总结了多变量设置的 CoST 和最佳性能基线的结果，表 7（由于空间限制，在附录 G 中）总结了单变量设置的结果。对于端到端预测方法，TCN 通常优于基于 Transformer 的方法，Informer 和 LogTrans。同时，表示学习方法优于端到端预测方法，但确实存在一些情况，例如在单变量设置的某些数据集中，端到端 TCN 的表现出奇的好。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YjE1ZDIyNDM0MDliOTlmNGUwOWNlYmYxMGE5NmRkZGJfMmVVUGo0NUFKS1JiSTVKU25COEY1VXNGTEJYZ1QwOVdfVG9rZW46TmppN2JzS2RKb0xoSnN4RlJ1UGNJSDJpbkdmXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>虽然Transformer在其他领域(如NLP)已经被证明是强大的模型，但这表明TCN模型仍然是一个强大的基线，仍然应该考虑用于时间序列。</p>
+<p>总体而言，我们的方法实现了最先进的性能，在多变量和单变量设置中分别比性能最佳的端到端预测方法高出 39.3% 和 18.22% (MSE)。 CoST 在多变量和单变量设置中也分别比表现最好的基于特征的方法高出 21.3% 和 4.71% (MSE)。这表明 CoST 通过学习对预测任务至关重要的趋势和季节性特征的组合来学习更多相关特征。</p>
+<h4 id="43参数灵敏度"><a class="markdownIt-Anchor" href="#43参数灵敏度"></a> 4.3参数灵敏度</h4>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NDM0NjkxZGYwZDMwMmU5ZGZlNDdhODQ0ZDhhOGE0NThfVjNQa3Qycll0ZnlLeTQ2TUV4aDU5VzBRRWpZeFBuS05fVG9rZW46TDF6MWJQN2FGbzNyUGh4dmlPeWMycjZDbkRoXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>α 控制总体损失函数中季节性分量的权重，L = Ltime + （α/2）* (Lamp + Lphase)。我们对此超参数（表 2）进行了敏感性分析，结果表明可以选择最佳值，并且该值在各种设置下都是稳健的。我们为所有其他实验选择 α = 5E−04，因为它在多变量和单变量设置上都表现良好。我们注意到，α 的小值源于  频域对比损失通常比时域对比损失大三个数量级，而不是表明季节性分量的重要性低于趋势分量。此外，我们强调，总体而言，虽然选择较小的 α 值可以在大多数数据集上获得更好的性能，但在某些情况下可能会首选较大的 α，如表 2 的下部所示。</p>
+<h4 id="44消融研究"><a class="markdownIt-Anchor" href="#44消融研究"></a> 4.4消融研究</h4>
+<p>表 3：ETT 数据集上 CoST 各个组成部分的消融研究。</p>
+<p>【TFD：趋势特征解缠器，MARE：自回归专家的混合（不带 MARE 的 TFD 是指具有内核大小为 h/2的单个 AR 专家的 TFD 模块），SFD：季节性特征解缠器，LFL：可学习傅立叶层，FDCL：频域对比损失。 † 表示使用监督预测损失进行端到端训练的模型。 ‡ 表示 † 带有额外的对比损失。】</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=N2UzY2VjZWNlNTNhYjliYTc2ZmY3MzQyMWFmYzRhMTVfeHRHQmNPQ1pHSnpVZEVhSk4yVGRqdzFjTGtlcjFINXdfVG9rZW46Q1hmcWJjZUFZbzBoS2p4STZaTmN0WUE1bldlXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NDIzZmQ5ZWI3NGM3OTlhOWU0ODkyMTFmZTZjZjYyNTBfcWZhODAybXY1bFUxSXpvdXMzeXc1VmhJQ1ZScDZpTWpfVG9rZW46SzNBR2JqSm1zbzNycnJ4WWVxZWNhYWJ4bkZiXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p><strong>CoST 的组成部分</strong></p>
+<p>我们首先进行消融研究，以了解 CoST 中每个组件带来的性能优势。表 3 显示了 ETT 数据集在所有预测范围设置上的平均结果（表 4 和表 5 类似）。我们表明，趋势和季节性成分都比基线（SimCLR 和 MoCo）提高了性能，而且趋势和季节性成分的组合可带来最佳性能。我们进一步验证，使用监督预测损失端到端训练我们提出的模型架构会导致性能更差。</p>
+<p><strong>主干</strong></p>
+<p>接下来，我们验证我们提出的趋势和季节性分量以及对比损失（时域和频域）对于各种主干编码器来说是稳健的。 TCN 是所有其他实验中使用的默认骨干编码器，我们展示了具有等效参数大小的 LSTM 和 Transformer 骨干编码器的结果。虽然使用 TCN 主干的性能优于 LSTM 和 Transformer，但我们表明我们的方法在所有三种设置上都优于竞争方法。</p>
+<p><strong>回归量</strong></p>
+<p>最后，我们证明 CoST 对于用于预测的各种回归量也具有稳健性。除了岭回归模型之外，我们还对线性回归模型和带有 RBF 核的核岭回归模型进行了实验。如表 5 所示，我们还证明 CoST 在所有三种设置上均优于竞争基线。</p>
+<h4 id="45-案例分析"><a class="markdownIt-Anchor" href="#45-案例分析"></a> 4.5 案例分析</h4>
+<p>我们将学习到的表示在具有季节性和趋势分量的简单合成时间序列上可视化，并表明 CoST 能够学习能够区分各种季节性和趋势模式的表示。综合数据集是通过定义两个趋势和三个季节模式，并采用叉积形成六个时间序列（详细信息参见附录 D）来生成的。在合成数据集上训练编码器后，我们可以通过 T-SNE 算法将它们可视化（Van der Maaten &amp; Hinton，2008）。图 4 显示我们的方法能够从数据集中学习趋势和季节性模式，并且学习到的表示具有较高的可聚类性，而 TS2Vec 无法区分各种季节模式。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=OTU4OGI3N2JhYTYxZjM4MzdjMDMyNzFmYjAyNjE0NmZfNTVsNkxSOVpKTFhWZTZiSVhUZ2tXUnltdWJOT1AzcFhfVG9rZW46SThwbGJ3alZCb201a0N4TlBkd2NURHhybm1jXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>图 4：从 CoST 和 TS2Vec 学习到的表示的 T-SNE 可视化。 （上）通过选择单个季节性后可视化表示生成。颜色代表了两种不同的趋势。 （下）通过选择单个趋势后可视化表示而生成。颜色代表三种不同的季节模式。</p>
+<h2 id="5相关工作"><a class="markdownIt-Anchor" href="#5相关工作"></a> 5.相关工作</h2>
+<p>深度预测通常被视为端到端的监督学习任务，早期工作考虑使用基于 RNN 的模型（Lai 等人，2018）作为时间序列数据建模的自然方法。最近的工作还考虑采用基于 Transformer 的模型进行时间序列预测（Li et al., 2020；Zhou et al., 2021），特别关注解决 Transformer 模型的二次空间复杂性。奥列什金等人。 (2020)提出了一种单变量深度预测模型，并表明深度模型优于经典时间序列预测技术。</p>
+<p>虽然时间序列表示学习的最新工作重点关注表示学习的各个方面，例如如何对对比对进行采样（Franceschi 等人，2020 年；Tonekaboni 等人，2021 年），但采用基于 Transformer 的方法（Zerveas 等人，2021 年） ，探索复杂的对比学习任务（Eldele et al., 2021），以及构建时间层次表示（Yue et al., 2021），但都没有涉及由趋势和季节特征组成的学习表示。尽管现有的工作仅专注于时间序列分类任务，但 Yue 等人。 （2021）首先表明，通过对比学习学习的时间序列表示在深度预测基准上建立了新的最先进的性能。</p>
+<p>经典时间序列分解技术（Hyndman &amp; Athanasopoulos，2018）已用于将时间序列分解为季节性和趋势分量，以获得可解释性。最近有人致力于开发更稳健、更高效的分解方法（Wen 等人，2018；2020；Yang 等人，2021）。这些方法侧重于将原始时间序列分解为趋势和季节性分量，这些分量仍然被解释为原始输入空间中的时间序列，而不是学习表示。 Godfrey &amp; Gashler (2017) 提出了使用神经网络对时间序列数据中的周期性和非周期性分量进行建模的初步尝试，利用周期性激活函数对周期性分量进行建模。与我们的工作不同，这种方法只能对每个模型的单个时间序列进行建模，而不是在给定回溯窗口的情况下生成分解的季节性趋势表示。</p>
+<h2 id="6-结论"><a class="markdownIt-Anchor" href="#6-结论"></a> 6 结论</h2>
+<p>我们的工作表明，将表示学习和下游预测任务分开是比时间序列预测的标准端到端监督训练方法更有前途的范例。我们通过经验证明这一点，并通过因果角度对其进行解释。通过遵循这一原则，我们提出了 CoST，一种对比学习框架，用于学习时间序列预测任务的解开的季节性趋势表示。广泛的实证分析表明，CoST 的性能远远优于之前最先进的方法，并且对于骨干编码器和回归器的各种选择都具有鲁棒性。未来的工作将扩展我们的其他时间序列情报任务的框架。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/04/01/%E3%80%8AConnecting%20the%20Dots%20Multivariate%20Time%20Series%20Forecasting%20with%20Graph%20Neural%20Networks%E3%80%8B%20%E8%AE%BA%E6%96%87KDD20/" rel="prev" title="">
+                  <i class="fa fa-angle-left"></i> 
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/04/01/%E3%80%8ACycleNet%20Enhancing%20Time%20Series%20Forecasting%20through%20Modeling%20Periodic%20Patterns%E3%80%8B%20%E8%AE%BA%E6%96%87/" rel="next" title="">
+                   <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Xu Yang</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.22.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="《TS2Vec: Towards Universal Representation of Time Series》论文 AAAI22 *斜体：*疑问  &amp; 解答 ｜  **加粗：**现象  ｜   下划线：解决方法、创新点  摘要 本文提出了 TS2Vec，一个用于学习任意语义级别的时间序列表示的通用框架。与现有方法不同，TS2Vec 在增强上下文视图上以分层方式执行对比学习，从而为每个">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://example.com/2025/04/01/%E3%80%8ATS2Vec%20Towards%20Universal%20Representation%20of%20Time%20Series%E3%80%8B%E8%AE%BA%E6%96%87%20AAAI22/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="《TS2Vec: Towards Universal Representation of Time Series》论文 AAAI22 *斜体：*疑问  &amp; 解答 ｜  **加粗：**现象  ｜   下划线：解决方法、创新点  摘要 本文提出了 TS2Vec，一个用于学习任意语义级别的时间序列表示的通用框架。与现有方法不同，TS2Vec 在增强上下文视图上以分层方式执行对比学习，从而为每个">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NzhiYWQzNmE1N2RhZDZjNmU2MTQ0ODk3N2Y2MWNmOTlfUDRNVkdZTU9yNEFKZWpTV0VPYTBQSHVtNEE3aGVNOW1fVG9rZW46QVQ0U2JyMlR3b3BFcTl4RHBxSWNwTE83bjFiXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MTRlOWE3MzVhZDVjYTgyZWVjOTBiMWFmNDc4YjRiYjRfalZmMjdVbkxrRVhQUDFUUE5NcFl4ZmxNZ2l1cDFZQ2lfVG9rZW46VFZscmJWWjlUb2p3V3Z4M0NJaGM3aTZ2bmhnXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YmIzNDMzNzRlMzY2NTUzMTFhZWExYTJlYjgzNmNiZWJfelVBY2JDdmJ0WUh2Sk5KTU9EZjJWdVB4cXZ3eGRjWjhfVG9rZW46V0RiZmJ6eFlrb0dJc1N4Vlc4ZGNvZ2lYbmtjXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=N2JkODFhOGZmOTkxNmJmMmRjNjFmMzc2NjgzY2Y3YWJfVXRCTWdUNGlnNFB0c2puZGxMRndkdHdjOVQ0WmI1R2dfVG9rZW46TDBBc2JCUHFyb3hwVG14SFliMGM4VUNHbkFoXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MDRjNWEwNTVmNjE5MmNiZjc1OWRkZmZkNGQyMTdkNWFfVDY4eVN0dm9CczFpMGxqemxWb2xESHJNdXNUd2h0Q2lfVG9rZW46Q2l1VmJUWVl0bzY4WkZ4cERVemNaNWx6bjFPXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NDEyMGJjNTY1ZTU2MWM4NjMyYWIyM2M0OTQzZjBlMTlfc1NoRU5QdjE4M08zbXZhcHJvZnZqZEttUHZ3UTFaT2ZfVG9rZW46S29BVmJ0ZzNib1Q3REl4YUd6RGNqMGdQbjBjXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=N2NjZWU4NDg4NDU0NTRkZjAwNWE0ZWIyZTdkMmM5YjNfckJEVk1RQUlIREhVMjdQcmFaNVFTekg5cmpZSW0wS2NfVG9rZW46TlZGZGI3cnFUb25Fb1F4enpqRGNNdVRVbnliXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZTEwMjYxMmEyOWVkNjE1NzU2YmUzMTE4ZWU2ZGM5NTJfSmh0dFJkM0hHWTJjV3h4aGx2OVJ0SUlkRmZQaVdXd1ZfVG9rZW46UGtKUmJrb0lLb3hpek54MmlqT2NVN1p1bndjXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MmNkYzIzYzBiODA0MzIxYmJhYzNjNjYwZjc3OWM0NTdfcTg4RzJXOTVJYlB6V2YwSWhZZzdKVjZ0a0pVd1k5QWtfVG9rZW46U0p4WGJnQk1Ub0FSTmt4QTZyemNCSkhQbmtmXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YWNkMGFmZDRmMzFlMDEzZGFhMmU1ZWRmN2Q0OTI5YWJfdFdrMWV6cjdFQXJFajBsNU5BQ3d1Nnl3VEo3UTdUVU1fVG9rZW46UGRWWWI1QVQyb1lZTkV4Q20xemNRY1Z2bjZiXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=OGE4ODdkZjUyY2IxNWFlOWRmNTBkYjRkZjRlZmJmNWNfMWJCR3RrNDRUdGJnTzhLTkQwTWxMVXFjc2kyMVg2d2dfVG9rZW46TWRTUGJSSUtwbzlEVGZ4WlZxcGNWZW55bnFoXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YjViMGU0NjFlMzAyNWIyNjg2OGJjNGI3YjQxZDRiNjBfRndrMENWWU9ocEVma1FTQzFYVEtNVXNsOExwbFNTVU5fVG9rZW46TWVaRWI1NFZEb1ZwV1N4ajM1RWN3UFVjbmdKXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Yjg1NDdhNWQxZjc3MDMyNDM0NzcwOTk5YTcwMWQ3NzhfOWR2MmdzMDhUMzJuU0NUSzBZUFh6T3kzVkpYWTN0dm9fVG9rZW46SElUYWJWRVFRb1RlTW94RlJlQmNMQTAwbjNmXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA">
+<meta property="article:published_time" content="2025-04-01T09:58:50.183Z">
+<meta property="article:modified_time" content="2025-04-01T09:58:04.079Z">
+<meta property="article:author" content="Xu Yang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NzhiYWQzNmE1N2RhZDZjNmU2MTQ0ODk3N2Y2MWNmOTlfUDRNVkdZTU9yNEFKZWpTV0VPYTBQSHVtNEE3aGVNOW1fVG9rZW46QVQ0U2JyMlR3b3BFcTl4RHBxSWNwTE83bjFiXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA">
+
+
+<link rel="canonical" href="http://example.com/2025/04/01/%E3%80%8ATS2Vec%20Towards%20Universal%20Representation%20of%20Time%20Series%E3%80%8B%E8%AE%BA%E6%96%87%20AAAI22/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2025/04/01/%E3%80%8ATS2Vec%20Towards%20Universal%20Representation%20of%20Time%20Series%E3%80%8B%E8%AE%BA%E6%96%87%20AAAI22/","path":"2025/04/01/《TS2Vec Towards Universal Representation of Time Series》论文 AAAI22/","title":""}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title> | Hexo</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Hexo</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ts2vec-towards-universal-representation-of-time-series%E8%AE%BA%E6%96%87-aaai22"><span class="nav-number">1.</span> <span class="nav-text"> 《TS2Vec: Towards Universal Representation of Time Series》论文 AAAI22</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-number">1.1.</span> <span class="nav-text"> 摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.2.</span> <span class="nav-text"> 1.介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.2.1.</span> <span class="nav-text"> 背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%9C%A8%E9%97%AE%E9%A2%98"><span class="nav-number">1.2.2.</span> <span class="nav-text"> 存在问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%80%9D%E8%B7%AF"><span class="nav-number">1.2.3.</span> <span class="nav-text"> 解决思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%88%E6%9E%9C%E5%8F%8A%E8%B4%A1%E7%8C%AE"><span class="nav-number">1.2.4.</span> <span class="nav-text"> 效果及贡献</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E6%96%B9%E6%B3%95"><span class="nav-number">1.3.</span> <span class="nav-text"> 2.方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%AE%9A%E4%B9%89"><span class="nav-number">1.3.1.</span> <span class="nav-text"> 问题定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E6%9E%B6%E6%9E%84"><span class="nav-number">1.3.2.</span> <span class="nav-text"> 模型架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8A%E4%B8%8B%E6%96%87%E4%B8%80%E8%87%B4%E6%80%A7"><span class="nav-number">1.3.3.</span> <span class="nav-text"> 上下文一致性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%B6%E9%97%B4%E6%88%B3%E5%B1%8F%E8%94%BD"><span class="nav-number">1.3.3.1.</span> <span class="nav-text"> 时间戳屏蔽</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9A%8F%E6%9C%BA%E8%A3%81%E5%89%AA"><span class="nav-number">1.3.3.2.</span> <span class="nav-text"> 随机裁剪</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%B1%82%E5%AF%B9%E6%AF%94"><span class="nav-number">1.3.4.</span> <span class="nav-text"> 分层对比</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%B6%E9%97%B4%E7%BA%A7%E5%AF%B9%E6%AF%94%E6%8D%9F%E5%A4%B1"><span class="nav-number">1.3.4.1.</span> <span class="nav-text"> 时间级对比损失</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E4%BE%8B%E7%BA%A7%E5%AF%B9%E6%AF%94%E6%8D%9F%E5%A4%B1"><span class="nav-number">1.3.4.2.</span> <span class="nav-text"> 实例级对比损失</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4%E5%AE%9E%E9%AA%8C"><span class="nav-number">1.4.</span> <span class="nav-text"> 4.实验</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E5%88%86%E7%B1%BB"><span class="nav-number">1.4.0.1.</span> <span class="nav-text"> 时间序列分类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E9%A2%84%E6%B5%8B"><span class="nav-number">1.4.0.2.</span> <span class="nav-text"> 时间序列预测</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E5%BC%82%E5%B8%B8%E6%A3%80%E6%B5%8B"><span class="nav-number">1.4.0.3.</span> <span class="nav-text"> 时间序列异常检测</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5%E7%9B%B8%E5%85%B3%E5%B7%A5%E4%BD%9C"><span class="nav-number">1.5.</span> <span class="nav-text"> 5.相关工作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E7%BB%93%E8%AE%BA"><span class="nav-number">1.6.</span> <span class="nav-text"> 6 结论</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Xu Yang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hduyangxu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hduyangxu" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/04/01/%E3%80%8ATS2Vec%20Towards%20Universal%20Representation%20of%20Time%20Series%E3%80%8B%E8%AE%BA%E6%96%87%20AAAI22/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Xu Yang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | Hexo">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-04-01 17:58:50 / 修改时间：17:58:04" itemprop="dateCreated datePublished" datetime="2025-04-01T17:58:50+08:00">2025-04-01</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="ts2vec-towards-universal-representation-of-time-series论文-aaai22"><a class="markdownIt-Anchor" href="#ts2vec-towards-universal-representation-of-time-series论文-aaai22"></a> 《TS2Vec: Towards Universal Representation of Time Series》论文 AAAI22</h1>
+<p>*斜体：*疑问  &amp; 解答 ｜  **加粗：**现象  ｜   下划线：解决方法、创新点</p>
+<h2 id="摘要"><a class="markdownIt-Anchor" href="#摘要"></a> 摘要</h2>
+<p>本文提出了 TS2Vec，一个用于学习任意语义级别的时间序列表示的通用框架。与现有方法不同，TS2Vec 在增强上下文视图上以分层方式执行对比学习，从而为每个时间戳提供强大的上下文表示。此外，为了获得时间序列中任意子序列的表示，我们可以对相应时间戳的表示应用简单的聚合。我们对时间序列分类任务进行了广泛的实验，以评估时间序列表示的质量。因此，TS2Vec 在 125 个 UCR 数据集和 29 个 UEA 数据集上实现了对现有无监督时间序列表示 SOTA 的显着改进。学习到的时间戳级表示在时间序列预测和异常检测任务中也取得了优异的结果。在学习到的表示之上训练的线性回归优于之前的时间序列预测的 SOTA。此外，*我们提出了一种简单的方法，将学习到的表示应用于无监督异常检测，*该方法在文献中建立了 SOTA 结果。源代码公开于 <a target="_blank" rel="noopener" href="https://github.com/yuezhihan/ts2vec">https://github.com/yuezhihan/ts2vec</a></p>
+<h2 id="1介绍"><a class="markdownIt-Anchor" href="#1介绍"></a> 1.介绍</h2>
+<h3 id="背景"><a class="markdownIt-Anchor" href="#背景"></a> 背景</h3>
+<p>时间序列在金融市场、需求预测和气候建模等各个行业中发挥着重要作用。学习时间序列的通用表示是一个基本但具有挑战性的问题。许多研究（Tonekaboni、Eytan 和 Goldenberg 2021；Franceschi、Dieuleveut 和 Jaggi 2019；Wu 等人 2018）专注于学习实例级表示，它描述了输入时间序列的整个片段，并在任务中取得了巨大成功比如聚类和分类。此外，最近的作品（Eldele et al. 2021；Franceschi、Dieuleveut 和 Jaggi 2019）采用对比损失来学习时间序列的内在结构。然而，现有方法仍然存在明显的局限性。</p>
+<h3 id="存在问题"><a class="markdownIt-Anchor" href="#存在问题"></a> 存在问题</h3>
+<ol>
+<li>**实例级表示可能不适合需要细粒度表示的任务。**例如，时间序列预测和异常检测。在这类任务中，需要在特定的时间戳或子序列上推断目标，而整个时间序列的粗粒度表示不足以达到令人满意的性能。</li>
+<li>**现有的方法很少能够区分不同粒度的多尺度上下文信息。**例如，TNC（Tonekaboni、Eytan 和 Goldenberg 2021）区分具有恒定长度的片段。 TLoss（Franceschi、Dieuleveut 和 Jaggi 2019）使用原始时间序列中的随机子序列作为正样本。然而，<strong>它们都没有以不同尺度的时间序列为特征来捕获尺度不变的信息</strong>，而这对于时间序列任务的成功至关重要。直观上，<strong>多尺度特征可以提供不同级别的语义并提高学习表示的泛化能力</strong></li>
+<li>大多数现有的无监督时间序列表示方法都是受到 <strong>CV 和 NLP</strong> 领域经验的启发，这些方法<strong>具有很强的归纳偏差</strong>，例如变换不变性和裁剪不变性。然而，这些假设<strong>并不总是适用于时间序列建模</strong>。例如，裁剪是一种常用的图像增强策略。然而，时间序列的分布和语义可能会随着时间的推移而改变，并且裁剪后的子序列可能与原始时间序列具有不同的分布。</li>
+</ol>
+<h3 id="解决思路"><a class="markdownIt-Anchor" href="#解决思路"></a> 解决思路</h3>
+<p>为了解决这些问题，本文提出了一种名为 TS2Vec 的通用对比学习框架，该框架能够实现所有语义级别的时间序列的表示学习。它在实例和时间维度上分层区分正样本和负样本；对于任意子系列，其整体表示可以通过相应时间戳上的最大池化来获得。这使得模型能够以多种分辨率捕获时态数据的上下文信息，并生成任何粒度的细粒度表示。此外，TS2Vec 中的对比目标基于增强上下文视图，即相同子系列在两个增强上下文中的表示应该是一致的。通过这种方式，我们获得了每个子系列的稳健上下文表示，而不会引入未受重视的归纳偏差，例如变换不变性和裁剪不变性。</p>
+<p>我们在多个任务上进行了大量的实验来证明我们方法的有效性。时间序列分类、预测和异常检测任务的结果验证了TS2Vec学习表征的通用性和有效性。</p>
+<h3 id="效果及贡献"><a class="markdownIt-Anchor" href="#效果及贡献"></a> 效果及贡献</h3>
+<ol>
+<li>我们提出了 TS2Vec，一个统一的框架，可以学习各种语义级别的任意子系列的上下文表示。据我们所知，这是第一个为时间序列领域的各种任务提供灵活且通用的表示方法的工作，包括但不限于时间序列分类、预测和异常检测。</li>
+<li>为了实现上述目标，我们在对比学习框架中利用了两种新颖的设计。首先，我们在实例维度和时间维度上使用分层对比方法来捕获多尺度上下文信息。其次，我们提出了积极配对选择的上下文一致性。与之前的state-of-the-art不同，它更适合具有不同分布和尺度的时间序列数据。广泛的分析证明了 TS2Vec 对于缺失值的时间序列的稳健性，并且通过消融研究验证了层次对比和上下文一致性的有效性。</li>
+<li>TS2Vec 在分类、预测和异常检测等三个基准时间序列任务上优于现有的 SOTA。例如，与分类任务上无监督表示的最佳 SOTA 相比，我们的方法在 125 个 UCR 数据集上平均准确率提高了 2.4%，在 29 个 UEA 数据集上平均准确率提高了 3.0%。</li>
+</ol>
+<h2 id="2方法"><a class="markdownIt-Anchor" href="#2方法"></a> 2.方法</h2>
+<h3 id="问题定义"><a class="markdownIt-Anchor" href="#问题定义"></a> 问题定义</h3>
+<p>找 fθ，将 维度为 T<em>F 的 输入 x  转化为 维度为  T</em>K 的表示向量 r</p>
+<h3 id="模型架构"><a class="markdownIt-Anchor" href="#模型架构"></a> 模型架构</h3>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NzhiYWQzNmE1N2RhZDZjNmU2MTQ0ODk3N2Y2MWNmOTlfUDRNVkdZTU9yNEFKZWpTV0VPYTBQSHVtNEE3aGVNOW1fVG9rZW46QVQ0U2JyMlR3b3BFcTl4RHBxSWNwTE83bjFiXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA" alt="img" /></p>
+<p>图一 TS2Vec 的拟议架构</p>
+<p>（尽管该图显示了单变量时间序列作为输入示例，但该框架支持多变量输入。每个平行四边形表示实例的时间戳上的表示向量）</p>
+<p>TS2Vec 的整体架构如图 1 所示。我们从输入时间序列 xi 中随机采样两个重叠的子序列，并鼓励公共片段上上下文表示的一致性。原始输入被馈送到编码器中，该编码器与时间对比损失和实例对比损失联合优化。总损失在分层框架中的多个尺度上求和。</p>
+<p>编码器 f 由三个组件组成，包括输入投影层、时间戳掩蔽模块和扩张的 CNN 模块。对于每个输入 x_i，输入投影层是一个全连接层，它将时间戳 t 处的观测值x_(i,t)映射到高维潜在向量 z_(i,t)。时间戳屏蔽模块在随机选择的时间戳处屏蔽潜在向量以生成增强的上下文视图。请注意，我们屏蔽了潜在向量而不是原始值，<em>因为时间序列的值范围可能是无界的，并且不可能为原始数据找到特殊的标记</em>。我们将在附录中进一步证明该设计的可行性。</p>
+<p>然后应用具有 10 个残差块的扩展 CNN 模块来提取每个时间戳的上下文表示。每个块包含两个带有膨胀参数的一维卷积层（第 l 个块为 2^l）。扩张卷积为不同域提供了较大的感受野（Bai、Kolter 和 Koltun 2018）。在实验部分，我们将展示其在各种任务和数据集上的有效性。</p>
+<h3 id="上下文一致性"><a class="markdownIt-Anchor" href="#上下文一致性"></a> 上下文一致性</h3>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MTRlOWE3MzVhZDVjYTgyZWVjOTBiMWFmNDc4YjRiYjRfalZmMjdVbkxrRVhQUDFUUE5NcFl4ZmxNZ2l1cDFZQ2lfVG9rZW46VFZscmJWWjlUb2p3V3Z4M0NJaGM3aTZ2bmhnXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA" alt="img" /></p>
+<p>图2 正样本选择策略</p>
+<p>正对的构建在对比学习中至关重要。之前的工作采用了各种选择策略（图2），总结如下：</p>
+<ul>
+<li>子序列一致性（Franceschi、Dieuleveut 和 Jaggi 2019）鼓励时间序列的表示更接近其采样子序列。</li>
+<li>时间一致性（Tonekaboni、Eytan 和 Goldenberg 2021）通过选择相邻片段作为正样本来增强表示的局部平滑性。</li>
+<li>变换一致性（Eldele et al. 2021）通过不同的变换（例如缩放、排列等）增强输入序列，鼓励模型学习变换不变的表示。</li>
+</ul>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YmIzNDMzNzRlMzY2NTUzMTFhZWExYTJlYjgzNmNiZWJfelVBY2JDdmJ0WUh2Sk5KTU9EZjJWdVB4cXZ3eGRjWjhfVG9rZW46V0RiZmJ6eFlrb0dJc1N4Vlc4ZGNvZ2lYbmtjXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA" alt="img" /></p>
+<p>图 3：时间序列分布变化的两个典型案例</p>
+<p>分别使用子序列一致性和时间一致性对随时间学习的表示进行热图可视化。</p>
+<p>然而，上述策略基于数据分布的强烈假设，可能不适用于时间序列数据。例如，当存在水平偏移时，子系列一致性很脆弱（图 3a），而当出现异常时，时间一致性可能会引入误报对（图 3b）。在这两张图中，绿色和黄色部分有不同的图案，但之前的策略认为它们是相似的。为了克服这个问题，我们提出了一种新的策略，即上下文一致性，它将两个增强上下文中相同时间戳的表示视为正对。通过对输入时间序列应用时间戳屏蔽和随机裁剪来生成上下文。好处有两个。首先，掩蔽和裁剪不会改变时间序列的大小，这对时间序列很重要；其次，<em>它们还通过强制每个时间戳在不同的上下文中重建自身来提高学习表示的稳健性</em>。</p>
+<h4 id="时间戳屏蔽"><a class="markdownIt-Anchor" href="#时间戳屏蔽"></a> 时间戳屏蔽</h4>
+<p>我们随机屏蔽实例的时间戳以生成新的上下文视图。具体来说，它使用二进制掩码 m ∈ {0,1} ; 沿时间轴mask输入投影层之后的潜在向量 z_i = {z_(i,t)}  ，其元素是从 p = 0:5 的伯努利分布中独立采样的。在编码器的每次前向传递中对掩码进行独立采样。</p>
+<h4 id="随机裁剪"><a class="markdownIt-Anchor" href="#随机裁剪"></a> 随机裁剪</h4>
+<p>采用随机裁剪来生成新的上下文。对于任何时间序列输入 xi ∈ RT ×F ，TS2Vec 随机采样两个重叠的时间段 [a1; b1]，[a2； b2] 使得 0 &lt; a1 ≤ a2 ≤ b1 ≤ b2 ≤ T 。重叠片段上的上下文表示[a2; b1] 对于两个上下文视图应该是一致的。我们在附录中表明，<strong>随机裁剪有助于学习与位置无关的表示并避免表示崩溃</strong>。时间戳屏蔽和随机裁剪仅应用于训练阶段。</p>
+<h3 id="分层对比"><a class="markdownIt-Anchor" href="#分层对比"></a> 分层对比</h3>
+<p>在本节中，我们提出了分层对比损失，迫使编码器学习各种尺度的表示。计算步骤总结在算法 1 中。基于时间戳级表示，我们沿时间轴对学习到的表示应用最大池化，并递归计算公式 3。特别是，顶级语义级别的对比使模型能够学习实例级表示。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=N2JkODFhOGZmOTkxNmJmMmRjNjFmMzc2NjgzY2Y3YWJfVXRCTWdUNGlnNFB0c2puZGxMRndkdHdjOVQ0WmI1R2dfVG9rZW46TDBBc2JCUHFyb3hwVG14SFliMGM4VUNHbkFoXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA" alt="img" /><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MDRjNWEwNTVmNjE5MmNiZjc1OWRkZmZkNGQyMTdkNWFfVDY4eVN0dm9CczFpMGxqemxWb2xESHJNdXNUd2h0Q2lfVG9rZW46Q2l1VmJUWVl0bzY4WkZ4cERVemNaNWx6bjFPXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA" alt="img" /></p>
+<p>分层对比方法能够比以前的作品更全面地表示。例如，T-Loss（Franceschi、Dieuleveut 和 Jaggi 2019）仅在实例级别执行实例对比； TS-TCC（Eldele et al. 2021）仅在时间戳级别应用实例对比； TNC（Tonekaboni、Eytan 和 Goldenberg 2021）鼓励特定粒度级别的时间局部平滑度。这些作品并没有像 TS2Vec 那样封装不同粒度级别的表示。</p>
+<p>为了捕获时间序列的上下文表示，我们联合利用实例和时间级对比损失来编码时间序列分布。损失函数应用于分层对比模型中的所有粒度级别。</p>
+<h4 id="时间级对比损失"><a class="markdownIt-Anchor" href="#时间级对比损失"></a> 时间级对比损失</h4>
+<p>为了沿着时间轴学习判别性表示，TS2Vec 将输入时间序列的两个增强视图中相同时间戳的表示作为正数，而将同一时间序列中不同时间戳的表示作为负数。令 i 为输入时间序列样本的索引，t 为时间戳。那么 r_(i,t)和 r’_(i,t) 表示相同时间戳 t 但来自 x_i的两次增强的表示。第 i 个时间序列在时间戳 t 处的时间对比损失可以表示为</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NDEyMGJjNTY1ZTU2MWM4NjMyYWIyM2M0OTQzZjBlMTlfc1NoRU5QdjE4M08zbXZhcHJvZnZqZEttUHZ3UTFaT2ZfVG9rZW46S29BVmJ0ZzNib1Q3REl4YUd6RGNqMGdQbjBjXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA" alt="img" /></p>
+<p>其中Ω是两个子系列重叠内的时间戳集合，<em>II是指标函数</em></p>
+<h4 id="实例级对比损失"><a class="markdownIt-Anchor" href="#实例级对比损失"></a> 实例级对比损失</h4>
+<p>以 (i, t) 为索引的实例对比损失可以表示为</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=N2NjZWU4NDg4NDU0NTRkZjAwNWE0ZWIyZTdkMmM5YjNfckJEVk1RQUlIREhVMjdQcmFaNVFTekg5cmpZSW0wS2NfVG9rZW46TlZGZGI3cnFUb25Fb1F4enpqRGNNdVRVbnliXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA" alt="img" /></p>
+<p>其中 B 表示批量大小。我们使用同一批次中时间戳 t 处的其他时间序列的表示作为负样本。</p>
+<p>这两种损失是相辅相成的。例如，给定来自多个用户的一组用电量数据，实例对比可以了解用户特定的特征，而时间对比旨在挖掘随时间变化的动态趋势。总损失定义为</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZTEwMjYxMmEyOWVkNjE1NzU2YmUzMTE4ZWU2ZGM5NTJfSmh0dFJkM0hHWTJjV3h4aGx2OVJ0SUlkRmZQaVdXd1ZfVG9rZW46UGtKUmJrb0lLb3hpek54MmlqT2NVN1p1bndjXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA" alt="img" /></p>
+<h2 id="4实验"><a class="markdownIt-Anchor" href="#4实验"></a> 4.实验</h2>
+<p>在本节中，我们评估 TS2Vec 在时间序列分类、预测和异常检测方面学习到的表示。详细的实验设置见附录。</p>
+<h4 id="时间序列分类"><a class="markdownIt-Anchor" href="#时间序列分类"></a> 时间序列分类</h4>
+<p>对于分类任务，在整个时间序列(实例)上标记类。因此，我们需要实例级表示，这可以通过对所有时间戳进行最大池化来获得。然后，我们遵循与T-Loss (Franceschi, Dieuleveut和Jaggi 2019)相同的协议，其中在实例级表示之上训练具有RBF内核的SVM分类器以进行预测。</p>
+<p>我们对时间序列分类进行了广泛的实验，以评估实例级表示，并与其他无监督时间序列表示的 SOTA 进行比较，包括 T-Loss、TS-TCC (Eldele et al. 2021)、TST (Zerveas et al. 2021)和 TNC（Tonekaboni、Eytan 和 Goldenberg 2021）。采用 UCR 档案（Dau et al. 2019）和 UEA 档案（Bagnall et al. 2018）进行评估。 UCR 中有 128 个单变量数据集，UEA 中有 30 个多元数据集。请注意，TS2Vec 适用于所有 UCR 和 UEA 数据集，附录中提供了 TS2Vec 在所有数据集上的完整结果。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MmNkYzIzYzBiODA0MzIxYmJhYzNjNjYwZjc3OWM0NTdfcTg4RzJXOTVJYlB6V2YwSWhZZzdKVjZ0a0pVd1k5QWtfVG9rZW46U0p4WGJnQk1Ub0FSTmt4QTZyemNCSkhQbmtmXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA" alt="img" /></p>
+<p>评估结果总结在表1中。与其他表示学习方法相比，TS2Vec 在 UCR 和 UEA 数据集上都取得了实质性的改进。特别是，TS2Vec 在 125 个 UCR 数据集上平均提高了 2.4% 的分类准确度，在 29 个 UEA 数据集上平均提高了 3.0%。图 4 显示了所有数据集（包括 125 个 UCR 和 29 个 UEA 数据集）上的 Nemenyi 测试的关键差异图（Demˇ sar 2006），其中未用粗线连接的分类器在平均排名上有显着差异。这验证了 TS2Vec 在平均排名上显着优于其他方法。正如 和 节中提到的，T-Loss、TS-TCC 和 TNC 仅在一定级别上执行对比学习，并施加强归纳偏差（例如变换不变性）来选择正对。 TS2Vec 在不同语义级别应用分层对比学习，从而获得更好的性能。</p>
+<p>表 1 还显示了使用 NVIDIA GeForce RTX 3090 GPU 表示学习方法的总训练时间，在这些方法中，TS2Vec 提供的训练时间最短。由于 TS2Vec 在一批中应用不同粒度的对比损失，因此表示学习的效率得到了极大的提高。</p>
+<h4 id="时间序列预测"><a class="markdownIt-Anchor" href="#时间序列预测"></a> 时间序列预测</h4>
+<p>给定最后一个 Tl 观测值 xt−Tl+1； :::; xt，时间序列预测任务旨在预测未来的H个观测值xt+1； :::; xt+H 。我们使用 rt（最后一个时间戳的表示）来预测未来的观察结果。具体来说，我们训练一个具有 L2 范数惩罚的线性回归模型，该模型以 rt 作为输入来直接预测未来值 ^ x。当 x 是单变量时间序列时，^ x 的维度为 H。当 x 是具有 F 个特征的多元时间序列时，^ x 的维度应为 F H。</p>
+<p>我们比较了 TS2Vec 和现有 SOTA 在四个公共数据集上的性能，包括三个 ETT 数据集（Zhou 等人，2021 年）和电力数据集（Dua 和 Graff，2017 年）。我们将 Informer (Zhou et al. 2021)、LogTrans (Li et al. 2019)、LSTnet (Lai et al. 2018)、TCN (Bai, Kolter, and Koltun 2018) 用于单变量和多变量设置，N-BEATS ( Oreshkin et al. 2019）用于单变量设置，StemGNN (Cao et al. 2020) 分别用于多变量设置。遵循之前的工作，我们使用 MSE 和 MAE 来评估预测性能。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YWNkMGFmZDRmMzFlMDEzZGFhMmU1ZWRmN2Q0OTI5YWJfdFdrMWV6cjdFQXJFajBsNU5BQ3d1Nnl3VEo3UTdUVU1fVG9rZW46UGRWWWI1QVQyb1lZTkV4Q20xemNRY1Z2bjZiXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA" alt="img" /></p>
+<p>单变量预测的 MSE 评估结果如表 2 所示，由于篇幅限制，完整的预测结果（MSE 和 MAE 的单变量和多变量预测）在附录中报告。总的来说，TS2Vec 在大多数情况下都建立了新的 SOTA，其中 TS2Vec 在单变量设置上实现平均 MSE 降低 32.6%，在多变量设置上降低 28.2%。此外，每个数据集的表示只需要学习一次，并且可以通过线性回归直接应用于各种水平（Hs），这证明了所学习的表示的普适性。图 5 展示了具有长期趋势和周期性模式的典型预测切片，比较了单变量预测中表现最好的 3 种方法。在这种情况下，Informer 显示了其捕获长期趋势的能力，但无法捕获周期性模式。 TCN 成功捕捉周期性模式，但未能捕捉长期趋势。 TS2Vec 捕获了这两个特征，显示出比其他方法更好的预测结果。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=OGE4ODdkZjUyY2IxNWFlOWRmNTBkYjRkZjRlZmJmNWNfMWJCR3RrNDRUdGJnTzhLTkQwTWxMVXFjc2kyMVg2d2dfVG9rZW46TWRTUGJSSUtwbzlEVGZ4WlZxcGNWZW55bnFoXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA" alt="img" /></p>
+<p>表 3 列出了所提出的方法在 ETTm1 上的 NVIDIA GeForce RTX 3090 GPU 上的执行时间，并与 Informer（Zhou 等人，2021）进行了比较，后者因其在长时间序列预测方面的卓越效率而闻名。 TS2Vec 的训练和推理时间分别由两个阶段报告。训练阶段包括两个阶段：（1）通过 TS2Vec 框架学习时间序列表示，（2）在学习的表示之上为每个 H 训练线性回归器。类似地，推理阶段也包括两个步骤：（1）推理相应时间戳的表示，（2）通过训练的线性回归器进行预测。请注意，对于不同的水平设置，TS2Vec 的表示模型只需要训练一次。无论是在训练还是推理方面，我们的方法与 Informer 相比都实现了优越的效率。</p>
+<h4 id="时间序列异常检测"><a class="markdownIt-Anchor" href="#时间序列异常检测"></a> 时间序列异常检测</h4>
+<p>我们遵循流评估协议（Ren et al. 2019）。给定任意时间序列切片x1； x2; :::; xt ，时间序列异常检测的任务是判断最后一个点 xt 是否为异常。在学习到的表示上，异常点可能会与正常点表现出明显的差异（图 7c）。此外，TS2Vec 鼓励实例的同一时间戳上的上下文一致性。考虑到这一点，我们建议将异常分数定义为根据屏蔽和未屏蔽输入计算的表示的差异。具体来说，在推理阶段，经过训练的 TS2Vec 对输入进行两次转发：第一次，我们仅屏蔽掉最后一个观察值 xt；第二次，没有敷面膜。我们分别将这两个转发的最后时间戳表示为 ru t 和 rm t 。 L1距离用于衡量异常分数：</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YjViMGU0NjFlMzAyNWIyNjg2OGJjNGI3YjQxZDRiNjBfRndrMENWWU9ocEVma1FTQzFYVEtNVXNsOExwbFNTVU5fVG9rZW46TWVaRWI1NFZEb1ZwV1N4ajM1RWN3UFVjbmdKXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA" alt="img" /></p>
+<p>为了避免漂移，按照之前的工作（Ren et al. 2019），我们取前面 Z 点的局部平均值 t = 1 Z Pt−1 i=t−Z i 来调整异常分数 adj t= t − t t 。根据推断，当 adj t &gt; + 时，时间戳 t 被预测为异常点，其中 和 分别是历史分数的平均值和标准差，并且是超参数。</p>
+<p>我们将 TS2Vec 与单变量时间序列异常检测的其他无监督方法进行比较，包括 FFT (Rasheed et al. 2009)、SPOT、DSPOT (Siffer et al. 2017)、Twitter-AD (Vallis、Hochenbaum 和 Kejariwal 2014)、Luminol ( Brennan 和 Ritesh 2018）、DONUT（Xu 等人，2018）和 SR（Ren 等人，2019）。使用两个公共数据集来评估我们的模型。 Yahoo (Nikolay Laptev 2015) 是异常检测的基准数据集，包括 367 个每小时采样的时间序列，并带有标记的异常点。它汇聚了各种异常类型，例如异常值和变化点。 KPI（Ren et al. 2019）是AIOPS Challenge发布的竞赛数据集。该数据集包含来自许多互联网公司的多条精细采样的真实 KPI 曲线。实验设置详见附录。</p>
+<p>在正常情况下，每个时间序列样本按照时间顺序分为两半，前半部分用于无监督训练，第二部分用于评估。然而，在基线中，Luminol、Twitter-AD 和 FFT 不需要额外的训练数据即可启动。因此，这些方法在冷启动设置下进行比较，其中所有时间序列都用于测试。在此设置中，TS2Vec 编码器在 UCR 中的 FordA 数据集上进行训练存档，并在 Yahoo 和 KPI 数据集上进行测试。我们将模型的转移版本表示为 TS2Vec†。对于这两种设置，我们根据经验设置 = 4，Z = 21（Ren 等人，2019）。在正常设置中，我们的协议的 和 是使用每个时间序列的训练分割来计算的，而在冷启动设置中，它们是使用最近点之前的所有历史数据点来计算的。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Yjg1NDdhNWQxZjc3MDMyNDM0NzcwOTk5YTcwMWQ3NzhfOWR2MmdzMDhUMzJuU0NUSzBZUFh6T3kzVkpYWTN0dm9fVG9rZW46SElUYWJWRVFRb1RlTW94RlJlQmNMQTAwbjNmXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA" alt="img" /></p>
+<p>表4显示了不同方法在F1分数、查准率和查全率上的性能比较。在正常设置下，与基线方法的最佳结果相比，TS2Vec 在 Yahoo 数据集上的 F1 分数提高了 18.2%，在 KPI 数据集上提高了 5.5%。在冷启动设置中，与最佳 SOTA 结果相比，Yahoo 数据集上的 F1 分数提高了 19.7%，KPI 数据集上的 F1 分数提高了 1.0%。请注意，我们的方法在这两种设置上获得了相似的分数，证明了 TS2Vec 从一个数据集到另一个数据集的可迁移性。</p>
+<h2 id="5相关工作"><a class="markdownIt-Anchor" href="#5相关工作"></a> 5.相关工作</h2>
+<h2 id="6-结论"><a class="markdownIt-Anchor" href="#6-结论"></a> 6 结论</h2>
+<p>本文提出了一种时间序列的通用表示学习框架，即 TS2Vec，它应用分层对比来学习增强上下文视图中的尺度不变表示。对三个时间序列相关任务（包括时间序列分类、预测和异常检测）的学习表征的评估证明了 TS2Vec 的普适性和有效性。我们还表明，TS2Vec 在提供不完整数据时提供稳定的性能，其中分层对比损失和时间戳掩蔽发挥着重要作用。此外，学习到的表示的可视化验证了 TS2Vec 捕获时间序列动态的能力。消融研究证明了所提出组件的有效性。 TS2Vec 的框架是通用的，有潜力在我们未来的工作中应用于其他领域。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/04/01/%E3%80%8ATimesURL%20Self-supervised%20Contrastive%20Learning%20for%20Universal%20Time%20Series%20Representation%20Learning%E3%80%8B%E8%AE%BA%E6%96%87/" rel="prev" title="">
+                  <i class="fa fa-angle-left"></i> 
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/04/01/%E3%80%8AConnecting%20the%20Dots%20Multivariate%20Time%20Series%20Forecasting%20with%20Graph%20Neural%20Networks%E3%80%8B%20%E8%AE%BA%E6%96%87KDD20/" rel="next" title="">
+                   <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Xu Yang</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

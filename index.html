@@ -145,7 +145,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">1</span>
+          <span class="site-state-item-count">8</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -176,6 +176,1185 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/04/01/%E3%80%8ACycleNet%20Enhancing%20Time%20Series%20Forecasting%20through%20Modeling%20Periodic%20Patterns%E3%80%8B%20%E8%AE%BA%E6%96%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Xu Yang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Hexo">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/04/01/%E3%80%8ACycleNet%20Enhancing%20Time%20Series%20Forecasting%20through%20Modeling%20Periodic%20Patterns%E3%80%8B%20%E8%AE%BA%E6%96%87/" class="post-title-link" itemprop="url">未命名</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-04-01 17:58:50 / 修改时间：17:58:03" itemprop="dateCreated datePublished" datetime="2025-04-01T17:58:50+08:00">2025-04-01</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="cyclenet-enhancing-time-series-forecasting-through-modeling-periodic-patterns-论文"><a class="markdownIt-Anchor" href="#cyclenet-enhancing-time-series-forecasting-through-modeling-periodic-patterns-论文"></a> 《CycleNet: Enhancing Time Series Forecasting through Modeling Periodic Patterns》 论文</h1>
+<p>*斜体：*疑问  &amp; 解答 ｜  **加粗：**现象  ｜   下划线：解决方法、创新点</p>
+<h2 id="摘要"><a class="markdownIt-Anchor" href="#摘要"></a> 摘要</h2>
+<p>时间序列数据中存在的稳定周期性模式是进行长期预测的基础。在本文中，我们开创了对这种周期性进行显式建模的探索，以提高模型在长期时间序列预测（LTSF）任务中的性能。具体来说，我们引入了残余周期预测（RCF）技术，该技术利用可学习的循环来对序列中固有的周期性模式进行建模，然后对建模周期的残余分量进行预测。将 RCF 与线性层或浅层 MLP 相结合形成了本文提出的简单而强大的方法，称为 CycleNet。 CycleNet 在电力、天气和能源等多个领域实现了最先进的预测精度，同时通过减少 90% 以上的所需参数数量来提供显着的效率优势。此外，作为一种新颖的即插即用技术，RCF还可以显着提高现有模型（包括PatchTST和iTransformer）的预测精度。</p>
+<h2 id="1介绍"><a class="markdownIt-Anchor" href="#1介绍"></a> 1.介绍</h2>
+<h3 id="背景"><a class="markdownIt-Anchor" href="#背景"></a> 背景</h3>
+<p>时间序列预测 (TSF) 在天气预报、交通和能源管理等各个领域发挥着至关重要的作用，为早期预警提供见解并促进主动规划。特别是，长期（例如，跨越几天或几个月）的准确预测提供了更多的便利，称为长期时间序列预测（LTSF）[59,56,17,42,6]。</p>
+<h3 id="存在问题"><a class="markdownIt-Anchor" href="#存在问题"></a> 存在问题</h3>
+<p>然而，<strong>实现长期预测的原则在于理解数据中固有的周期性[32]。与短期预测不同，长期预测不能仅仅依赖于最近的时间信息（包括平均值、趋势等）</strong>。例如，用户未来三十天的用电量不仅与其过去几天的用电量模式相关。在这种情况下，长期依赖性，或者换句话说，数据中潜在的稳定周期性，可以作为进行长期预测的实际基础[32]。这就是为什么现有模型强调其提取具有长期依赖性的特征的能力。 Informer [59]、Autoformer [51] 和 PatchTST [40] 等模型利用 Transformer 的长距离建模能力来解决 LTSF 任务。 ModernTCN [38] 采用大型卷积核来增强 TCN 捕获长程依赖性的能力，而 SegRNN [31] 使用分段迭代来改进 RNN 方法对长序列的处理。如果模型能够准确捕获长期依赖性，它就可以从历史长序列中精确提取周期性模式，从而实现更准确的长期预测。</p>
+<p>然而，   如果构建深度复杂模型的目的仅仅是为了更好地从远程依赖性中提取周期性特征，为什么不直接对模式进行建模呢？如图 1 所示，电力数据表现出清晰的每日周期性模式（除了可能的每周模式）。我们可以使用全球共享的每日片段来表示电力消耗的周期性模式。通过重复这个每日片段N次，我们可以连续地表示N天用电量序列的循环分量。</p>
+<h3 id="解决思路"><a class="markdownIt-Anchor" href="#解决思路"></a> 解决思路</h3>
+<p>基于上述动机，我们在本文中率先对数据中的周期性模式进行显式建模，以增强模型在 LTSF 任务上的性能。具体来说，我们提出了剩余周期预测（RCF）技术。它涉及使用可学习的循环周期对时间序列数据中固有的周期性模式进行显式建模，然后预测建模周期的剩余分量。将 RCF 技术与单层线性或双层 MLP 相结合，形成了 CycleNet，这是一种简单但功能强大的方法。</p>
+<h3 id="效果及贡献"><a class="markdownIt-Anchor" href="#效果及贡献"></a> 效果及贡献</h3>
+<p>CycleNet 在多个领域实现了一致的最先进性能，并提供了显着的效率优势。总之，本文贡献：</p>
+<p>• 我们确定了长期预测领域中共享周期性模式的存在，并提出对这些模式的显式建模，以增强模型在 LTSF 任务上的性能。</p>
+<p>• 从技术上讲，我们引入了RCF 技术，该技术利用可学习的循环周期对时间序列数据内的固有周期性模式进行显式建模，然后预测建模周期的剩余分量。 RCF 技术显着增强了基本（或现有）模型的性能。</p>
+<p>• 将RCF 与线性层或浅层MLP 结合使用，形成了所提出的简单而强大的方法，称为CycleNet。 CycleNet 在多个领域实现了一致的最先进性能，并提供了显着的效率优势。</p>
+<h2 id="2相关工作"><a class="markdownIt-Anchor" href="#2相关工作"></a> 2.相关工作</h2>
+<p>事实上，利用周期性信息来提高模型预测精度并不是一个新概念。特别是，许多研究引入了一系列季节性趋势分解（STD）技术，使模型能够更好地利用周期性信息。 Autoformer [51]、FEDformer [60] 和 DLinear [56] 等流行模型利用经典的 STD 方法将原始时间序列分解为两个同等大小的子序列：季节性和趋势分量，然后独立建模。这些经典的 STD 方法通常使用基本移动平均 (MOV) 内核来执行滑动聚合以获得趋势分量。最近，Leddam [55] 提出用可学习分解（LD）内核替换 STD 中的传统 MOV 内核，从而提高性能。此外，DEPTS [8]将序列的周期性视为相对于时间的参数化函数，并通过其周期性和局部块逐层学习周期性和残余分量。 SparseTSF [32]是最近的另一项工作，利用跨时期稀疏预测技术来解耦周期和趋势，以极低的成本实现了令人印象深刻的性能。</p>
+<p>本文提出的 RCF 技术本质上可以被认为是 STD 方法的一种。与现有技术的主要区别在于它使用可学习的循环周期对独立序列内的全局周期模式进行显式建模。所提出的 RCF 技术概念简单、计算高效，并且可以显着提高预测精度。进一步提出的 CycleNet 将 RCF 技术与简单的主干网络相结合，是一种基于线性或 MLP 的模型，简单、高效且功能强大，适用于时间序列预测。为了正确定位 CycleNet，我们在附录 A 中详细回顾了不同类别的时间序列预测方法（包括基于 Transformer 的、基于 RNN 的等）的发展。</p>
+<h2 id="3解决方法-cyclenet"><a class="markdownIt-Anchor" href="#3解决方法-cyclenet"></a> 3.解决方法 CycleNet</h2>
+<p>给定具有 D 个变量或通道的时间序列 X，时间序列预测的目标是根据过去 L 个观测值预测未来的 H 步，数学上表示为</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YTdmYjdiYjMzM2E3Y2ZiOWE2ZTMxMDFkNWJhNDliODJfZ0J3eUs4ZUpwU2UxaU5FVzI5NEkyN3RDZzZ3OXNBVDZfVG9rZW46QmlNNmJLOFlyb3V2Z014N3l6RWNxbWk3bk1kXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<p>事实上，时间序列中固有的周期性是准确预测的基础，特别是在大范围内进行预测时，例如 96-720 步（对应于几天或几个月）。为了提高模型在长期预测任务上的性能，我们提出了剩余周期预测（RCF）技术。它结合了线性层或浅层 MLP，形成了一个简单而强大的方法 CycleNet，如图 2 所示，详细的伪代码在附录 B.1 中提供。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YjQxYjE1NWQxYWVjZTRkNGI4MTdlOGJiMjMzNjkzOGJfZm8ya2JwYmJkTGNJclpyU2pDSVo1aXVKMzRzTzlOY29fVG9rZW46TmhQbGJEUHM0b25aUEl4R1pZVGN6TmlVblhnXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<p>CycleNet 架构。 CycleNet/Linear 和 CycleNet/MLP 分别代表使用单层 Linear 模型和双层 MLP 模型作为 CycleNet 的主干。这里，D = 3。</p>
+<h4 id="31-residual-cycle-forecasting"><a class="markdownIt-Anchor" href="#31-residual-cycle-forecasting"></a> 3.1 Residual cycle forecasting</h4>
+<p>RCF 技术包括两个步骤：第一步涉及通过独立通道内的可学习循环来对序列的周期性模式进行建模，第二步需要预测建模周期的剩余分量。</p>
+<p><strong>Periodic patterns modeling周期性模式建模</strong></p>
+<p>对于具有先验周期长度 W 的 D 个通道，我们首先生成可学习的循环周期 Q ∈ RW ×D，全部初始化为零。这些循环在通道内全局共享，这意味着通过执行循环复制，我们可以获得相同长度的序列X的循环分量C。这些长度为 W 的循环周期 Q 与用于预测的骨干模块一起经历梯度反向传播训练，产生学习表示（与最初初始化的零不同），揭示序列内的内部循环模式。</p>
+<blockquote>
+<p><strong>举例说明</strong></p>
+<p>假设我们有一个电力消耗的时间序列数据集，它有7个通道（比如代表7天的电力消耗），每个通道的长度为24小时（代表一天中的每小时）。如果我们确定了电力消耗的日循环模式（即每天的电力消耗模式是相似的），那么：</p>
+<ol>
+<li><strong>初始化Q</strong>：我们首先创建一个长度为24的向量Q，这个向量包含了一天中每小时的电力消耗模式。这个向量是可学习的，意味着它会在训练过程中根据数据进行调整。</li>
+<li><strong>循环复制Q</strong>：由于我们有7天的数据，我们将Q复制7次，以生成一个长度为168的向量C，这个向量代表了一周内每小时的电力消耗模式。</li>
+<li><strong>全局共享</strong>：这个C向量对于所有的通道都是相同的，因为我们假设电力消耗的日循环模式在整个数据集中是一致的。这就是“全局共享”的含义。</li>
+</ol>
+<p>通过这种方式，我们可以将复杂的时间序列数据分解为易于管理和预测的周期性部分（C）和非周期性部分（残差分量）。这种方法有助于模型更准确地捕捉和预测时间序列数据中的周期性变化。</p>
+</blockquote>
+<p>这里，周期长度W取决于数据集的先验特征，并且应该设置为数据集中的最大稳定周期。考虑到需要长期预测的场景通常表现出突出的、明确的周期（例如，用电量和交通数据表现出清晰的每日和每周周期），确定具体的周期长度是可用且简单的。此外，可以通过自相关函数 (ACF) [39] 进一步检查数据集的周期，如附录 B.2 所示。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NDM1NzQ2ZGNlMmFkMzg4YjNmNzAwYzdkYzlhNmU3YWFfSml0dXIxYlNKenNoR3Y3Q3RIQW1xdWtkbU9MbVZuc3FfVG9rZW46SlpiRmJxYmp0b0JpRWJ4cTN3MmNaSVhibmJoXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<p><strong>Residual</strong> <strong>forecastin</strong> <strong>残差****预测</strong></p>
+<p>对建模周期的剩余部分进行的预测（称为剩余预测）如下：</p>
+<p>1.从原始输入中去除循环分量 以获得残差分量。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZjNkZWEwODdhYzI0NDk0ZWMyOTJkMTg4Mjc0ODQxNGRfd1FIZ1NyNHpJZUJvRDI1dFh3VlJzZ2NYaFZ2eW9VbmVfVG9rZW46UUtYdmI2UzY3b0JUT1l4V2dlRGNWNXlSblRkXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<p>2.将 残差分量通过主干网络，以获得残差分量的预测</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NGU5OThmMDI0ZjM2NTIxMTQzZWExOGM0NmMzNWNjNTBfTnpUa3B0NVo3eGZoWVhDWWRtNGtMV1RXM2VYNGx0WERfVG9rZW46TVhkZmJiZGI1b2pJQ1V4ZUs0UWNIQk1ibkNnXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<p>3.将预测的残差分量与循环分量相加，得到预测序列</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MGEwZDBiMGNjMzNkMmI0NzUyMjEwNzMzMmYyODU5ODVfRG9lVHphQjFIWEEzNlJaek4yZDNPU3MyaE55U0RJWEZfVG9rZW46U2tiV2JxdXN1b2F6b2t4SkVGWWNVSXk5blE0XzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<p>需要注意的是，由于循环分量C是由Q的循环复制导出的虚拟序列，因此我们无法直接获得上述子序列ct−L+1:t 和ct+1:t+H 。因此，如图 3 所示，需要对循环 Q 进行适当的对齐和重复以获得等效的子序列：</p>
+<p>(i) 将 Q 左移 t mod W 位置以获得 Q(t)。这里，t mod W 可以被视为当前序列样本在 Q 内的相对位置索引。</p>
+<p>(ii) 重复 Q(t) ⌊L/W ⌋ 次并连接 Q(t) 0:L mod W 。在数学上，这两个等价子序列可以表示为：</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NzJiOTgxMzg2MmJhNTUxM2VlOGVmNzNhMmYzZjA5ZGVfY2FUSUp1d2thTzdqUzJUQ2tZWllsRzNPellLTUNIWTZfVG9rZW46QmZRemJ0QWRZb0JmVzV4ZzRhRWM0MkxBbnhkXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NGRiMDgxNzA3ODQ0NTYyZWFlYWFmODZlODdlOTU1NWJfbXJXVkxqNlJSdHZPSHBrWTBDdDhRdkpZSzE5WVlaUGhfVG9rZW46VkJIdmI4SHFjb2p4N0N4YTUxYmNqVXhrblhmXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<p><strong>Backbone主干网络</strong></p>
+<p>将原来的预测任务转化为循环残差分量建模，可以作为正常的序列建模。因此，任何现有的时间序列预测模型都可以用作骨干。在本文中，我们的目标是提出并研究一种通过显式建模周期（即 RCF）来增强时间序列预测的方法。因此，我们选择最基本的主干，即单层 Linear 和双层 MLP，形成我们简单但强大的方法，CycleNet/Linear 和 CycleNet/MLP。这里，每个通道利用相同的骨干网和参数共享进行建模，这也称为通道独立策略[13]</p>
+<h4 id="32-instance-normalization-实例标准化"><a class="markdownIt-Anchor" href="#32-instance-normalization-实例标准化"></a> 3.2 Instance normalization 实例标准化</h4>
+<p>时间序列数据的统计特性（例如均值）通常会随时间变化，这称为分布变化。这可能会导致在历史训练集上训练的模型在应用于未来数据时表现不佳。为了解决这个问题，最近的研究引入了实例标准化策略，例如 RevIN [45,22,26]。 iTransformer [37]、PatchTST [40] 和 SparseTSF [32] 等主流方法已广泛采用类似的技术来增强性能。为了提高 CycleNet 的鲁棒性，我们还采用了类似的可选策略（参见附录 C.4 中的完整消融研究）。具体来说，我们从 CycleNet 输入和输出步骤之外的模型内部表示中删除了不同的统计属性：</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NjgwOTFhZWNkZDEwZDFiMWIzNzMwOTlkN2RhNDQ3MWRfV1BwUGI3TlplM2hGUUxNNE44b2hIWFpnVDJ5Z2xvSUpfVG9rZW46QmM5WmJZeEc1bzFaVFN4UE4wZGMyOUpFbnFjXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<p>其中 μ 和 σ 分别表示输入窗口的平均值和标准差，ε 是用于数值稳定性的小常数。此方法与排除可学习仿射参数的 RevIN 版本一致 [22]。</p>
+<p><strong>3.3****Loss function</strong> <strong>损失函数</strong></p>
+<p>为了与当前主流方法保持一致，CycleNet默认使用均方误差（MSE）作为损失函数，以确保与其他方法的公平比较，公式为：</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MmI2MWMzNmM5MTE4YzY4Njc2NGI1MDY5MzU3ZmM4YWNfazlrdWd5NnU3TXMwOElYZWNMamlUYVRJMG1TaUlWVUlfVG9rZW46RExaOWJjWkYxbzRsRzF4Q3diMGM2UFNHbllnXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<h2 id="4实验效果"><a class="markdownIt-Anchor" href="#4实验效果"></a> 4.实验效果</h2>
+<h4 id="41设定"><a class="markdownIt-Anchor" href="#41设定"></a> 4.1设定</h4>
+<p><strong>Datasets</strong></p>
+<p>我们利用了广泛采用的基准数据集，包括 ETT 系列 [59]、天气、交通、电力和太阳能 [24]。对数据集的预处理操作，例如数据集分割和标准化方法，与之前的工作保持一致（例如，Autoformer [51]，iTransformer [37]等）。</p>
+<p>数据集的信息如表1所示。请注意，这些数据集都表现出稳定的循环模式，例如每日和每周，这构成了执行长期预测的现实基础。结合数据集的采样频率，我们可以推断出数据集的最大周期长度，例如ETTh1为24，Electricity为168。这些手动推断的周期长度可以通过 ACF 分析进一步确认，其详细信息在附录 B.2 中提供。 CycleNet 的超参数 W 默认设置为匹配表 1 中的循环长度。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NDQ5NjdkYTE3ZThjN2JhYjA3N2YxOGZmMzRhMTA3MDRfQVFqU251NnN3dWFWN095aml2NXBJQ0hPZk5zVGtibWdfVG9rZW46RU1nVGJyNHlPbzMwSjF4MHdtZmMybzdwblFlXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<p><strong>Baselines</strong></p>
+<p>我们将 CycleNet 与近年来最先进的模型进行了比较，包括 iTransformer [37]、PatchTST [40]、Crossformer [58]、TiDE [5]、TimesNet [52]、DLinear [56]、SCINet [34] 、FEDformer [60]、Autoformer [51]。为了全面评估 CycleNet 的性能，采用了均方误差（MSE）和平均绝对误差（MAE）指标。</p>
+<p><strong>Environments</strong></p>
+<p>本文中的所有实验均使用 PyTorch [41] 实现，使用 Adam [23] 优化器进行训练，并在具有 24 GB 内存的单个 NVIDIA GeForce RTX 4090 GPU 上执行</p>
+<h4 id="42主要结果"><a class="markdownIt-Anchor" href="#42主要结果"></a> 4.2主要结果</h4>
+<p>表2显示了CycleNet与其他模型在多变量LTSF任务上的比较结果。总体而言，CycleNet 实现了最先进的性能（除了 Traffic 数据集），其中 CycleNet/MLP 总体排名第一，CycleNet/Linear 总体排名第二。由于 MLP 与 Linear 相比具有非线性映射能力，CycleNet/MLP 在电力和太阳能等高维数据集（即具有超过 100 个通道的数据集）上表现更好。综上所述，在 RCF 技术的支持下，即使是非常简单基础的模型（即 Linear 和 MLP）也能达到目前最好的性能，超越其他深度模型。这充分体现了RCF技术的优势。</p>
+<p>表 2：多元长期时间序列预测结果。回溯长度 L 固定为 96，结果是 H ∈ {96, 192, 336, 720} 的所有预测范围的平均。附录 C.2 提供了完整的结果和更长回溯长度的更多比较结果。其他模型的结果来自iTransformer [37]和TimeMixer [48]。最好的结果以粗体突出显示，次好的结果用下划线突出显示。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YWVmM2I3NDM0Y2M4MDQwZjhjMzk5MzRlNzU2ZWU5NThfM2RIU3BseE1uQmVXTDN1dkNNZE1YelB4TXBuZnd6Z3RfVG9rZW46WHFmYmJwckpSb2FYbnR4dVdIcWNhR3lNbkNPXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<p>此外，我们可以观察到 CycleNet 在 Traffic 数据集上的性能不如 iTransformer，后者使用反向 Transformer 对时间序列数据中的多元关系进行建模。这是因为交通数据集表现出时空特征和时间滞后特征，其中某个检测点的交通流量显着影响邻近检测点的未来值。在这种情况下，需要对足够的渠道间关系进行建模，而 iTransformer 可以实现这一点。相比之下，CycleNet 独立地对每个通道的时间依赖性进行建模，因此在这种情况下它会遇到缺点。然而，CycleNet 在 Traffic 数据集上仍然明显优于其他基线，这证明了 CycleNet 的竞争力。此外，我们在附录 C.5 中包含了对 CycleNet 在交通场景中的更多分析，包括对 PEMS 数据集结果的完整比较。</p>
+<h4 id="43效率分析"><a class="markdownIt-Anchor" href="#43效率分析"></a> 4.3效率分析</h4>
+<p>所提出的 RCF 技术作为即插即用模块，需要最小的开销，仅需要额外的 W × D 可学习参数，并且不需要额外的乘法累加运算（MAC）。 CycleNet 的主干，即单层 Linear 和双层 MLP，与其他多层堆叠模型相比也显着轻量级。表3展示了CycleNet与其他主流模型的效率对比，其中CycleNet表现出显着的优势。特别是，与同样具有强大的长期依赖性建模和非线性学习能力的 iTransformer 相比，CycleNet/MLP 的参数和 MAC 数量少了十倍以上。至于CycleNet/Linear，它与DLinear共享相同的单层线性主干，它的参数和MAC也更少。不过，就训练速度而言，DLinear 仍然比 CycleNet/Linear 快。这是因为 RCF 技术需要将循环周期与每个数据样本对齐，这会产生额外的 CPU 时间。总体而言，考虑到RCF技术带来的预测精度的显着提升，CycleNet实现了性能和效率之间的最佳平衡。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NDNkZThmYjc1OTQxOTgwMmIzMTI3NDk5YzEyOWZlYmJfNldub3RDRjA4VDBuQ2ZCUFd5WGNVb2lWS001S1gxOUZfVG9rZW46UHJsV2JWYzdyb2F4VGF4UzlKZGNXeTlobkdSXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<h4 id="44-消融研究与分析"><a class="markdownIt-Anchor" href="#44-消融研究与分析"></a> 4.4 消融研究与分析</h4>
+<p><strong>RCF的有效性</strong></p>
+<p>为了研究 RCF 的有效性，我们对两个具有显着周期性的数据集：电力和交通数据集进行了全面的消融实验。结果如表4所示。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=N2I4OTY3NzZkZWViZDcxYmZmY2Y5OGVjNDRlODc5MTRfVXI1dkNDV05BakpUZndhc2dac2o5M0pkRXBwcXFXbVFfVG9rZW46TnJLVmJuNmR3b1J2ZU54NmpMcGNpeklpbmlkXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<p>首先，当将基本的 Linear 和 MLP 主干（默认情况下均使用实例归一化）与 RCF 技术相结合时，可以观察到预测精度显着提高（大约 10% 到 20%）。这表明 CycleNet 的成功很大程度上归功于 RCF 技术，而不是主干网本身或实例标准化策略。总体而言，无论是否应用RCF技术，MLP的性能都强于Linear。这表明，在使用通道无关策略（跨每个通道共享参数）对高维数据集进行建模时，非线性映射能力是必要的，这与之前的研究结果一致[26]。</p>
+<p>其次，我们进一步验证了RCF是否可以提高现有模型的预测精度，因为RCF本质上是一种即插即用的灵活技术。据观察，结合 RCF 仍然可以提高现有复杂设计的深度堆叠模型的性能（大约 5% 到 10%），例如 PatchTST [40] 和 iTransformer [37]。即使对于已经采用基于 MOV 的经典 STD 技术的 DLinear，RCF 也能够提供大约 20% 的改进。这进一步说明了RCF的有效性和可移植性。</p>
+<p>然而，观察到一个有趣的现象：当 PatchTST 和 iTransformer 与 RCF 结合时，虽然 MAE 降低了，但 MSE 却增加了。这背后最重要的原因是，流量数据集中存在极值点，可能会影响 RCF 的有效性，而 RCF 从根本上依赖于学习数据集中的历史平均周期。我们在附录 C.5 中进一步详细分析了这种现象，并提出了改进 RCF 技术的潜在方向。</p>
+<p><strong>不同<strong><strong>STD</strong></strong>技术的比较</strong></p>
+<p>所提出的 RCF 技术本质上是一种更强大的 STD 方法。与从有限回溯窗口分解周期性（季节性）分量的现有方法不同，RCF 从训练集中学习全局周期性分量。在这里，我们使用纯线性模型作为主干（不应用任何实例归一化策略），将 RCF 与现有 STD 技术的有效性进行比较。比较包括来自 Leddam [55] 的 LD、来自 DLinear [56] 的 MOV 和来自 SparseTSF [32] 的稀疏技术。如表 5 所示，RCF 显着优于其他 STD 方法，特别是在具有强周期性的数据集上，例如电力和太阳能。相比之下，其他 STD 方法并没有表现出比纯线性模型显着的优势。</p>
+<p>这有几个原因。首先，基于MOV和LD的STD方法通过在回溯窗口内滑动聚合来实现趋势估计，这存在固有的问题[27, 26]：</p>
+<p>（i）移动平均的滑动窗口需要大于最大值季节性成分的周期；否则，分解可能不完整（特别是当周期长度超过回溯序列长度时，可能导致分解不可能）。</p>
+<p>(ii)在序列样本的边缘需要进行补零以获得同等大小的移动平均序列，导致序列边缘失真。至于稀疏技术，作为一种轻量级的分解方法，它更多地依赖于较长的回溯窗口和实例归一化策略来保证足够的性能。</p>
+<p>此外，这些在回溯窗口内解耦趋势和季节性的方法本质上相当于无约束或弱约束线性回归[44]，这意味着在完全训练收敛后，基于线性的模型与这些方法相结合在理论上相当于纯线性回归。线性模型。相比之下，RCF技术获得的周期分量是从训练集中全局估计的，使其超越了有限长度回溯窗口的限制，因此，其能力超出了标准线性回归。</p>
+<p>表 5：不同 STD 技术的比较。为了直接比较 STD 的效果，这里使用的配置与 DLinear [56] 一致，具有足够的回溯窗口长度 336，并且没有额外的实例归一化策略。因此，这里的 CLinear 指的是不带 RevIN 的 CycleNet/Linear。报告的结果是 H ∈ {96, 192, 336, 720} 的所有预测范围的平均值，完整结果可在附录 C.3 中找到。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MTBjYmQ5YTA4NzhlMzg0ZDZkNDZmNWU2MjQ2YjUyMzZfU2RrWUNEWm1aU2lOZ0VLV215aWZka1hidVhJRE5nWTRfVG9rZW46WGhDT2J1c3RPb1RjWWl4VlBYNGNxaXJyblZnXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<p><strong>超参数****W的影响</strong></p>
+<p>超参数 W 决定了 RCF 技术中可学习循环 Q 的长度。原则上，它必须匹配数据中的最大主周期长度，才能正确建模序列的周期性模式。我们在表 6 中研究了不同数据集在不同 W 设置下的 CycleNet/Linear 模型的性能。当将超参数 W 正确设置为数据集的最大周期长度（即表 1 中预先推断的周期长度）时， RCF 可以发挥重要作用，与未正确设置的情况相比，会产生很大的性能差距。这表明有必要推断和设置正确的 W 以使 RCF 正常运行。此外，当W设置不正确时，模型的性能几乎与根本不使用RCF时相同。这表明即使在最坏的情况下，RCF也不会带来显着的负面影响。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=OGI1MmM2MDYyYWQ4OTI3YjU3M2YwMWEzYjkxZjVmMTVfRjBPTmhhc1FpekNQMUR4VzVMM1BmNFVkVEhydDBQSmZfVG9rZW46TGxyU2JpUkFLbzRIa3N4UnRTTGNKRWM1bldoXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<p><strong>学习到的周期性模式的可视化</strong></p>
+<p>RCF 技术的目的是利用可学习的循环周期 Q（初始化为零）对时间序列数据中的周期性模式进行建模。与主干网络共同训练后，循环可以代表序列的固有周期性模式。图 4 说明了从不同数据集和通道中学习到的不同周期性模式。例如，图4（c）显示了太阳能光伏发电的每日运行模式，而图4（d）显示了交通流量的每周运行模式，以工作日的早上为高峰。从全局序列中学习到的这些周期性模式为预测模型提供了重要的补充信息，特别是当回溯窗口的长度有限并且当循环长度很长时可能无法提供足够的循环信息。</p>
+<p>此外，尽管同一数据集中不同通道的周期长度相同，但具体的周期模式不同，如图 4(e-h) 所示。特别是，图4（f）显示了工作日家庭用电量的间歇性周期性，而其他的则在各自的渠道中表现出相对均匀的工作日模式。这凸显了对每个通道的周期模式单独建模的必要性。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MzcwMzQzZTEwOGY3NTg4MmQzYWM1MjhlYTg3NGNhMmNfY1c3M1hzM25GakoxRGExNVMxVFZJNmF0MWhjM0FjdGRfVG9rZW46TTF4VWI2Y2Uwb3lnSDl4UUhkV2NFQkQ3bjZFXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<p>总之，这些发现表明，RCF 技术可以有效地学习时间序列数据中固有的周期性模式，是促成 CycleNet 最先进性能的关键解释因素。此外，我们在附录 C.1 中包含了进一步的分析，展示了在不同配置下学习到的 RCF 周期性模式，以更好地说明 RCF 是如何运行的。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=OTRjNzk1YzFmZGUxYjUzNzhjNGMyNDExNTVlZGE4NjNfMXBEYlBSVGd1ZzRhSVdTV2FYQlNwZGdMT3Z2RklHaGhfVG9rZW46TnlEaWI0QXhPb2ZqbzJ4OGpKemM5dmp3bkpiXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<p><strong>不同回望长度的性能</strong></p>
+<p>回顾长度决定了可以利用的历史信息的丰富程度。理论上，它越大，模型性能应该越好，特别是对于能够捕获长期依赖关系的模型。图5显示了不同模型在不同回溯长度下的性能。可以看出，CycleNet 以及 iTransformer [37]、PatchTST [40] 和 DLinear [56] 等当前最先进模型的代表，都通过更长的回溯长度实现了更好的性能。这表明这些模型都具有强大的长期依赖性建模能力。</p>
+<p>值得强调的是（i）在电力数据集上，CycleNet 在任何预测长度上都优于当前最先进的模型； (ii) 在交通数据集上，与 iTransformer 等强大的现有多元预测模型相比，CycleNet 仍然存在不足。这表明，在周期性较强但没有额外时空关系的场景下，充分利用周期性成分足以实现高精度预测。然而，在需要对变量之间的关系进行彻底建模的更复杂场景中，简单的独立于通道的策略与基本主干相结合（例如 CycleNet）仍然难以完全满足需求。因此，在附录C.5中，我们进一步分析了当前RCF技术在时空场景（例如流量域）中的局限性，并指出了未来改进的潜在方向。最后，我们还在附录 C.2 中使用更长的回溯窗口对 CycleNet 与现有模型在完整数据集上进行了比较。</p>
+<h2 id="5-讨论"><a class="markdownIt-Anchor" href="#5-讨论"></a> 5 讨论</h2>
+<h4 id="潜在的限制"><a class="markdownIt-Anchor" href="#潜在的限制"></a> 潜在的限制</h4>
+<p>CycleNet 在以突出且明确的周期性模式为特征的 LTSF 场景中展示了其功效。然而，CycleNet 有几个潜在的局限性值得在此讨论：</p>
+<p>• 周期长度不稳定：CycleNet 可能不适合周期长度（或频率）随时间变化的数据集，例如心电图（ECG）数据，因为 CycleNet 只能学习固定长度的周期。</p>
+<p>• 不同通道的周期长度：当数据集中的不同通道表现出不同长度的周期时，CycleNet 可能会遇到挑战，因为它默认对具有相同周期长度 W 的所有通道进行建模。鉴于 CycleNet 的通道独立建模策略，一种潜在的解决方案是根据周期长度拆分数据集来预处理数据集，或者将每个通道独立建模为单独的数据集。</p>
+<p>• 异常值的影响：如果数据集包含显着的异常值，CycleNet 的性能可能会受到影响。这是因为RCF的基本工作原理是学习数据集中的历史平均周期。当存在显着的异常值时，RCF 学习到的循环中某个点的平均值可能会被夸大，导致周期性分量和残差分量的估计不准确，从而影响预测过程。</p>
+<p>• 长期周期建模：RCF 技术对于建模中期稳定周期（例如每日或每周）非常有效。然而，考虑更长的依赖性（例如每年的周期）给 RCF 技术带来了更具挑战性的任务。虽然理论上CycleNet的W可以设置为年周期长度来建模年周期，但最大的困难在于收集足够长的历史数据来训练完整的年周期，这可能需要数十年的数据。在这种情况下，未来的研究需要开发更先进的技术来专门解决长程循环建模。</p>
+<h4 id="未来工作进一步建模通道间关系"><a class="markdownIt-Anchor" href="#未来工作进一步建模通道间关系"></a> 未来工作：进一步建模通道间关系</h4>
+<p>RCF 技术增强了模型对时间序列数据周期性建模的能力，但没有明确考虑多个变量之间的关系。在一些变量之间存在空间和时间依赖性的时空场景中，这些关系至关重要。例如，iTransformer [37] 和 SOFTS [12] 等最近的研究表明，适当地建模通道间关系可以提高流量场景中的性能。然而，直接将 RCF 技术应用于 iTransformer 并不会带来显着的改进（至少对于 MSE 指标而言），如表 4 所示。我们相信，设计一种结合 CycleNet 的更合理的多元建模方法可能是有前景和有价值的，并且我们将其留待未来探索。</p>
+<h2 id="6-总结"><a class="markdownIt-Anchor" href="#6-总结"></a> 6 总结</h2>
+<p>本文揭示了时间序列数据中固有周期性模式的存在，并开创了对这种周期性进行显式建模以提高时间序列预测模型性能的探索。从技术上讲，我们提出了残余循环预测（RCF）技术，该技术通过循环对序列中的共享周期模式进行建模，并通过主干预测残余循环分量。此外，我们还介绍了简单而强大的 LTSF 方法 CycleNet/Linear 和 CycleNet/MLP，它们分别将单层 Linear 和双层 MLP 与 RCF 技术结合起来。大量的实验证明了 RCF 技术的有效性，而 CycleNet 作为一种新颖而简单的方法，取得了最先进的结果，并具有显着的效率优势。本文的研究结果强调了周期性作为准确时间序列预测的关键特征的重要性，在建模过程中应给予更多重视。最后，将 CycleNet 与有效的渠道间关系建模方法相结合是一个有前途且有价值的未来研究方向。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/04/01/%E3%80%8ACost%20Contrastive%20learning%20of%20disentangled%20seasonal-trend%20representations%20for%20time%20series%20forecasting%E3%80%8B%20ICLR22%20%E8%AE%BA%E6%96%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Xu Yang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Hexo">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/04/01/%E3%80%8ACost%20Contrastive%20learning%20of%20disentangled%20seasonal-trend%20representations%20for%20time%20series%20forecasting%E3%80%8B%20ICLR22%20%E8%AE%BA%E6%96%87/" class="post-title-link" itemprop="url">未命名</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-04-01 17:58:50 / 修改时间：17:58:03" itemprop="dateCreated datePublished" datetime="2025-04-01T17:58:50+08:00">2025-04-01</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="cost-contrastive-learning-of-disentangled-seasonal-trend-representations-for-time-series-forecasting-iclr22-论文"><a class="markdownIt-Anchor" href="#cost-contrastive-learning-of-disentangled-seasonal-trend-representations-for-time-series-forecasting-iclr22-论文"></a> 《Cost: Contrastive learning of disentangled seasonal-trend representations for time series forecasting》 ICLR22 论文</h1>
+<p>*斜体：*疑问  &amp; 解答 ｜  **加粗：**现象  ｜   下划线：解决方法、创新点</p>
+<h2 id="摘要"><a class="markdownIt-Anchor" href="#摘要"></a> 摘要</h2>
+<p>深度学习在时间序列预测方面得到了积极的研究，主流范式是基于神经网络架构的端到端训练，从经典的 LSTM/RNN 到最近的 TCN 和 Transformer。受计算机视觉和自然语言处理领域表示学习近期成功的启发，我们认为时间序列预测的一个更有前途的范式是：首先，学习解耦特征表示；其次，是简单的回归微调步骤 - 我们从因果角度证明了这种范式的合理性。遵循这一原则，我们提出了一种用于长序列时间序列预测的时间序列表示学习新框架，名为 CoST，它应用对比学习方法来学习解耦的季节性趋势表示。 CoST 包括时域和频域对比损失，分别用于学习判别趋势和季节表示。对现实世界数据集的大量实验表明，CoST 始终大幅优于最先进的方法，在多变量基准上实现了 MSE 21.3% 的改进。它对于主干编码器以及下游回归器的各种选择也具有鲁棒性。</p>
+<h2 id="1介绍"><a class="markdownIt-Anchor" href="#1介绍"></a> 1.介绍</h2>
+<h3 id="背景"><a class="markdownIt-Anchor" href="#背景"></a> 背景</h3>
+<p>时间序列预测已广泛应用于各个领域，例如电价（Cuaresma等，2004）、需求预测（Carbonneau等，2008）、容量规划和管理（Kim，2003）以及异常检测（Laptev）等人，2017）。最近，应用深度学习进行预测的探索激增（Wen et al., 2017; Bai et al., 2018; Zhou et al., 2021），并且由于数据可用性和计算资源的增加，这些在预测文献中，这些方法比传统方法提供了有潜力的性能。与传统方法相比，这些方法能够通过堆叠一系列非线性层来执行特征提取，然后是专注于预测的回归层，从而联合学习特征表示和预测函数。</p>
+<h3 id="存在问题"><a class="markdownIt-Anchor" href="#存在问题"></a> 存在问题</h3>
+<p>然而，从观测数据中端到端地联合学习这些层可能会导致模型过度拟合并捕获观测数据中包含的不可预测噪声的虚假相关性。当学习到的表示纠缠在一起时（当特征表示的单个维度对来自数据生成过程的多个局部独立模块的信息进行编码时）并且局部独立模块经历分布变化时，这种情况会加剧。图 1 是这种情况的一个示例，其中观察到的时间序列是由季节性模块和非线性趋势模块生成的。<strong>如果我们知道季节性模块经历了分布偏移，我们仍然可以基于不变趋势模块做出合理的预测</strong>。然而，<strong>如果我们从观察到的数据中学习纠缠特征表示，那么学习模型处理这种分布变化将是一个挑战，即使该分布变化只发生在数据生成过程的部分组件中</strong>。<strong>总之，当数据是从非平稳环境（<strong><strong>时间序列分析</strong></strong>中非常常见的场景）生成时，从端到端训练方法中学到的表示和预测关联无法很好地迁移或泛化</strong>。因此，在这项工作中，我们退后一步，旨在学习对时间序列预测更有用的解耦季节性趋势表示。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YWQyZDNjNDE1ODNjZGQ0Y2RkODdjYTg1MzEzODA1YTJfQVFEaGFFNzB6NTRsNmZwMldhWnZxZ2VPWEltS2pIZlFfVG9rZW46Unp0cWI4b2pQb1NiRE14d0ZpeGNyMWE1bnhkXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<h3 id="解决思路"><a class="markdownIt-Anchor" href="#解决思路"></a> 解决思路</h3>
+<p>为了实现这一目标，我们利用结构时间序列模型的思想（Scott &amp; Varian，2015；Qiu 等人，2018），该模型将时间序列表示为趋势、季节和误差变量的总和，并利用此类先验知识来学习时间序列表示。首先，我们提出通过因果视角学习解耦的季节性趋势表征的必要性，并证明这种表征在误差变量的干预下是鲁棒的。然后，受到 Mitrovic 等人的启发。 （2020），我们建议通过数据增强来模拟对误差变量的干预，并通过对比学习来学习解耦的季节性趋势表示。</p>
+<p>基于上述动机，我们提出了一种新颖的对比学习框架，用于学习长序列时间序列预测（LSTF）任务的解耦的季节性趋势表示（Zhou et al., 2021）。具体来说，CoST 利用模型架构中的归纳偏差来学习解耦的季节性趋势表示。 CoST 有效地学习趋势表示，通过引入自回归experts的混合来缓解回溯窗口选择的问题。它还通过利用可学习的傅立叶层来学习更强大的季节表示，该傅立叶层可实现频率内交互。趋势和季节性表示都是通过对比损失函数学习的。趋势表示是在时域中学习的，而季节表示是通过一种新颖的频域对比损失来学习的，这种损失鼓励有区别的季节表示，并回避确定数据中存在的季节模式周期的问题。</p>
+<h3 id="效果及贡献"><a class="markdownIt-Anchor" href="#效果及贡献"></a> 效果及贡献</h3>
+<ol>
+<li>我们从因果角度展示了通过对比学习学习解耦的季节性趋势表示对于时间序列预测的好处。</li>
+<li>我们提出了CoST，一种时间序列表示学习方法，它利用模型架构中的归纳偏差来学习解耦的季节和趋势表示，并结合一种新颖的频域对比损失来鼓励有区别的季节表示。</li>
+<li>CoST 在现实世界基准上明显优于现有最先进的方法 – 多变量设置的 MSE 提高了 21.3%。我们还分析了每个提出的模块的优点，并通过广泛的消融研究确定 CoST 对于骨干编码器和下游回归器的各种选择具有鲁棒性。</li>
+</ol>
+<h2 id="2时间序列的季节-趋势表示"><a class="markdownIt-Anchor" href="#2时间序列的季节-趋势表示"></a> 2.时间序列的季节-趋势表示</h2>
+<h3 id="问题定义"><a class="markdownIt-Anchor" href="#问题定义"></a> 问题定义</h3>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ODcxM2YyODQyZmE4ZWJiMGNlNGZlNTRmYjAzYjQzYWRfNG0xZFlETWx4Q2xYc2xFaTdhYVVxQTlRc2VIRWY0VUtfVG9rZW46Qm1XSmJXVjVxb212cHh4M2JvdGN3a0dlbkhjXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>不是联合学习表示和预测，而是先学习表示，再进行预测，如下图所示</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=N2FiYTNlYWM5YTc3Zjg1NDI0M2Y1Y2RmZmMyMDQ3NDZfUDZEUmZ4OU1CY2pQb1J0WERpRW9MU1RGb2NPSDRaTWhfVG9rZW46WDE2UmJ3c2Jub1FKeEF4YXJRbmNpZFJyblptXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<h3 id="解耦的季节-趋势表征学习及其因果解释"><a class="markdownIt-Anchor" href="#解耦的季节-趋势表征学习及其因果解释"></a> 解耦的季节-趋势表征学习及其因果解释</h3>
+<p>正如 Bengio 等人所讨论的，复杂的数据源于多个来源的丰富交互——<strong>良好的表示应该能够理清各种解释来源，使其对复杂且结构丰富的变化具有鲁棒性</strong>。不这样做可能会导致捕获在非独立同分布下不能很好传输的虚假特征。数据分布设置。</p>
+<p>为了实现这一目标，有必要引入时间序列的结构先验。在这里，我们借鉴了贝叶斯结构时间序列模型的想法。如图 2 中的因果图所示，我们假设观测到的时间序列数据 X 是由误差变量 E 和无误差潜在变量 X<em>生成的。 反过来，X</em>是由趋势变量 T 和季节变量 S 生成的。由于E 是不可预测的，因此如果我们能够发现 仅取决于 T 和 S的X*就能实现最佳预测。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MTlmN2E0ZDMwYzUxZWY3YTNkOWM4ZTMzMTVkY2I1ZjFfYW03aUd0NllmNFBkNHBjd2M0c0ZrVWVSOUI4bUFwUjJfVG9rZW46SXBGSWI4Q1kwb0oxRzN4YmJKaWN4bzZYblNjXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>图二 时间序列数据生成过程的因果图</p>
+<p>首先，我们强调现有的工作使用<em>端到端深度预测方法</em>来直接对观测数据 X 上的时滞关系和多变量交互进行建模。不幸的是，每个 X 都包含不可预测的噪声 E，这可能导致捕获虚假的相关性。因此，我们的目标是学习无误差的潜在变量 X*。</p>
+<blockquote>
+<p>端到端：说人话就是黑盒，从输入数据到输出数据经过一个一体的神经网络</p>
+<p>非端到端：通常分为多个步骤，包括数据预处理、特征提取、模型训练和预测。这些步骤可以由不同的算法或模型来完成，通常需要手工设计和调优。</p>
+</blockquote>
+<p>其次，通过独立机制假设（他人提出的），我们可以看到季节模块和趋势模块不会相互影响。因此，即使一种机制因分配变化而发生变化，另一种机制也保持不变。解开季节性和趋势的设计可以在非平稳环境中实现更好的迁移或泛化。此外，独立的季节和趋势机制可以独立学习并灵活地重用和重新提出。</p>
+<p>我们可以看到，对E的干预并不影响条件分布P(X*|T,S)，即</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YjI5ZDMwMGM3NDNjMDRlNGZlYTA0MGFiYWZiYTRiOGNfOW13UERQZmRYM3Z2b3cycUhEVFphRlQ2azBiWnZVc2tfVG9rZW46QjJiRWJBRmVybzlCNHF4cmlnWGNIbFdabkJlXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>因此，S 和 T 在 E 变化的情况下保持不变。学习 S 和 T 的表示使我们能够找到X<em>的最优预测，就各种类型的错误而言。既然目标X</em>是未知的，我们构建了一个代理对比学习任务。具体来说，我们使用数据增强作为对误差 E 的干预，并通过对比学习学习 T 和 S 的不变表示。由于不可能生成所有可能的错误变化，因此我们选择了三种典型的增强：放缩、移位和抖动，它们可以模拟大量且多样化的错误，有利于学习更好的表示。</p>
+<h2 id="3季节-趋势对比学习框架"><a class="markdownIt-Anchor" href="#3季节-趋势对比学习框架"></a> 3.季节-趋势对比学习框架</h2>
+<p>在本节中，我们将介绍我们提出的 CoST 框架，以学习解耦的季节性趋势表示。我们的目标是学习表示，以便对于每个时间步长，我们都有季节性和趋势分量的解耦表示，即</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZmU3ZmZmODZkMmZjMzgyNjY0ZjRmNTk3MzQ5NTMzMDVfdnY4YmEzcHd5b2Z4clB4dmh5dnV4UG1ISEp3NDE5aERfVG9rZW46UDZOdWIxYnptb2g0Rk14WFlwV2NZMWNtbktiXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>VT 表示趋势，VS表示季节性</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Y2Q5OGNiMzQzYzNkZGQxOWE2ODFhOTAzN2Y0YjJhNWNfMEF4ZFVVOElhNzZDTWdGdGlRZ1hlNTFaTTVTY0dhbGtfVG9rZW46QmFVSmJpVnJFbzJIRFN4OFRuYmNiakhwbk1lXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>图 3a 说明了我们的整体框架。首先，我们利用主干编码器</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MDQ1NDU3MmQ0NjQ0YmQ0OGFiNzMxYjk0NzIzY2M5ZTVfcDJ3OVRpYzNrM3ZSUXZ3cWthWXlTU1oybkc5M0dFZjNfVG9rZW46S2NsQ2Ixc09rb0JoVDF4bFVrRWNJN2VObkpnXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>将观测值映射到潜在空间。接下来，我们从这些中间表示构建趋势和季节性表示。具体来说，</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MDY3ZjM0ZWE5MDEyNWI3Zjc3OWIxODE0N2I5YmIyMjZfZHM3aGt6d216MWlUZHpTdkJLMklZZGZqSXFYVUhmdHVfVG9rZW46T3VNRWJtRnd0b1pPd3J4RHFVNmNIb2hKbk5iXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>傅里叶层是通过频域对比损失来学习的，频域对比损失包括幅度分量 Lamp 和相位分量 Lphase。该模型以端到端的方式学习，整体损失函数为</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ODBkYzQzZDQyMGM0MTgyYWMwNWEyMTk0MDY5YTIzYzlfR1hNd0NnRXkxTlIyQ3lHam9OMDg2eG5yUnpDcTVSOFNfVG9rZW46REQ2NWJSVmxGbzBjZ1V4UHJyZGNvMEJNbkZlXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>其中 α 是一个超参数，用于平衡趋势因素和季节性因素之间的权衡。最后，我们连接趋势和季节性特征解缠器的输出以获得最终的输出表示。</p>
+<h3 id="31-趋势特征表示"><a class="markdownIt-Anchor" href="#31-趋势特征表示"></a> 3.1 趋势特征表示</h3>
+<p>提取潜在趋势对于时间序列建模至关重要。自回归过滤是一种广泛使用的方法，因为它能够从过去的观察中捕获滞后的因果关系。一个具有挑战性的问题是选择合适的回溯窗口——较小的窗口会导致欠拟合，而较大的模型会导致过度拟合和过度参数化问题。一个简单的解决方案是通过训练或验证损失的网格搜索来优化这个超参数（Hyndman &amp; Khandakar，2008），但这种方法的计算成本太高。因此，我们建议使用自回归专家的混合，它可以自适应地选择适当的回顾窗口。</p>
+<h4 id="趋势特征解缠器-tfd"><a class="markdownIt-Anchor" href="#趋势特征解缠器-tfd"></a> 趋势特征解缠器 (TFD)</h4>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Yzc5MTYxMWZlOWY2OGRjZWM5NDliY2NkMmE4MmIyZTVfRHpITzk1NmdVcGQwMXk0N0NyaGFBQUp3Q3hZTFd2RUxfVG9rZW46V09LU2JpM1Rrb3VxNTl4dWMzdGN1VGtzbnBqXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>如图 3b 所示，TFD 是 L + 1 个自回归专家的混合Mixture of L+1 autoregressive experts，其中 L = log2(h/2)。每个专家都被实现为具有 d 个输入通道和 d_T 输出通道的 1d <em>因果卷积</em>，其中第 i 个专家的内核大小为 2^i。每个专家输出一个矩阵。最后，对输出执行平均池操作以获得最终的趋势表示。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZTZiMDg4ZWE3NDY3YmIyMDFkYzQxYmQzNmY1MjJlOGVfVzFKcEl4UnFMVDJlYVJIQXZLamRRVWNJQ1ZjSlNIRGZfVG9rZW46Rk5XOWJqWVlsb0NlYWV4Z0tCOGM0NWVZbnRmXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<blockquote>
+<p>因果卷积（Causal Convolution）是一种特殊类型的卷积运算，通常用于时间序列数据的建模中，特别是在一维卷积神经网络（1D CNN）和生成对抗网络（GAN）等模型中。其主要特点是保证卷积操作的因果性，即输出时刻仅依赖于当前及之前的输入，而不依赖于未来的输入。</p>
+</blockquote>
+<h4 id="时域对比损失"><a class="markdownIt-Anchor" href="#时域对比损失"></a> 时域对比损失</h4>
+<p>我们在时域中采用对比损失来学习判别性趋势表示。具体来说，我们应用对比学习的 MoCo (He et al., 2020) 变体，它<strong>利用动量编码器来获取正对的表示</strong>，并<strong>使用带有队列的动态字典来获取负对</strong>。然后，给定N个样本和K个负样本，时域对比损失为</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NTZmMTM2ZjBhZGMyNzcwYjM5NzJiNjc2NmIwMTFjOTlfcThpQmQ3RE9wdUxmdm9QdnZYOG8wSHB0SFdZcTJQOENfVG9rZW46S3BHdWJiWlc3b3BKUzF4Nlg0V2MzMkNQbmdIXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>给定样本V^(T)，我们首先选择随机时间步 t 作为对比损失，并应用投影头（单层 MLP）来获取 q，k ，分别对应由<em>动量编码器和动态词典</em>生成的相应样本的增强版本。</p>
+<h3 id="32季节特征表示"><a class="markdownIt-Anchor" href="#32季节特征表示"></a> 3.2季节特征表示</h3>
+<p>频域频谱分析已广泛应用于季节性检测（Shumway et al., 2000）。因此，我们转向频域来处理季节表示的学习。为此，我们的目标是解决两个问题：</p>
+<p>（1）我们如何支持频率内交互（在特征维度之间），从而允许表示更轻松地编码周期性信息</p>
+<p>（2）学习需要什么样的学习信号用以区分不同季节性模式的表示</p>
+<p>标准主干架构无法轻松捕获频率内级别的交互，因此，我们引入了利用可学习傅里叶层的 SFD。</p>
+<p>然后，为了在事先不知道周期性的情况下学习这些季节性特征，为每个频率引入频域对比损失。</p>
+<h4 id="季节性特征解缠器sfd"><a class="markdownIt-Anchor" href="#季节性特征解缠器sfd"></a> 季节性特征解缠器(SFD)</h4>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Mjc1ZjhhZDQ2ODQ5YzZkZDI3ODg1YmM3NzBhZTQ1ZGJfUHhDMjlid0RSQ0czZlNZYnFuS0FFY1M4dWJsR3JWQVdfVG9rZW46QzRXc2JreGcyb0hNWVl4aTFuN2NGZWhXbjk5XzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>如图 3c 所示，SFD 主要由离散傅里叶变换 (DFT) 组成，用于将中间特征映射到频域，然后是可学习的傅里叶层。-DFT 沿时间维度应用，并将时域表示映射到频域</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=OTlhNjcyNDRiNGQ3NDEzYmVjNzIxOTRlYWQ1YWIwYTVfd1VqYVhBVWtaeWNlenk2WTZwbDBxaDZrVGRJWmplc3lfVG9rZW46VW1kM2J4eGtOb0FQNmt4RVhJQ2N3VGkxbjVmXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>接下来，可学习的傅立叶层通过每元素线性层实现，该层实现频域交互。它对每个频率应用仿射变换，并为每个频率提供一组唯一的复值参数，因为我们不期望该层具有平移不变性。最后，我们使用逆 DFT 运算将表示变换回时域。该层的最终输出矩阵是季节表示，V (S) ∈ Rh×dS 。形式上，我们可以将输出的第 i, k 个元素表示为</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NjRkM2EyM2FhM2FhYWNiYWRiMTM2OGE0ZWQxMTQ2MjJfNWRlMGtDdlVWSjI0WnlURjI4RHpSMlR0VDJwUHZ5U3NfVG9rZW46UzFEZGJjZVV5b0Jabkl4OU5nMGNmVHRWbjBuXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NDgxNzE4ZTdkZWU3NTkzZWI2MWMyMDg4M2Y0NGYwY2ZfOVJXMVlOZTZuU2pyWEVnTG9mcHlEMTZ2V2NRclBtTW1fVG9rZW46RlNwaWJQZjRjb3RWSGN4cDdkSWMyQmk1bmtoXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>是每元素线性层的参数。</p>
+<h4 id="频域对比损失"><a class="markdownIt-Anchor" href="#频域对比损失"></a> 频域对比损失</h4>
+<p>如图 3c 所示，频域损失函数的输入是 iFFT 前的表示，</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NDU5MDY2NTg0MGFlZTVmMDM0MjJlZTYxZDhlMmE2ODZfR3drQU5ST1pjV2VQQXo0VnQ3aFZrbVdlc0l3cEJtclNfVG9rZW46UVpqZmJ1Z3Jrb281blR4a2NkS2NtVnFnbm1mXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>这些是频域中的复值表示。为了学习能够区分不同季节模式的表示，我们引入了频域损失函数。由于我们的数据增强可以解释为对误差变量的干预，因此季节性信息不会改变，因此频域中的对比损失对应于在给定频率的不同周期性模式之间进行区分。为了克服用复值表示构建损失函数的问题，每个频率都可以通过其幅度和相位表示来唯一表示，</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YzcwYWZhYWY4YjY0ZmJmODIxMTA3MzBmZjhhYmRmNjRfWVA4bDFreFJ6b09nSWpNUWF1SlFuMzBDbGVTZGx6SGZfVG9rZW46UGRLRGJsWDN1b2Vxc2J4aWp0SmNOQ1ZzbkpmXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>然后，损失函数表示为</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NDNjZGVmMWZmNTVmNWM1NDA2NGI0NjU3NjlhMjhjNzhfVk1XWnpiN1NyTElobDNqZE04blQwREJEQ0IybVVRYzlfVG9rZW46S2E2M2JrSDNSbzVKZ2d4UU5sSWN6Z3cwblVmXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YjAxODE1ZGU2OGQyY2JhNTAzMDAyNjJhYjJmZWRiMmJfWDNkNmhsa29yb2RRcWhvSjAxSmdTeERTY0VYYU0yeUlfVG9rZW46Tm5FN2JEMDRTb2pXRUR4Y1p4ZGNaWjg1bkZkXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<h2 id="4实验效果"><a class="markdownIt-Anchor" href="#4实验效果"></a> 4.实验效果</h2>
+<h4 id="41实验设置"><a class="markdownIt-Anchor" href="#41实验设置"></a> 4.1实验设置</h4>
+<h5 id="数据集"><a class="markdownIt-Anchor" href="#数据集"></a> 数据集</h5>
+<p>我们对五个现实世界的公共基准数据集进行了广泛的实验。</p>
+<p>ETT（电力变压器温度）由两个小时级数据集（ETTh）和一个 15 分钟级数据集（ETTm）组成，测量六种电力负荷特征和“oil temperature”作为单变量预测的目标值。</p>
+<p>Electricity测量了321个客户的用电量，按照流行的基准，我们将数据集转换为每小时的测量值，并将“MT 320”设置为单变量预测的目标值。</p>
+<p>Weather是一个每小时级别的数据集，包含来自美国近1,600个地点的11个气候特征，我们以“wet bulb”作为单变量预测的目标值。</p>
+<h5 id="评估设置"><a class="markdownIt-Anchor" href="#评估设置"></a> 评估设置</h5>
+<p>继之前的工作之后，我们在两种设置上进行了实验——多变量和单变量预测。多变量设置涉及多变量输入和输出，考虑数据集的所有维度。单变量设置涉及单变量输入和输出，即上述目标值。</p>
+<p>我们使用 MSE 和 MAE 作为评估指标，并执行 60/20/20 的训练/验证/测试分配。输入是零均值归一化的，并在不同的预测长度上进行评估。遵循 Yue 等人，首先在训练集分割上训练自监督学习方法，并在学习到的表示之上训练岭回归模型以直接预测整个预测长度。验证集用于在搜索空间 {0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000} 上选择适当的岭回归正则化项 α。评估结果在测试集上报告。</p>
+<h5 id="实施细节"><a class="markdownIt-Anchor" href="#实施细节"></a> 实施细节</h5>
+<p>对于 CoST 和所有其他表示学习方法，所使用的主干编码器是时间卷积网络（遵循 TS2Vec（Yue 等人，2021）中的类似实践）。使用的所有方法的表示维度均为 320。我们在所有数据集上使用标准超参数设置 - 批量大小为 256，学习率为 1E−3，动量为 0.9，权重衰减为 1E−4，使用 SGD 优化器和余弦退火。时域对比损失的 MoCo 实现使用队列大小 256、动量 0.999 和温度 0.07。对于样本少于 100,000 的数据集，我们训练 200 次迭代，否则训练 600 次迭代。</p>
+<h4 id="42实验结果"><a class="markdownIt-Anchor" href="#42实验结果"></a> 4.2实验结果</h4>
+<p>在基线中，我们在主要结果中报告了表示学习技术的性能，包括 TS2Vec、TNC 和 MoCo 的时间序列适应。由于空间限制，可以在附录 H 中找到基于特征的预测方法的更广泛的基准。有关基线的更多详细信息可以在附录 E 中找到。我们包括监督预测方法 - 两种基于 Transformer 的模型，Informer（Zhou 等人，2021）和 LogTrans（Li 等人，2020），以及主干 TCN 直接接受端到端预测损失训练。端到端预测方法的比较可以在附录一中找到。</p>
+<p>表 1 总结了多变量设置的 CoST 和最佳性能基线的结果，表 7（由于空间限制，在附录 G 中）总结了单变量设置的结果。对于端到端预测方法，TCN 通常优于基于 Transformer 的方法，Informer 和 LogTrans。同时，表示学习方法优于端到端预测方法，但确实存在一些情况，例如在单变量设置的某些数据集中，端到端 TCN 的表现出奇的好。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YjE1ZDIyNDM0MDliOTlmNGUwOWNlYmYxMGE5NmRkZGJfMmVVUGo0NUFKS1JiSTVKU25COEY1VXNGTEJYZ1QwOVdfVG9rZW46TmppN2JzS2RKb0xoSnN4RlJ1UGNJSDJpbkdmXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>虽然Transformer在其他领域(如NLP)已经被证明是强大的模型，但这表明TCN模型仍然是一个强大的基线，仍然应该考虑用于时间序列。</p>
+<p>总体而言，我们的方法实现了最先进的性能，在多变量和单变量设置中分别比性能最佳的端到端预测方法高出 39.3% 和 18.22% (MSE)。 CoST 在多变量和单变量设置中也分别比表现最好的基于特征的方法高出 21.3% 和 4.71% (MSE)。这表明 CoST 通过学习对预测任务至关重要的趋势和季节性特征的组合来学习更多相关特征。</p>
+<h4 id="43参数灵敏度"><a class="markdownIt-Anchor" href="#43参数灵敏度"></a> 4.3参数灵敏度</h4>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NDM0NjkxZGYwZDMwMmU5ZGZlNDdhODQ0ZDhhOGE0NThfVjNQa3Qycll0ZnlLeTQ2TUV4aDU5VzBRRWpZeFBuS05fVG9rZW46TDF6MWJQN2FGbzNyUGh4dmlPeWMycjZDbkRoXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>α 控制总体损失函数中季节性分量的权重，L = Ltime + （α/2）* (Lamp + Lphase)。我们对此超参数（表 2）进行了敏感性分析，结果表明可以选择最佳值，并且该值在各种设置下都是稳健的。我们为所有其他实验选择 α = 5E−04，因为它在多变量和单变量设置上都表现良好。我们注意到，α 的小值源于  频域对比损失通常比时域对比损失大三个数量级，而不是表明季节性分量的重要性低于趋势分量。此外，我们强调，总体而言，虽然选择较小的 α 值可以在大多数数据集上获得更好的性能，但在某些情况下可能会首选较大的 α，如表 2 的下部所示。</p>
+<h4 id="44消融研究"><a class="markdownIt-Anchor" href="#44消融研究"></a> 4.4消融研究</h4>
+<p>表 3：ETT 数据集上 CoST 各个组成部分的消融研究。</p>
+<p>【TFD：趋势特征解缠器，MARE：自回归专家的混合（不带 MARE 的 TFD 是指具有内核大小为 h/2的单个 AR 专家的 TFD 模块），SFD：季节性特征解缠器，LFL：可学习傅立叶层，FDCL：频域对比损失。 † 表示使用监督预测损失进行端到端训练的模型。 ‡ 表示 † 带有额外的对比损失。】</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=N2UzY2VjZWNlNTNhYjliYTc2ZmY3MzQyMWFmYzRhMTVfeHRHQmNPQ1pHSnpVZEVhSk4yVGRqdzFjTGtlcjFINXdfVG9rZW46Q1hmcWJjZUFZbzBoS2p4STZaTmN0WUE1bldlXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NDIzZmQ5ZWI3NGM3OTlhOWU0ODkyMTFmZTZjZjYyNTBfcWZhODAybXY1bFUxSXpvdXMzeXc1VmhJQ1ZScDZpTWpfVG9rZW46SzNBR2JqSm1zbzNycnJ4WWVxZWNhYWJ4bkZiXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p><strong>CoST 的组成部分</strong></p>
+<p>我们首先进行消融研究，以了解 CoST 中每个组件带来的性能优势。表 3 显示了 ETT 数据集在所有预测范围设置上的平均结果（表 4 和表 5 类似）。我们表明，趋势和季节性成分都比基线（SimCLR 和 MoCo）提高了性能，而且趋势和季节性成分的组合可带来最佳性能。我们进一步验证，使用监督预测损失端到端训练我们提出的模型架构会导致性能更差。</p>
+<p><strong>主干</strong></p>
+<p>接下来，我们验证我们提出的趋势和季节性分量以及对比损失（时域和频域）对于各种主干编码器来说是稳健的。 TCN 是所有其他实验中使用的默认骨干编码器，我们展示了具有等效参数大小的 LSTM 和 Transformer 骨干编码器的结果。虽然使用 TCN 主干的性能优于 LSTM 和 Transformer，但我们表明我们的方法在所有三种设置上都优于竞争方法。</p>
+<p><strong>回归量</strong></p>
+<p>最后，我们证明 CoST 对于用于预测的各种回归量也具有稳健性。除了岭回归模型之外，我们还对线性回归模型和带有 RBF 核的核岭回归模型进行了实验。如表 5 所示，我们还证明 CoST 在所有三种设置上均优于竞争基线。</p>
+<h4 id="45-案例分析"><a class="markdownIt-Anchor" href="#45-案例分析"></a> 4.5 案例分析</h4>
+<p>我们将学习到的表示在具有季节性和趋势分量的简单合成时间序列上可视化，并表明 CoST 能够学习能够区分各种季节性和趋势模式的表示。综合数据集是通过定义两个趋势和三个季节模式，并采用叉积形成六个时间序列（详细信息参见附录 D）来生成的。在合成数据集上训练编码器后，我们可以通过 T-SNE 算法将它们可视化（Van der Maaten &amp; Hinton，2008）。图 4 显示我们的方法能够从数据集中学习趋势和季节性模式，并且学习到的表示具有较高的可聚类性，而 TS2Vec 无法区分各种季节模式。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=OTU4OGI3N2JhYTYxZjM4MzdjMDMyNzFmYjAyNjE0NmZfNTVsNkxSOVpKTFhWZTZiSVhUZ2tXUnltdWJOT1AzcFhfVG9rZW46SThwbGJ3alZCb201a0N4TlBkd2NURHhybm1jXzE3NDM1MDEzMzk6MTc0MzUwNDkzOV9WNA" alt="img" /></p>
+<p>图 4：从 CoST 和 TS2Vec 学习到的表示的 T-SNE 可视化。 （上）通过选择单个季节性后可视化表示生成。颜色代表了两种不同的趋势。 （下）通过选择单个趋势后可视化表示而生成。颜色代表三种不同的季节模式。</p>
+<h2 id="5相关工作"><a class="markdownIt-Anchor" href="#5相关工作"></a> 5.相关工作</h2>
+<p>深度预测通常被视为端到端的监督学习任务，早期工作考虑使用基于 RNN 的模型（Lai 等人，2018）作为时间序列数据建模的自然方法。最近的工作还考虑采用基于 Transformer 的模型进行时间序列预测（Li et al., 2020；Zhou et al., 2021），特别关注解决 Transformer 模型的二次空间复杂性。奥列什金等人。 (2020)提出了一种单变量深度预测模型，并表明深度模型优于经典时间序列预测技术。</p>
+<p>虽然时间序列表示学习的最新工作重点关注表示学习的各个方面，例如如何对对比对进行采样（Franceschi 等人，2020 年；Tonekaboni 等人，2021 年），但采用基于 Transformer 的方法（Zerveas 等人，2021 年） ，探索复杂的对比学习任务（Eldele et al., 2021），以及构建时间层次表示（Yue et al., 2021），但都没有涉及由趋势和季节特征组成的学习表示。尽管现有的工作仅专注于时间序列分类任务，但 Yue 等人。 （2021）首先表明，通过对比学习学习的时间序列表示在深度预测基准上建立了新的最先进的性能。</p>
+<p>经典时间序列分解技术（Hyndman &amp; Athanasopoulos，2018）已用于将时间序列分解为季节性和趋势分量，以获得可解释性。最近有人致力于开发更稳健、更高效的分解方法（Wen 等人，2018；2020；Yang 等人，2021）。这些方法侧重于将原始时间序列分解为趋势和季节性分量，这些分量仍然被解释为原始输入空间中的时间序列，而不是学习表示。 Godfrey &amp; Gashler (2017) 提出了使用神经网络对时间序列数据中的周期性和非周期性分量进行建模的初步尝试，利用周期性激活函数对周期性分量进行建模。与我们的工作不同，这种方法只能对每个模型的单个时间序列进行建模，而不是在给定回溯窗口的情况下生成分解的季节性趋势表示。</p>
+<h2 id="6-结论"><a class="markdownIt-Anchor" href="#6-结论"></a> 6 结论</h2>
+<p>我们的工作表明，将表示学习和下游预测任务分开是比时间序列预测的标准端到端监督训练方法更有前途的范例。我们通过经验证明这一点，并通过因果角度对其进行解释。通过遵循这一原则，我们提出了 CoST，一种对比学习框架，用于学习时间序列预测任务的解开的季节性趋势表示。广泛的实证分析表明，CoST 的性能远远优于之前最先进的方法，并且对于骨干编码器和回归器的各种选择都具有鲁棒性。未来的工作将扩展我们的其他时间序列情报任务的框架。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/04/01/%E3%80%8AConnecting%20the%20Dots%20Multivariate%20Time%20Series%20Forecasting%20with%20Graph%20Neural%20Networks%E3%80%8B%20%E8%AE%BA%E6%96%87KDD20/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Xu Yang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Hexo">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/04/01/%E3%80%8AConnecting%20the%20Dots%20Multivariate%20Time%20Series%20Forecasting%20with%20Graph%20Neural%20Networks%E3%80%8B%20%E8%AE%BA%E6%96%87KDD20/" class="post-title-link" itemprop="url">未命名</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-04-01 17:58:50 / 修改时间：17:58:02" itemprop="dateCreated datePublished" datetime="2025-04-01T17:58:50+08:00">2025-04-01</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="connecting-the-dots-multivariate-time-series-forecasting-with-graph-neural-networks-论文kdd20"><a class="markdownIt-Anchor" href="#connecting-the-dots-multivariate-time-series-forecasting-with-graph-neural-networks-论文kdd20"></a> 《Connecting the Dots: Multivariate Time Series Forecasting with Graph Neural Networks》 论文KDD20</h1>
+<p>*斜体：*疑问  &amp; 解答 ｜  **加粗：**现象  ｜   下划线：解决方法、创新点</p>
+<h2 id="摘要"><a class="markdownIt-Anchor" href="#摘要"></a> 摘要</h2>
+<p>多元时间序列建模长期以来一直吸引着来自经济、金融和交通等不同领域的研究人员。多元时间序列预测背后的一个基本假设是其变量相互依赖，但仔细观察后，可以公平地说，现有方法未能充分利用变量对之间的潜在空间依赖性。与此同时，近年来，图神经网络（GNN）在处理关系依赖性方面表现出了强大的能力。 GNN 需要明确定义的图结构来进行信息传播，这意味着它们不能直接应用于事先未知依赖关系的多元时间序列。在本文中，我们提出了一种专门为多元时间序列数据设计的通用图神经网络框架。我们的方法通过图学习模块自动提取变量之间的单向关系，可以轻松地将变量属性等外部知识集成到其中。进一步提出了一种新颖的混合跳跃传播层和扩张的初始层来捕获时间序列内的空间和时间依赖性。图学习、图卷积和时间卷积模块在端到端框架中联合学习。实验结果表明，我们提出的模型在 4 个基准数据集中的 3 个上优于最先进的基线方法，并在两个提供额外结构信息的流量数据集上实现了与其他方法相当的性能。</p>
+<h2 id="1介绍"><a class="markdownIt-Anchor" href="#1介绍"></a> 1.介绍</h2>
+<h3 id="背景"><a class="markdownIt-Anchor" href="#背景"></a> 背景</h3>
+<p>现代社会受益于各种传感器来记录温度、价格、交通速度、用电量和许多其他形式数据的变化。不同传感器记录的时间序列可以形成多元时间序列数据并且可以互连。例如，每日气温升高可能会导致用电量增加。为了捕捉一组动态变化变量的系统趋势systematic trends over a group of dynamically changing variables，多元时间序列预测问题已经被研究了至少六十年。它在经济、金融、生物信息学和交通领域有着巨大的应用。</p>
+<h3 id="存在问题"><a class="markdownIt-Anchor" href="#存在问题"></a> 存在问题</h3>
+<p>多元时间序列预测方法本质上假设变量之间存在相互依赖性。换句话说，<strong>每个变量不仅取决于其历史值，还取决于其他变量</strong>。然而，现有的方法并没有有效地利用变量之间潜在的相互依赖性。统计方法，例如<strong>向量<strong><strong>自回归模型</strong></strong>（VAR）和高斯过程模型（GP）</strong>，假设变量之间存在线性相关性。统计方法的模型复杂性随着变量数量呈二次方增长。他们<strong>面临着大量变量<strong><strong>过度拟合</strong></strong>的问题</strong>。最近开发的基于深度学习的方法，包括 LSTNet [12] 和 TPA-LSTM [19]，能够有效捕获非线性模式。 LSTNet 使用一维卷积神经网络将短期局部信息编码为低维向量，并通过循环神经网络对向量进行解码。 TPA-LSTM 通过循环神经网络处理输入，并使用卷积神经网络来计算多个步骤的注意力分数。 LSTNet 和 TPA-LSTM <strong>没有明确地对变量之间的成对依赖关系进行建模，这削弱了模型的可解释性</strong>。</p>
+<p>图是一种特殊的数据形式，描述不同实体之间的关系。最近，图神经网络由于其排列不变性、局部连通性和组合性而在处理图数据方面取得了巨大成功。通过结构传播信息，图神经网络允许图中的每个节点了解其邻居上下文。多元时间序列预测可以自然地从图的角度来看。多元时间序列中的变量可以被视为图中的节点，它们通过隐藏的依赖关系相互关联。因此，使用图神经网络对多元时间序列数据进行建模可能是一种有前途的方法，可以在利用时间序列之间的相互依赖性的同时保留其时间轨迹。</p>
+<p>最适合多元时间序列的图神经网络类型是时空图神经网络。时空图神经网络以多元时间序列和外部图结构作为输入，旨在预测多元时间序列的未来值或标签。与不利用结构信息的方法相比，时空图神经网络取得了显着的改进。然而，由于以下挑战，这些方法仍然不足以建模多元时间序列。</p>
+<p>• 挑战1：<strong>未知的****图结构</strong>。现有的 GNN 方法严重依赖于预定义的图结构来执行时间序列预测。在大多数情况下，多元时间序列没有明确的图形结构。变量之间的关系必须从数据中发现，而不是作为基本事实知识提供。</p>
+<p>• 挑战2：<strong>图学习和****GNN</strong> <strong>学习，<strong><strong>图结构</strong></strong>应实时更新</strong>。尽管图结构可用，但大多数 GNN 方法仅关注消息传递（GNN 学习），而忽略了图结构不是最优的、应在训练期间更新的事实。接下来的问题是如何在端到端框架中同时学习时间序列的图结构和 GNN。</p>
+<h3 id="解决思路"><a class="markdownIt-Anchor" href="#解决思路"></a> 解决思路</h3>
+<p>在本文中，我们提出了一种克服这些挑战的新方法。如图 1 所示，我们的框架由三个核心组件组成：图学习层、图卷积模块和时间卷积模块。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MTg5ZTBlMDRhNGIwNjlkMDA1OTU1ZGI4Mzk0OTgzZDNfRmhiU3BjRlBrNk9KZFNGTkdreWMzTnpBQzZVa05sOGlfVG9rZW46VUZaNmJjZ0Qwb0h5ZUN4V1Q1T2MxdzRjbnBlXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p>对于挑战 1，我们提出了一种新颖的图学习层，它根据数据自适应地提取稀疏图邻接矩阵。此外，我们开发了一个图卷积模块来解决变量之间的空间依赖性，给定图学习层计算的邻接矩阵。这是专门为有向图设计的，避免了图卷积网络中经常出现的过度平滑问题。最后，我们提出了一个时间卷积模块，通过修改的一维卷积捕获时间模式。它既可以发现具有多个频率的时间模式，也可以处理很长的序列。</p>
+<p>由于所有参数都可以通过梯度下降来学习，因此所提出的框架能够对多元时间序列数据进行建模，并以<em>端到端的方式</em>同时学习内部图结构（针对挑战 2）。为了降低解决高度非凸优化问题的难度并减少处理大图时的内存占用，我们提出了一种学习算法，该算法使用<em>课程学习策略</em>来寻找更好的局部最优值，并在训练期间将多元时间序列分成子组。这里的优点是我们提出的框架通常适用于小图和大图、短时间序列和长时间序列、有或没有外部定义的图结构。</p>
+<blockquote>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YTE5YzI0NzAyNmYyZTEwMTk2NjVjNzIyZmZmYzRkYTZfb0N0RVM1MDF2WmNMZ1FEellZdE1VTTF3UVNNUUJRTFFfVG9rZW46UVlpUGJiRE9Ob3NMSFV4cWd4OGNYSk94bnRiXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+</blockquote>
+<h3 id="效果及贡献"><a class="markdownIt-Anchor" href="#效果及贡献"></a> 效果及贡献</h3>
+<p>• 据我们所知，这是首次利用图神经网络从基于图的角度对多元时间序列数据进行研究。</p>
+<p>• 我们提出了一种新颖的图学习模块来学习变量之间隐藏的空间依赖性。我们的方法为 GNN 模型打开了一扇新的大门，可以在没有显式图结构的情况下处理数据。</p>
+<p>• 我们提出了一个用于建模多元时间序列数据和学习图结构的联合框架。我们的框架比任何现有的时空图神经网络更通用，因为它可以处理带有或不带有预定义图结构的多元时间序列。</p>
+<p>• 实验结果表明，我们的方法在 4 个基准数据集中的 3 个上优于最先进的方法，并在提供额外结构信息的两个流量数据集上实现了与其他 GNN 相当的性能。</p>
+<h2 id="2背景"><a class="markdownIt-Anchor" href="#2背景"></a> 2.背景</h2>
+<h3 id="21多元时间序列预测"><a class="markdownIt-Anchor" href="#21多元时间序列预测"></a> 2.1多元时间序列预测</h3>
+<p>时间序列预测已经被研究了很长时间。大多数现有方法都遵循统计方法。自回归积分移动平均 (ARIMA) [1] 概括了一系列线性模型，包括自回归 (AR)、移动平均 (MA) 和自回归移动平均 (ARMA)。向量自回归模型 (VAR) 扩展了 AR 模型以捕获多个时间序列之间的线性相互依赖性。类似地，矢量自回归移动平均模型（VARMA）被提出作为 ARMA 模型的多元版本。高斯过程 (GP) 作为一种贝叶斯方法，对多元变量在函数上的分布进行建模。 GP 可以自然地应用于对多元时间序列数据进行建模[5]。尽管统计模型因其简单性和可解释性而被广泛用于时间序列预测，但它们对平稳过程做出了强有力的假设，并且不能很好地扩展到多元时间序列数据。基于深度学习的方法不受平稳假设的影响，是捕获非线性的有效方法。赖等人。 [12] 和施等人。 [19]是前两个为多元时间序列预测而设计的基于深度学习的模型。他们使用卷积神经网络来捕获变量之间的局部依赖性，并使用循环神经网络来保留长期的时间依赖性。卷积神经网络将变量之间的相互作用封装到全局隐藏状态中。因此，他们无法充分利用变量对之间的潜在依赖关系。</p>
+<h3 id="22图神经网络"><a class="markdownIt-Anchor" href="#22图神经网络"></a> 2.2图神经网络</h3>
+<p>图神经网络在处理网络中实体之间的空间依赖性方面取得了巨大成功。图神经网络假设节点的状态取决于其邻居的状态。为了捕获这种类型的空间依赖性，人们通过消息传递[7]、信息传播[11]和图卷积[10]开发了各种图神经网络。它们共享相似的角色，本质上是通过将信息从节点的邻居传递到节点本身来捕获节点的高级表示。最近，我们看到了一种称为时空图神经网络的图神经网络的出现。这种形式的神经网络最初是为了解决交通预测 [3, 13, 21, 23, 26] 和基于骨架的动作识别 [18, 22] 的问题而提出的。时空图神经网络的输入是具有外部图结构的多元时间序列，该外部图结构描述了多元时间序列中变量之间的关系。对于时空图神经网络，节点之间的空间依赖性由图卷积捕获，而历史状态之间的时间依赖性由循环神经网络 [13, 17] 或一维卷积 [22, 23] 保留。尽管现有的时空图神经网络与不使用图结构的方法相比取得了显着的改进，但由于缺乏预定义的图和通用框架，它们无法有效地处理纯多元时间序列数据。</p>
+<h2 id="问题定义"><a class="markdownIt-Anchor" href="#问题定义"></a> 问题定义</h2>
+<p>在本文中，我们重点关注多元时间序列预测的任务。</p>
+<p>令 zt ∈ RN 表示维度为 N 的多元变量在时间步 t 的值，其中 zt [i] ∈ R 表示第 i 个变量在时间步 t 的值。给定多变量变量的一系列历史 P 时间步观测值，X = {zt1, zt2, ···, ztP }</p>
+<p>我们的目标是预测 Y = {ztP+Q } 的 Q 步距值，或未来值的序列 Y = {ztP+1, ztP+2, · · · , ztP+Q }。</p>
+<p>更一般地，输入信号可以与其他辅助特征相结合，例如一天中的时间、一周中的一天和季节中的一天。将输入信号与辅助特征连接起来，我们假设输入为 X = {St1, St2, ···, StP }，其中 Sti ∈ RN ×D ，D 是特征维度，Sti 的第一列等于 zti ，并且其余的都是辅助功能。我们的目标是通过 l2 正则化最小化绝对损失来构建从 X 到 Y 的映射 f (·)。</p>
+<p>图描述了网络中实体之间的关系。下面我们给出与图相关的概念的正式定义。</p>
+<p>定义 3.1（图）。图的形式为 G = (V , E)，其中 V 是节点集，E 是边集。我们使用 N 来表示图中的节点数。</p>
+<p>定义 3.2（节点邻域）。设 v ∈ V 表示节点，e = (v, u) ε E 表示从 u 到 v 的边。节点 v 的邻域定义为 N (v) = {u ∈ V |(v, u) ε E}。</p>
+<p>定义 3.3（邻接矩阵）。邻接矩阵是图的数学表示，表示为 A ∈ RN ×N，其中 Ai j = c &gt; 0 if (vi, v j ) ε E 且 Ai j = 0 if (vi, v j ) ∉ E。</p>
+<p>从基于图的角度来看，我们将多元时间序列中的变量视为图中的节点。我们使用图邻接矩阵来描述节点之间的关系。在大多数情况下，图邻接矩阵不是由多元时间序列数据给出的，而是由我们的模型学习的。</p>
+<h2 id="解决方法-mtgnn框架"><a class="markdownIt-Anchor" href="#解决方法-mtgnn框架"></a> 解决方法 MTGNN框架</h2>
+<h3 id="41-模型架构"><a class="markdownIt-Anchor" href="#41-模型架构"></a> 4.1 模型架构</h3>
+<p>我们首先详细阐述我们模型的总体框架。如图 2 所示，</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NTU0MmI0YzUzN2FlYzE3MDQzY2U2YWZlNzVkNjMxZDNfRGduMWN2Smg1MTlJSFdDbDFQb29CMzhiUHJTSzN5R1FfVG9rZW46UHlWSWJCZExhb0lBWVN4dDVYc2NFS2lJbjhkXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p>最高层的 MTGNN 由图学习层、m 个图卷积模块、m 个时间卷积模块和一个输出模块组成。为了发现节点之间隐藏的关联，图学习层计算图邻接矩阵，该矩阵随后用作所有图卷积模块的输入。图卷积模块与时间卷积模块交织以分别捕获空间和时间依赖性。图 3 演示了时间卷积模块和图卷积模块如何相互协作。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZTUzZjNkMGZkODVmNWUyOTVlMWQ3NTQ4MWQ0MzE4M2RfSEZ2Ullacm9oZmlnbVFpUmZCbU1XMGxWSkZTVWlrWHNfVG9rZW46T21uWmJYdXQxb2UwUFJ4bWV2dWN0dmdrbldkXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p>为了避免梯度消失问题，将时间卷积模块的输入添加到图卷积模块的输出中。在每个时间卷积模块之后添加跳跃连接。为了获得最终输出，输出模块将隐藏特征投影到所需的输出维度。更详细地说，我们模型的核心组件如下所示：</p>
+<h3 id="42图学习层"><a class="markdownIt-Anchor" href="#42图学习层"></a> 4.2图学习层</h3>
+<p>图学习层自适应地学习图邻接矩阵，以捕获时间序列数据之间的隐藏关系。为了构建图，现有研究通过距离度量来测量节点对之间的相似性，例如<em>点积和<strong>欧几里得距离</strong>[13]</em>。这不可避免地导致时间和空间复杂度较高的问题，O(N 2)。这意味着计算和内存成本随着图大小的增加呈二次方增长。这限制了模型处理更大图的能力。为了解决这个限制，我们采用采样方法，<em>仅计算节点子集之间的成对关系</em>。这消除了每个小批量中的计算和内存瓶颈。更多详细信息将在第 4.6 节中提供。</p>
+<p>另一个问题是现有的距离度量通常是对称的或双向的。在多元时间序列预测中，我们期望一个节点的状况的变化会引起另一个节点的状况（例如交通流量）的变化。因此，学习到的关系应该是单向的。我们提出的图学习层专门设计用于提取单向关系，如下所示：</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=OGMxNWQ2MzRmNWU1MzZmY2JjNjc0MjFlZmQwYjZmOTZfbzFQZzBxNHJ3a3p2dTJzTnBudkZiTXl2aTJ5OW9rUkpfVG9rZW46V3BPcGJLUUJSb1N1Tnl4bEg5NWNOam9BblhmXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p>其中<em>E1，E2表示随机初始化的节点嵌入（E1和E2的维度是什么？）</em>，在训练期间是可学习的，θ1，θ2是模型参数，α是用于控制激活函数饱和率的超参数，argtopk（·）返回前k个最大值。我们提出的图邻接矩阵的非对称特性通过等式 3 实现。<em>减法项和</em> <em>ReLU</em> <em>激活函数对邻接矩阵进行<strong>正则化</strong>，以便如果 Avu 为正，则其对角对应 Auv 将为零</em>。公式5-6是一种使邻接矩阵稀疏，同时减少后续图卷积的计算成本的策略。对于每个节点，我们选择其前 k 个最接近的节点作为其邻居。在保留连接节点的权重的同时，我们将非连接节点的权重设置为零。</p>
+<p>**合并外部数据。**图学习层的输入不限于节点嵌入。在给定每个节点属性的外部知识的情况下，我们还可以设置E1 = E2 = Z，其中Z是静态节点特征矩阵。一些作品考虑了捕获动态空间依赖性 [8, 18]。换句话说，它们根据时间输入动态调整两个连接节点的权重。然而，当我们需要同时学习图结构时，假设动态空间依赖使得模型极难收敛。我们的方法的优点是我们可以在训练数据集期间学习稳定且可解释的节点关系。</p>
+<p>一旦模型在在线学习版本中进行训练，我们的图邻接矩阵也可以随着新的训练数据更新模型参数而改变。</p>
+<h3 id="43-图卷积模块"><a class="markdownIt-Anchor" href="#43-图卷积模块"></a> 4.3 图卷积模块</h3>
+<p>图卷积模块旨在将节点的信息与其邻居的信息融合，以处理图中的空间依赖性。图卷积模块由两个mixhop传播层组成，分别处理通过每个节点的流入和流出信息。通过将两个混合跳传播层的输出相加获得净流入信息。图 4 显示了图卷积模块和混合跳传播层的架构。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ODNmZDI3ZDkyZWQyYjNlN2M3MWQxYzgwMWMwYWQyNDdfT0J4dVlxOXJRRHoyaUl1eVd0TlNTTDRTVW1mbHpwV3JfVG9rZW46VUFnZGJkSHBhb1V1Z2x4bkZzT2NKZFU1bmhiXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p>混合跳传播层。给定图邻接矩阵，我们提出混合跳传播层来处理空间相关节点上的信息流。所提出的混合跳传播层由两个步骤组成——信息传播步骤和信息选择步骤。我们首先给出这两个步骤的数学形式，然后说明我们的动机。信息传播步骤定义如下：</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NzQ1MjNlYWM5Y2UxZjE4M2YyZjNiOTZlZTVmNjY1NjZfaVdwV09la0JocmRjQ2g0NEpQYnk4ZENSWjY4Z0hnNDZfVG9rZW46UTBMdGJaUVZhb29ZNXV4Q3owWmNaVEFIblJiXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p>其中β是超参数，控制保留根节点原始状态的比例。信息选择步骤定义如下</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZmZhZjA0ZGRiNTI5YjkxZWViYzAwZmYwOGEyMDcyY2RfN0dVNEdRMXNRSjJ5c05MNHRrNk9ralQ4MTFZYWkyWmtfVG9rZW46VWpMWWJRY3pQb1JjYVN4dU1vSGNlOU11bktkXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p>其中K是传播深度，Hin表示上一层输出的输入隐藏状态，Hout表示当前层的输出隐藏状态，</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MTdmZWVmYjQ3NjQ5ZWYyN2FlYjQ0YzE5NjEwNWJlODVfWnFDOWtITjZ4MDB4aFJvYXJ0T0xRQnduZWh1OGR0TWxfVG9rZW46WE5BcWJJejY0b3l1VHh4OWtzcWNwU1JFblBGXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p>在图 4b 中，我们演示了所提出的混合跳传播层中的信息传播步骤和信息选择步骤。它首先水平传播信息，垂直选择信息。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NmQ5ODc5ZTQxOGRkNGJkNjIxOTI3MGQ4NTAxN2JjMGFfQjB6T3FEZ0d1RnRtWEF3VmtiZ0dzVjRNY3psdWxOZktfVG9rZW46SVpYOWJNc3cwb0o5a1R4M1gzeGMyYmNzbnpkXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p>​</p>
+<blockquote>
+<p>随机游走就是每次从邻居中随机选一个点，但最终会到达最远的点，在多层图卷积之后，每个节点的隐藏状态都会趋于相同。</p>
+</blockquote>
+<p>为了解决这个问题，Klicpera 等人提出了解决方案。 [11]，我们在传播过程中保留了一定比例的节点原始状态，以便传播的节点状态既可以保留局部性，又可以探索深层邻域。然而，如果我们只应用公式 7，一些节点信息将会丢失。<strong>在不存在空间<strong><strong>依赖性</strong></strong>的极端情况下，聚合邻域信息只会给每个节点添加无用的噪声</strong>。因此，引入信息选择步骤来过滤掉每一跳产生的重要信息。根据等式8，参数矩阵W(k)充当特征选择器。当给定的图结构不存在空间依赖性时，公式 8 仍然能够通过将所有 k &gt; 0 的 W(k) 调整为 0 来保留原始节点自身信息。</p>
+<p><strong>与现有工作的连接。</strong>[9] 和 [2] 已经探讨了 mix-hop 的想法。卡普尔等人。 [9]连接来自不同跃点的信息。陈等人。 [2]提出了一种注意机制来对不同跳之间的信息进行加权。他们都应用GCN来进行信息传播。然而，由于 <em>GCN 面临过度平滑问题</em></p>
+<blockquote>
+<p>过度平滑问题是GCN中的一个关键挑战，通常由于信息在多层传播时过度融合，导致节点的特征趋向相似，失去区分度。随着网络层数的增加，节点特征变得越来越接近，影响了模型的性能和学习能力。为了避免这一问题，可以采用跳跃连接、注意力机制等方法来提高模型的表达能力，保留节点之间的差异性。</p>
+</blockquote>
+<p>来自更高跳数的信息可能无法有效贡献，甚至可能对整体性能产生负面影响。为了避免这种情况，我们的方法在本地和邻里信息之间保持平衡。此外，卡普尔等人 *[9]表明他们提出的具有两个混合跳层的模型能够表示两个连续跳之间的增量差异。*我们的方法只需一个混合跳传播层即可达到相同的效果。假设 K = 2、W(0) = 0、W(1) = −1、W(2) = 1，则</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NzM1N2JkY2RmNDE0MWMxNDFlYWY0MGYzYjI2ZWNlMmVfMW9nellBdWJVam5iVGNrRXk5Q3RqZ01ZNzZ6MW51anhfVG9rZW46V1FoQmJQY1FXb0NFMFB4Y1JmQmNrdG9rbnNnXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p>从这个角度来看，与串联方法相比，使用求和可以更有效地表示不同跳的所有线性交互。</p>
+<h3 id="44-时间卷积模块"><a class="markdownIt-Anchor" href="#44-时间卷积模块"></a> 4.4 时间卷积模块</h3>
+<p>时间卷积模块应用一组标准扩张一维卷积滤波器来提取高级时间特征。该模块由两个扩展的初始层组成。一个扩张的初始层后面是一个正切双曲激活函数并起到过滤器的作用。另一层后面是 sigmoid 激活函数，用作控制过滤器可以传递到下一个模块的信息量的门。图 5 显示了时间卷积模块和扩张初始层的架构。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Zjc0ZGMwNzNjNDVhNjIzYjU3NTY1NzlhNjI0ZmQwMTNfdzAxRVRtdXY4djNsUE11N2JadzBtcEh1MzA3MEtWemVfVG9rZW46QllyQWJXTGdLb0FyWXR4dEp6emNTNWdqbkJjXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p>**扩张的初始层。**时间卷积模块通过一维卷积滤波器捕获时间序列数据的顺序模式。为了提出一个能够发现不同范围的时间模式并处理很长序列的时间卷积模块，我们提出了扩张初始层，它结合了卷积神经网络中两种广泛应用的策略，即使用多个尺寸的过滤器[20]并应用扩张卷积[24]。</p>
+<p>首先，选择正确的内核大小对于卷积网络来说是一个具有挑战性的问题。滤波器尺寸可能太大而无法巧妙地表示短期信号模式，或者太小而无法充分发现长期信号模式。在图像处理中，一种广泛采用的策略称为初始策略，它将具有三种不同内核大小（1 × 1、3 × 3 和 5 × 5）的 2D 卷积滤波器的输出连接起来。从 2D 图像转向 1D 时间序列，该集合1 × 1、1 × 3 和 1 × 5 滤波器尺寸不适合时间信号的性质。由于时间信号往往具有几个固有周期，例如 7、12、24、28 和 60，因此滤波器大小为 1 × 1、1 × 3 和 1 × 5 的初始层堆栈不能很好地包含这些周期。或者，我们提出一个由四种滤波器大小组成的时间初始层，即1 × 2、1 × 3、1 × 6 和 1 × 7。上述周期都可以通过这些滤波器尺寸的组合来覆盖。例如，为了表示周期 12，模型可以将输入传递通过来自第一时间起始层的 1 × 7 滤波器，然后通过来自第二时间起始层的 1 × 6 滤波器。</p>
+<p>其次，卷积网络的感受野大小随着网络深度和滤波器内核大小呈线性增长。考虑一个具有 m 个核大小为 c 的一维卷积层的卷积网络，卷积网络的感受野大小为</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Y2NhYWY4Nzk5ZTZmZWMwM2M5ZmJkMTJkM2M2NDdiNmRfTFhCREVWVHZJajFMbVRkNzBSZGozdmRNOEVXaDgxY3RfVG9rZW46T2lUeWJBa3FQb2hFOWd4VUM2dGM4dDZ0bnhoXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p>要处理很长的序列，需要非常深的网络或非常大的过滤器。我们采用扩张卷积来降低模型复杂度。扩张卷积以特定频率对下采样输入运行标准卷积滤波器。例如，当膨胀因子为 2 时，它会对每两步采样的输入应用标准卷积。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=OWZhODI2NjE1ZThiYjg1MTM2NTQ0N2Y4NGRhMGM4ZDJfRGZDbTd2aW91bjQwVW10bWpxbkNFaDRldjM4bzF1ZFNfVG9rZW46WHZBb2JFbU9ub2FsUFF4WEE0dmNzRzlHbjRLXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p>按照[14]，我们让每层的膨胀因子以 q (q &gt; 1) 的比率呈指数增长。假设初始扩张因子为 1，则核大小为 c 的 m 层扩张卷积网络的感受野大小为</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NGI5NzA0YWFkOTAwMDFhNTcwNDdhMzEwMTEyNzJkNjhfcE1rcm1BRGRlek5SUU0xM3RqT3VxY0psWG5nYkJ2MkVfVG9rZW46RW9DRGJ3N2N3b204ZXl4dUN3WmN1VUNHblJkXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p>这表明网络的感受野大小也随着隐藏层数量以 q 的速度增加而呈指数增长。因此，使用这种扩张策略可以捕获比不使用这种扩张策略更长的序列。</p>
+<p>形式上，结合初始和扩张，我们提出了扩张初始层，如图 5b 所示。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MWZjODE1OWEzNmFiNWM3NWQyZWQ2M2I4Nzk4MWRmZmVfMFMxNlRYcjVZQVlNRXJ5Z3htMnFYSVdvNm5DSW5iT2NfVG9rZW46WVlkbmI2QkN0b0c2TGN4SzJ3S2MzMW1rbnNiXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p>给定一个 1D 序列输入 z ∈ RT 和由</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MWNmNjQ4YjllMjlkOWQ3YWVmOTNmYjgxNmQ2NzM4OTBfRkpNUmtWOXRrTDZLckdiOWRTYzljUVcxeUw4dFlRTUJfVG9rZW46T1dZM2JHQjlXb0N4NEl4bXowZGNhemEybnZjXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p>组成的滤波器，我们的扩张初始层采用以下形式：</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MGExNjU1MzI2YzQ3NDcyMDg0YmY2MTg1ZjBkM2RhOGNfVncxdGZFSnBUU05oUllob09MRUlqbHNVNnVXU2F3OTFfVG9rZW46RWhyc2JuQ0tFb09jWjl4blRJVmNRZUlFbmRoXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p><em>其中，四个滤波器的输出根据最大滤波器截断为相同长度并在通道维度上连接，z ★ f1×k 表示的扩张卷积定义为</em></p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=N2U1NzJhYzlmYmZhNjEyNGNkMzQ4OGEwNTVmOGNhNTNfUmpwVHJ5V0x5VlRpenVvaWZEbUhBaklYcHVWSnNjNVVfVG9rZW46T00wMWJxOVBRbzczTWN4cTB2bmN2Tnlubk1iXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p>其中 d 是膨胀因子。</p>
+<h3 id="45-跳跃连接层和输出模块"><a class="markdownIt-Anchor" href="#45-跳跃连接层和输出模块"></a> 4.5 跳跃连接层和输出模块</h3>
+<p>跳跃连接层本质上是 1 × Li 标准卷积，其中 Li 是第 i 个跳跃连接层的输入的序列长度。它将跳跃到输出模块的信息标准化为具有相同的序列长度1。输出模块由两个1×1标准卷积层组成，将输入的通道维度转换为所需的输出维度。如果我们只想预测未来的某个步骤，则所需的输出维度为 1。当我们想预测 Q 个连续步骤时，所需的输出维度为 Q。</p>
+<h3 id="46建议的学习算法"><a class="markdownIt-Anchor" href="#46建议的学习算法"></a> 4.6建议的学习算法</h3>
+<p>我们提出了一种学习算法来增强我们的模型处理大图并稳定在更好的局部最优的能力。对图进行训练通常需要将所有节点中间状态存储到内存中。如果图很大，就会面临内存溢出的问题。与我们最相关的是Chiang等人。 [4]提出了一种子图训练算法来解决内存瓶颈。他们应用图聚类算法将图划分为子图，并在划分的子图上训练图卷积网络。在我们的问题中，基于节点的拓扑信息对节点进行聚类是不切实际的，因为我们的模型同时学习潜在的图结构。或者，在每次迭代中，我们将节点随机分成几组，并让算法根据采样的节点学习子图结构。这为每个节点提供了与一组中的另一个节点分配的完全可能性，以便可以计算和更新这两个节点之间的相似性得分。附带的好处是，如果我们将节点分成 s 个组，则可以在每次迭代中将图学习层的时间和空间复杂度从 O (N 2) 降低到 (N /s)2。训练后，由于所有节点嵌入都经过良好训练，因此可以构建全局图以充分利用空间关系。尽管它的计算成本很高，可以在进行预测之前并行预先计算邻接矩阵。</p>
+<p>我们提出的算法的第二个考虑是促进我们的模型稳定在更好的局部最优中。在多步预测任务中，我们观察到长期预测在模型性能方面往往比短期预测取得更大的改进。我们认为原因是我们的模型总共预测了多个步骤，并且长期预测产生的损失比短期预测高得多。因此，为了最大限度地减少总体损失，该模型更加注重提高长期预测的准确性。为了解决这个问题，我们提出了多步骤预测任务的课程学习策略。该算法从解决最简单的问题开始，仅预测下一步。模型找到一个好的起点是非常有利的。随着迭代次数的增加，我们逐渐增加模型的预测长度，使模型能够逐步学习困难的任务。涵盖所有这些，我们的算法在算法 1 中给出。我们模型的进一步复杂性分析可以在附录 A.1 中找到。</p>
+<h2 id="实验效果"><a class="markdownIt-Anchor" href="#实验效果"></a> 实验效果</h2>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/04/01/%E3%80%8ATS2Vec%20Towards%20Universal%20Representation%20of%20Time%20Series%E3%80%8B%E8%AE%BA%E6%96%87%20AAAI22/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Xu Yang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Hexo">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/04/01/%E3%80%8ATS2Vec%20Towards%20Universal%20Representation%20of%20Time%20Series%E3%80%8B%E8%AE%BA%E6%96%87%20AAAI22/" class="post-title-link" itemprop="url">未命名</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-04-01 17:58:50 / 修改时间：17:58:04" itemprop="dateCreated datePublished" datetime="2025-04-01T17:58:50+08:00">2025-04-01</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="ts2vec-towards-universal-representation-of-time-series论文-aaai22"><a class="markdownIt-Anchor" href="#ts2vec-towards-universal-representation-of-time-series论文-aaai22"></a> 《TS2Vec: Towards Universal Representation of Time Series》论文 AAAI22</h1>
+<p>*斜体：*疑问  &amp; 解答 ｜  **加粗：**现象  ｜   下划线：解决方法、创新点</p>
+<h2 id="摘要"><a class="markdownIt-Anchor" href="#摘要"></a> 摘要</h2>
+<p>本文提出了 TS2Vec，一个用于学习任意语义级别的时间序列表示的通用框架。与现有方法不同，TS2Vec 在增强上下文视图上以分层方式执行对比学习，从而为每个时间戳提供强大的上下文表示。此外，为了获得时间序列中任意子序列的表示，我们可以对相应时间戳的表示应用简单的聚合。我们对时间序列分类任务进行了广泛的实验，以评估时间序列表示的质量。因此，TS2Vec 在 125 个 UCR 数据集和 29 个 UEA 数据集上实现了对现有无监督时间序列表示 SOTA 的显着改进。学习到的时间戳级表示在时间序列预测和异常检测任务中也取得了优异的结果。在学习到的表示之上训练的线性回归优于之前的时间序列预测的 SOTA。此外，*我们提出了一种简单的方法，将学习到的表示应用于无监督异常检测，*该方法在文献中建立了 SOTA 结果。源代码公开于 <a target="_blank" rel="noopener" href="https://github.com/yuezhihan/ts2vec">https://github.com/yuezhihan/ts2vec</a></p>
+<h2 id="1介绍"><a class="markdownIt-Anchor" href="#1介绍"></a> 1.介绍</h2>
+<h3 id="背景"><a class="markdownIt-Anchor" href="#背景"></a> 背景</h3>
+<p>时间序列在金融市场、需求预测和气候建模等各个行业中发挥着重要作用。学习时间序列的通用表示是一个基本但具有挑战性的问题。许多研究（Tonekaboni、Eytan 和 Goldenberg 2021；Franceschi、Dieuleveut 和 Jaggi 2019；Wu 等人 2018）专注于学习实例级表示，它描述了输入时间序列的整个片段，并在任务中取得了巨大成功比如聚类和分类。此外，最近的作品（Eldele et al. 2021；Franceschi、Dieuleveut 和 Jaggi 2019）采用对比损失来学习时间序列的内在结构。然而，现有方法仍然存在明显的局限性。</p>
+<h3 id="存在问题"><a class="markdownIt-Anchor" href="#存在问题"></a> 存在问题</h3>
+<ol>
+<li>**实例级表示可能不适合需要细粒度表示的任务。**例如，时间序列预测和异常检测。在这类任务中，需要在特定的时间戳或子序列上推断目标，而整个时间序列的粗粒度表示不足以达到令人满意的性能。</li>
+<li>**现有的方法很少能够区分不同粒度的多尺度上下文信息。**例如，TNC（Tonekaboni、Eytan 和 Goldenberg 2021）区分具有恒定长度的片段。 TLoss（Franceschi、Dieuleveut 和 Jaggi 2019）使用原始时间序列中的随机子序列作为正样本。然而，<strong>它们都没有以不同尺度的时间序列为特征来捕获尺度不变的信息</strong>，而这对于时间序列任务的成功至关重要。直观上，<strong>多尺度特征可以提供不同级别的语义并提高学习表示的泛化能力</strong></li>
+<li>大多数现有的无监督时间序列表示方法都是受到 <strong>CV 和 NLP</strong> 领域经验的启发，这些方法<strong>具有很强的归纳偏差</strong>，例如变换不变性和裁剪不变性。然而，这些假设<strong>并不总是适用于时间序列建模</strong>。例如，裁剪是一种常用的图像增强策略。然而，时间序列的分布和语义可能会随着时间的推移而改变，并且裁剪后的子序列可能与原始时间序列具有不同的分布。</li>
+</ol>
+<h3 id="解决思路"><a class="markdownIt-Anchor" href="#解决思路"></a> 解决思路</h3>
+<p>为了解决这些问题，本文提出了一种名为 TS2Vec 的通用对比学习框架，该框架能够实现所有语义级别的时间序列的表示学习。它在实例和时间维度上分层区分正样本和负样本；对于任意子系列，其整体表示可以通过相应时间戳上的最大池化来获得。这使得模型能够以多种分辨率捕获时态数据的上下文信息，并生成任何粒度的细粒度表示。此外，TS2Vec 中的对比目标基于增强上下文视图，即相同子系列在两个增强上下文中的表示应该是一致的。通过这种方式，我们获得了每个子系列的稳健上下文表示，而不会引入未受重视的归纳偏差，例如变换不变性和裁剪不变性。</p>
+<p>我们在多个任务上进行了大量的实验来证明我们方法的有效性。时间序列分类、预测和异常检测任务的结果验证了TS2Vec学习表征的通用性和有效性。</p>
+<h3 id="效果及贡献"><a class="markdownIt-Anchor" href="#效果及贡献"></a> 效果及贡献</h3>
+<ol>
+<li>我们提出了 TS2Vec，一个统一的框架，可以学习各种语义级别的任意子系列的上下文表示。据我们所知，这是第一个为时间序列领域的各种任务提供灵活且通用的表示方法的工作，包括但不限于时间序列分类、预测和异常检测。</li>
+<li>为了实现上述目标，我们在对比学习框架中利用了两种新颖的设计。首先，我们在实例维度和时间维度上使用分层对比方法来捕获多尺度上下文信息。其次，我们提出了积极配对选择的上下文一致性。与之前的state-of-the-art不同，它更适合具有不同分布和尺度的时间序列数据。广泛的分析证明了 TS2Vec 对于缺失值的时间序列的稳健性，并且通过消融研究验证了层次对比和上下文一致性的有效性。</li>
+<li>TS2Vec 在分类、预测和异常检测等三个基准时间序列任务上优于现有的 SOTA。例如，与分类任务上无监督表示的最佳 SOTA 相比，我们的方法在 125 个 UCR 数据集上平均准确率提高了 2.4%，在 29 个 UEA 数据集上平均准确率提高了 3.0%。</li>
+</ol>
+<h2 id="2方法"><a class="markdownIt-Anchor" href="#2方法"></a> 2.方法</h2>
+<h3 id="问题定义"><a class="markdownIt-Anchor" href="#问题定义"></a> 问题定义</h3>
+<p>找 fθ，将 维度为 T<em>F 的 输入 x  转化为 维度为  T</em>K 的表示向量 r</p>
+<h3 id="模型架构"><a class="markdownIt-Anchor" href="#模型架构"></a> 模型架构</h3>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NzhiYWQzNmE1N2RhZDZjNmU2MTQ0ODk3N2Y2MWNmOTlfUDRNVkdZTU9yNEFKZWpTV0VPYTBQSHVtNEE3aGVNOW1fVG9rZW46QVQ0U2JyMlR3b3BFcTl4RHBxSWNwTE83bjFiXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA" alt="img" /></p>
+<p>图一 TS2Vec 的拟议架构</p>
+<p>（尽管该图显示了单变量时间序列作为输入示例，但该框架支持多变量输入。每个平行四边形表示实例的时间戳上的表示向量）</p>
+<p>TS2Vec 的整体架构如图 1 所示。我们从输入时间序列 xi 中随机采样两个重叠的子序列，并鼓励公共片段上上下文表示的一致性。原始输入被馈送到编码器中，该编码器与时间对比损失和实例对比损失联合优化。总损失在分层框架中的多个尺度上求和。</p>
+<p>编码器 f 由三个组件组成，包括输入投影层、时间戳掩蔽模块和扩张的 CNN 模块。对于每个输入 x_i，输入投影层是一个全连接层，它将时间戳 t 处的观测值x_(i,t)映射到高维潜在向量 z_(i,t)。时间戳屏蔽模块在随机选择的时间戳处屏蔽潜在向量以生成增强的上下文视图。请注意，我们屏蔽了潜在向量而不是原始值，<em>因为时间序列的值范围可能是无界的，并且不可能为原始数据找到特殊的标记</em>。我们将在附录中进一步证明该设计的可行性。</p>
+<p>然后应用具有 10 个残差块的扩展 CNN 模块来提取每个时间戳的上下文表示。每个块包含两个带有膨胀参数的一维卷积层（第 l 个块为 2^l）。扩张卷积为不同域提供了较大的感受野（Bai、Kolter 和 Koltun 2018）。在实验部分，我们将展示其在各种任务和数据集上的有效性。</p>
+<h3 id="上下文一致性"><a class="markdownIt-Anchor" href="#上下文一致性"></a> 上下文一致性</h3>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MTRlOWE3MzVhZDVjYTgyZWVjOTBiMWFmNDc4YjRiYjRfalZmMjdVbkxrRVhQUDFUUE5NcFl4ZmxNZ2l1cDFZQ2lfVG9rZW46VFZscmJWWjlUb2p3V3Z4M0NJaGM3aTZ2bmhnXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA" alt="img" /></p>
+<p>图2 正样本选择策略</p>
+<p>正对的构建在对比学习中至关重要。之前的工作采用了各种选择策略（图2），总结如下：</p>
+<ul>
+<li>子序列一致性（Franceschi、Dieuleveut 和 Jaggi 2019）鼓励时间序列的表示更接近其采样子序列。</li>
+<li>时间一致性（Tonekaboni、Eytan 和 Goldenberg 2021）通过选择相邻片段作为正样本来增强表示的局部平滑性。</li>
+<li>变换一致性（Eldele et al. 2021）通过不同的变换（例如缩放、排列等）增强输入序列，鼓励模型学习变换不变的表示。</li>
+</ul>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YmIzNDMzNzRlMzY2NTUzMTFhZWExYTJlYjgzNmNiZWJfelVBY2JDdmJ0WUh2Sk5KTU9EZjJWdVB4cXZ3eGRjWjhfVG9rZW46V0RiZmJ6eFlrb0dJc1N4Vlc4ZGNvZ2lYbmtjXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA" alt="img" /></p>
+<p>图 3：时间序列分布变化的两个典型案例</p>
+<p>分别使用子序列一致性和时间一致性对随时间学习的表示进行热图可视化。</p>
+<p>然而，上述策略基于数据分布的强烈假设，可能不适用于时间序列数据。例如，当存在水平偏移时，子系列一致性很脆弱（图 3a），而当出现异常时，时间一致性可能会引入误报对（图 3b）。在这两张图中，绿色和黄色部分有不同的图案，但之前的策略认为它们是相似的。为了克服这个问题，我们提出了一种新的策略，即上下文一致性，它将两个增强上下文中相同时间戳的表示视为正对。通过对输入时间序列应用时间戳屏蔽和随机裁剪来生成上下文。好处有两个。首先，掩蔽和裁剪不会改变时间序列的大小，这对时间序列很重要；其次，<em>它们还通过强制每个时间戳在不同的上下文中重建自身来提高学习表示的稳健性</em>。</p>
+<h4 id="时间戳屏蔽"><a class="markdownIt-Anchor" href="#时间戳屏蔽"></a> 时间戳屏蔽</h4>
+<p>我们随机屏蔽实例的时间戳以生成新的上下文视图。具体来说，它使用二进制掩码 m ∈ {0,1} ; 沿时间轴mask输入投影层之后的潜在向量 z_i = {z_(i,t)}  ，其元素是从 p = 0:5 的伯努利分布中独立采样的。在编码器的每次前向传递中对掩码进行独立采样。</p>
+<h4 id="随机裁剪"><a class="markdownIt-Anchor" href="#随机裁剪"></a> 随机裁剪</h4>
+<p>采用随机裁剪来生成新的上下文。对于任何时间序列输入 xi ∈ RT ×F ，TS2Vec 随机采样两个重叠的时间段 [a1; b1]，[a2； b2] 使得 0 &lt; a1 ≤ a2 ≤ b1 ≤ b2 ≤ T 。重叠片段上的上下文表示[a2; b1] 对于两个上下文视图应该是一致的。我们在附录中表明，<strong>随机裁剪有助于学习与位置无关的表示并避免表示崩溃</strong>。时间戳屏蔽和随机裁剪仅应用于训练阶段。</p>
+<h3 id="分层对比"><a class="markdownIt-Anchor" href="#分层对比"></a> 分层对比</h3>
+<p>在本节中，我们提出了分层对比损失，迫使编码器学习各种尺度的表示。计算步骤总结在算法 1 中。基于时间戳级表示，我们沿时间轴对学习到的表示应用最大池化，并递归计算公式 3。特别是，顶级语义级别的对比使模型能够学习实例级表示。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=N2JkODFhOGZmOTkxNmJmMmRjNjFmMzc2NjgzY2Y3YWJfVXRCTWdUNGlnNFB0c2puZGxMRndkdHdjOVQ0WmI1R2dfVG9rZW46TDBBc2JCUHFyb3hwVG14SFliMGM4VUNHbkFoXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA" alt="img" /><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MDRjNWEwNTVmNjE5MmNiZjc1OWRkZmZkNGQyMTdkNWFfVDY4eVN0dm9CczFpMGxqemxWb2xESHJNdXNUd2h0Q2lfVG9rZW46Q2l1VmJUWVl0bzY4WkZ4cERVemNaNWx6bjFPXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA" alt="img" /></p>
+<p>分层对比方法能够比以前的作品更全面地表示。例如，T-Loss（Franceschi、Dieuleveut 和 Jaggi 2019）仅在实例级别执行实例对比； TS-TCC（Eldele et al. 2021）仅在时间戳级别应用实例对比； TNC（Tonekaboni、Eytan 和 Goldenberg 2021）鼓励特定粒度级别的时间局部平滑度。这些作品并没有像 TS2Vec 那样封装不同粒度级别的表示。</p>
+<p>为了捕获时间序列的上下文表示，我们联合利用实例和时间级对比损失来编码时间序列分布。损失函数应用于分层对比模型中的所有粒度级别。</p>
+<h4 id="时间级对比损失"><a class="markdownIt-Anchor" href="#时间级对比损失"></a> 时间级对比损失</h4>
+<p>为了沿着时间轴学习判别性表示，TS2Vec 将输入时间序列的两个增强视图中相同时间戳的表示作为正数，而将同一时间序列中不同时间戳的表示作为负数。令 i 为输入时间序列样本的索引，t 为时间戳。那么 r_(i,t)和 r’_(i,t) 表示相同时间戳 t 但来自 x_i的两次增强的表示。第 i 个时间序列在时间戳 t 处的时间对比损失可以表示为</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NDEyMGJjNTY1ZTU2MWM4NjMyYWIyM2M0OTQzZjBlMTlfc1NoRU5QdjE4M08zbXZhcHJvZnZqZEttUHZ3UTFaT2ZfVG9rZW46S29BVmJ0ZzNib1Q3REl4YUd6RGNqMGdQbjBjXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA" alt="img" /></p>
+<p>其中Ω是两个子系列重叠内的时间戳集合，<em>II是指标函数</em></p>
+<h4 id="实例级对比损失"><a class="markdownIt-Anchor" href="#实例级对比损失"></a> 实例级对比损失</h4>
+<p>以 (i, t) 为索引的实例对比损失可以表示为</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=N2NjZWU4NDg4NDU0NTRkZjAwNWE0ZWIyZTdkMmM5YjNfckJEVk1RQUlIREhVMjdQcmFaNVFTekg5cmpZSW0wS2NfVG9rZW46TlZGZGI3cnFUb25Fb1F4enpqRGNNdVRVbnliXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA" alt="img" /></p>
+<p>其中 B 表示批量大小。我们使用同一批次中时间戳 t 处的其他时间序列的表示作为负样本。</p>
+<p>这两种损失是相辅相成的。例如，给定来自多个用户的一组用电量数据，实例对比可以了解用户特定的特征，而时间对比旨在挖掘随时间变化的动态趋势。总损失定义为</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZTEwMjYxMmEyOWVkNjE1NzU2YmUzMTE4ZWU2ZGM5NTJfSmh0dFJkM0hHWTJjV3h4aGx2OVJ0SUlkRmZQaVdXd1ZfVG9rZW46UGtKUmJrb0lLb3hpek54MmlqT2NVN1p1bndjXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA" alt="img" /></p>
+<h2 id="4实验"><a class="markdownIt-Anchor" href="#4实验"></a> 4.实验</h2>
+<p>在本节中，我们评估 TS2Vec 在时间序列分类、预测和异常检测方面学习到的表示。详细的实验设置见附录。</p>
+<h4 id="时间序列分类"><a class="markdownIt-Anchor" href="#时间序列分类"></a> 时间序列分类</h4>
+<p>对于分类任务，在整个时间序列(实例)上标记类。因此，我们需要实例级表示，这可以通过对所有时间戳进行最大池化来获得。然后，我们遵循与T-Loss (Franceschi, Dieuleveut和Jaggi 2019)相同的协议，其中在实例级表示之上训练具有RBF内核的SVM分类器以进行预测。</p>
+<p>我们对时间序列分类进行了广泛的实验，以评估实例级表示，并与其他无监督时间序列表示的 SOTA 进行比较，包括 T-Loss、TS-TCC (Eldele et al. 2021)、TST (Zerveas et al. 2021)和 TNC（Tonekaboni、Eytan 和 Goldenberg 2021）。采用 UCR 档案（Dau et al. 2019）和 UEA 档案（Bagnall et al. 2018）进行评估。 UCR 中有 128 个单变量数据集，UEA 中有 30 个多元数据集。请注意，TS2Vec 适用于所有 UCR 和 UEA 数据集，附录中提供了 TS2Vec 在所有数据集上的完整结果。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MmNkYzIzYzBiODA0MzIxYmJhYzNjNjYwZjc3OWM0NTdfcTg4RzJXOTVJYlB6V2YwSWhZZzdKVjZ0a0pVd1k5QWtfVG9rZW46U0p4WGJnQk1Ub0FSTmt4QTZyemNCSkhQbmtmXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA" alt="img" /></p>
+<p>评估结果总结在表1中。与其他表示学习方法相比，TS2Vec 在 UCR 和 UEA 数据集上都取得了实质性的改进。特别是，TS2Vec 在 125 个 UCR 数据集上平均提高了 2.4% 的分类准确度，在 29 个 UEA 数据集上平均提高了 3.0%。图 4 显示了所有数据集（包括 125 个 UCR 和 29 个 UEA 数据集）上的 Nemenyi 测试的关键差异图（Demˇ sar 2006），其中未用粗线连接的分类器在平均排名上有显着差异。这验证了 TS2Vec 在平均排名上显着优于其他方法。正如 和 节中提到的，T-Loss、TS-TCC 和 TNC 仅在一定级别上执行对比学习，并施加强归纳偏差（例如变换不变性）来选择正对。 TS2Vec 在不同语义级别应用分层对比学习，从而获得更好的性能。</p>
+<p>表 1 还显示了使用 NVIDIA GeForce RTX 3090 GPU 表示学习方法的总训练时间，在这些方法中，TS2Vec 提供的训练时间最短。由于 TS2Vec 在一批中应用不同粒度的对比损失，因此表示学习的效率得到了极大的提高。</p>
+<h4 id="时间序列预测"><a class="markdownIt-Anchor" href="#时间序列预测"></a> 时间序列预测</h4>
+<p>给定最后一个 Tl 观测值 xt−Tl+1； :::; xt，时间序列预测任务旨在预测未来的H个观测值xt+1； :::; xt+H 。我们使用 rt（最后一个时间戳的表示）来预测未来的观察结果。具体来说，我们训练一个具有 L2 范数惩罚的线性回归模型，该模型以 rt 作为输入来直接预测未来值 ^ x。当 x 是单变量时间序列时，^ x 的维度为 H。当 x 是具有 F 个特征的多元时间序列时，^ x 的维度应为 F H。</p>
+<p>我们比较了 TS2Vec 和现有 SOTA 在四个公共数据集上的性能，包括三个 ETT 数据集（Zhou 等人，2021 年）和电力数据集（Dua 和 Graff，2017 年）。我们将 Informer (Zhou et al. 2021)、LogTrans (Li et al. 2019)、LSTnet (Lai et al. 2018)、TCN (Bai, Kolter, and Koltun 2018) 用于单变量和多变量设置，N-BEATS ( Oreshkin et al. 2019）用于单变量设置，StemGNN (Cao et al. 2020) 分别用于多变量设置。遵循之前的工作，我们使用 MSE 和 MAE 来评估预测性能。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YWNkMGFmZDRmMzFlMDEzZGFhMmU1ZWRmN2Q0OTI5YWJfdFdrMWV6cjdFQXJFajBsNU5BQ3d1Nnl3VEo3UTdUVU1fVG9rZW46UGRWWWI1QVQyb1lZTkV4Q20xemNRY1Z2bjZiXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA" alt="img" /></p>
+<p>单变量预测的 MSE 评估结果如表 2 所示，由于篇幅限制，完整的预测结果（MSE 和 MAE 的单变量和多变量预测）在附录中报告。总的来说，TS2Vec 在大多数情况下都建立了新的 SOTA，其中 TS2Vec 在单变量设置上实现平均 MSE 降低 32.6%，在多变量设置上降低 28.2%。此外，每个数据集的表示只需要学习一次，并且可以通过线性回归直接应用于各种水平（Hs），这证明了所学习的表示的普适性。图 5 展示了具有长期趋势和周期性模式的典型预测切片，比较了单变量预测中表现最好的 3 种方法。在这种情况下，Informer 显示了其捕获长期趋势的能力，但无法捕获周期性模式。 TCN 成功捕捉周期性模式，但未能捕捉长期趋势。 TS2Vec 捕获了这两个特征，显示出比其他方法更好的预测结果。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=OGE4ODdkZjUyY2IxNWFlOWRmNTBkYjRkZjRlZmJmNWNfMWJCR3RrNDRUdGJnTzhLTkQwTWxMVXFjc2kyMVg2d2dfVG9rZW46TWRTUGJSSUtwbzlEVGZ4WlZxcGNWZW55bnFoXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA" alt="img" /></p>
+<p>表 3 列出了所提出的方法在 ETTm1 上的 NVIDIA GeForce RTX 3090 GPU 上的执行时间，并与 Informer（Zhou 等人，2021）进行了比较，后者因其在长时间序列预测方面的卓越效率而闻名。 TS2Vec 的训练和推理时间分别由两个阶段报告。训练阶段包括两个阶段：（1）通过 TS2Vec 框架学习时间序列表示，（2）在学习的表示之上为每个 H 训练线性回归器。类似地，推理阶段也包括两个步骤：（1）推理相应时间戳的表示，（2）通过训练的线性回归器进行预测。请注意，对于不同的水平设置，TS2Vec 的表示模型只需要训练一次。无论是在训练还是推理方面，我们的方法与 Informer 相比都实现了优越的效率。</p>
+<h4 id="时间序列异常检测"><a class="markdownIt-Anchor" href="#时间序列异常检测"></a> 时间序列异常检测</h4>
+<p>我们遵循流评估协议（Ren et al. 2019）。给定任意时间序列切片x1； x2; :::; xt ，时间序列异常检测的任务是判断最后一个点 xt 是否为异常。在学习到的表示上，异常点可能会与正常点表现出明显的差异（图 7c）。此外，TS2Vec 鼓励实例的同一时间戳上的上下文一致性。考虑到这一点，我们建议将异常分数定义为根据屏蔽和未屏蔽输入计算的表示的差异。具体来说，在推理阶段，经过训练的 TS2Vec 对输入进行两次转发：第一次，我们仅屏蔽掉最后一个观察值 xt；第二次，没有敷面膜。我们分别将这两个转发的最后时间戳表示为 ru t 和 rm t 。 L1距离用于衡量异常分数：</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YjViMGU0NjFlMzAyNWIyNjg2OGJjNGI3YjQxZDRiNjBfRndrMENWWU9ocEVma1FTQzFYVEtNVXNsOExwbFNTVU5fVG9rZW46TWVaRWI1NFZEb1ZwV1N4ajM1RWN3UFVjbmdKXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA" alt="img" /></p>
+<p>为了避免漂移，按照之前的工作（Ren et al. 2019），我们取前面 Z 点的局部平均值 t = 1 Z Pt−1 i=t−Z i 来调整异常分数 adj t= t − t t 。根据推断，当 adj t &gt; + 时，时间戳 t 被预测为异常点，其中 和 分别是历史分数的平均值和标准差，并且是超参数。</p>
+<p>我们将 TS2Vec 与单变量时间序列异常检测的其他无监督方法进行比较，包括 FFT (Rasheed et al. 2009)、SPOT、DSPOT (Siffer et al. 2017)、Twitter-AD (Vallis、Hochenbaum 和 Kejariwal 2014)、Luminol ( Brennan 和 Ritesh 2018）、DONUT（Xu 等人，2018）和 SR（Ren 等人，2019）。使用两个公共数据集来评估我们的模型。 Yahoo (Nikolay Laptev 2015) 是异常检测的基准数据集，包括 367 个每小时采样的时间序列，并带有标记的异常点。它汇聚了各种异常类型，例如异常值和变化点。 KPI（Ren et al. 2019）是AIOPS Challenge发布的竞赛数据集。该数据集包含来自许多互联网公司的多条精细采样的真实 KPI 曲线。实验设置详见附录。</p>
+<p>在正常情况下，每个时间序列样本按照时间顺序分为两半，前半部分用于无监督训练，第二部分用于评估。然而，在基线中，Luminol、Twitter-AD 和 FFT 不需要额外的训练数据即可启动。因此，这些方法在冷启动设置下进行比较，其中所有时间序列都用于测试。在此设置中，TS2Vec 编码器在 UCR 中的 FordA 数据集上进行训练存档，并在 Yahoo 和 KPI 数据集上进行测试。我们将模型的转移版本表示为 TS2Vec†。对于这两种设置，我们根据经验设置 = 4，Z = 21（Ren 等人，2019）。在正常设置中，我们的协议的 和 是使用每个时间序列的训练分割来计算的，而在冷启动设置中，它们是使用最近点之前的所有历史数据点来计算的。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Yjg1NDdhNWQxZjc3MDMyNDM0NzcwOTk5YTcwMWQ3NzhfOWR2MmdzMDhUMzJuU0NUSzBZUFh6T3kzVkpYWTN0dm9fVG9rZW46SElUYWJWRVFRb1RlTW94RlJlQmNMQTAwbjNmXzE3NDM1MDExMDg6MTc0MzUwNDcwOF9WNA" alt="img" /></p>
+<p>表4显示了不同方法在F1分数、查准率和查全率上的性能比较。在正常设置下，与基线方法的最佳结果相比，TS2Vec 在 Yahoo 数据集上的 F1 分数提高了 18.2%，在 KPI 数据集上提高了 5.5%。在冷启动设置中，与最佳 SOTA 结果相比，Yahoo 数据集上的 F1 分数提高了 19.7%，KPI 数据集上的 F1 分数提高了 1.0%。请注意，我们的方法在这两种设置上获得了相似的分数，证明了 TS2Vec 从一个数据集到另一个数据集的可迁移性。</p>
+<h2 id="5相关工作"><a class="markdownIt-Anchor" href="#5相关工作"></a> 5.相关工作</h2>
+<h2 id="6-结论"><a class="markdownIt-Anchor" href="#6-结论"></a> 6 结论</h2>
+<p>本文提出了一种时间序列的通用表示学习框架，即 TS2Vec，它应用分层对比来学习增强上下文视图中的尺度不变表示。对三个时间序列相关任务（包括时间序列分类、预测和异常检测）的学习表征的评估证明了 TS2Vec 的普适性和有效性。我们还表明，TS2Vec 在提供不完整数据时提供稳定的性能，其中分层对比损失和时间戳掩蔽发挥着重要作用。此外，学习到的表示的可视化验证了 TS2Vec 捕获时间序列动态的能力。消融研究证明了所提出组件的有效性。 TS2Vec 的框架是通用的，有潜力在我们未来的工作中应用于其他领域。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/04/01/%E3%80%8ATimesURL%20Self-supervised%20Contrastive%20Learning%20for%20Universal%20Time%20Series%20Representation%20Learning%E3%80%8B%E8%AE%BA%E6%96%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Xu Yang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Hexo">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/04/01/%E3%80%8ATimesURL%20Self-supervised%20Contrastive%20Learning%20for%20Universal%20Time%20Series%20Representation%20Learning%E3%80%8B%E8%AE%BA%E6%96%87/" class="post-title-link" itemprop="url">未命名</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-04-01 17:58:50 / 修改时间：17:58:03" itemprop="dateCreated datePublished" datetime="2025-04-01T17:58:50+08:00">2025-04-01</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="timesurl-self-supervised-contrastive-learning-for-universal-time-series-representation-learning"><a class="markdownIt-Anchor" href="#timesurl-self-supervised-contrastive-learning-for-universal-time-series-representation-learning"></a> TimesURL: Self-supervised Contrastive Learning for Universal Time Series Representation Learning</h1>
+<p>黄色：现象       红色：疑问      绿色：解答     橙色：创新点</p>
+<h2 id="动机"><a class="markdownIt-Anchor" href="#动机"></a> 动机</h2>
+<p>最近，研究人员尝试利用计算机视觉（CV）和自然语言处理（NLP）中自监督对比学习（SSCL）的成功来解决时间序列表示问题。然而，由于时间特征的特殊性，仅仅依靠其他领域的经验指导可能对时间序列无效，并且难以适应多个下游任务。</p>
+<p>为此，作者回顾了 SSCL 涉及的三个部分，包括</p>
+<h4 id="1设计正对的增强方法"><a class="markdownIt-Anchor" href="#1设计正对的增强方法"></a> 1）设计正对的增强方法</h4>
+<p>大多数增强方法在应用于时间序列数据时，可能会引入不适当的归纳偏差，因为它们直接借鉴了 CV 和 NLP 领域的思想。例如，Flipping (Luo et al. 2023) 翻转原始时间序列的符号，假设时间序列在上下方向之间具有对称性。然而，这可能会破坏原始时间序列中固有存在的时间变化，例如趋势和峰谷。排列（Um et al. 2017）会重新排列时间序列中片段的顺序以生成新的序列，但前提是底层语义信息在不同顺序下保持不变。然而，这会扰乱时间依赖性，从而影响过去和未来时间戳信息之间的关系。因此，由于时间序列的有价值的语义信息主要存在于时间变化和依赖性中，因此这种增强无法捕获有效的通用表示学习所需的适当特征。</p>
+<h4 id="2构建hard负对"><a class="markdownIt-Anchor" href="#2构建hard负对"></a> 2）构建（hard）负对</h4>
+<p>困难负样本选择的重要性已在其他领域得到证明（Kalantidis et al. 2020；Robinson et al. 2020），但在时间序列文献中仍未得到充分探索。由于局部平滑性和马尔可夫性质，大多数时间序列片段可以被视为简单负样本。这些片段往往表现出与锚点的语义差异，并且仅贡献较小的梯度，因此无法提供有用的区分信息。尽管会包含少量的被证明有助于改进和加速学习的困难负样本与锚点具有相似但不相同的语义，但其可发挥的有效性被大量的简单负样本所掩盖。</p>
+<blockquote>
+<p>局部平滑性和马尔可夫性质：局部平滑性是指一个函数或者信号在局部范围内的变化相对较小或者连续的性质。局部平滑性的概念通常用于平滑数据、降噪、边缘检测等任务中。例如，通过在图像中的像素点之间进行平滑操作，可以减少图像中的噪声并保留图像的细节。马尔可夫性质是一个在概率论和随机过程中常见的概念，描述了一个随机过程的状态在给定其当前状态时，其未来状态不依赖于过去状态的性质。换句话说，给定当前状态，未来状态的概率只依赖于当前状态，而与过去状态无关。马尔可夫性质是一种“无记忆性”的性质，它在很多情况下都提供了简化模型的可能性。马尔可夫链是一个常见的应用马尔可夫性质的随机过程，它的状态转移满足马尔可夫性。在机器学习和自然语言处理中，马尔可夫性质常被用于建模序列数据，例如自然语言中的词语序列、时间序列数据等。通过假设未来的状态只与当前状态相关，可以简化模型并减少计算复杂度。总的来说，局部平滑性和马尔可夫性质是两个不同领域的重要概念，它们在不同的上下文中具有不同的含义和应用。</p>
+</blockquote>
+<p>简单负样本表现出与锚点的语义差异（容易看出与锚点不相似）</p>
+<p>困难负样本具有与锚点相似但不相同的语义</p>
+<h4 id="3设计-sscl-损失"><a class="markdownIt-Anchor" href="#3设计-sscl-损失"></a> 3）设计 SSCL 损失</h4>
+<p>使用分段和实例级别的信息不足以学习通用表示。先前的研究通常将上述任务分为两类（Yue et al. 2022）。</p>
+<p>第一类包括预测、异常检测和插补，它们更多地依赖于在分段级别捕获的细粒度信息（Yue 等人，2022 年；Woo 等人，2022 年；Luo 等人，2023 年），因为这些任务需要推断特定的时间戳或子序列。</p>
+<p>第二类包括优先考虑实例级信息（即粗粒度信息）的分类和聚类（Eldele et al. 2021, 2022；Liu and wei Liu 2022），旨在推断整个系列的目标。</p>
+<p>因此，当面对在预训练阶段缺乏先验知识的任务时，片段级和实例级信息对于实现有效的通用时间序列表示学习都是不可或缺的。</p>
+<h2 id="解决方法"><a class="markdownIt-Anchor" href="#解决方法"></a> 解决方法</h2>
+<p>为了解决上述问题，作者提出了一种新颖的自监督框架，名为 TimesURL，为了应对这些挑战，在本文中，我们提出了一种名为 TimesURL 的新型自监督框架，以学习能够有效支持各种下游任务的通用表示。</p>
+<p>具体来说，我们首先引入基于频率-时间的增强以保持时间属性不变。然后，我们构建双重 Universums作为一种特殊的负样本，以指导更好的对比学习。此外，我们引入时间重建作为联合优化目标与对比学习来捕获段级和实例级信息。</p>
+<p>作者首先进行实例级和时间对比学习，以纳入时间变化和样本多样性。具体来说，为了保持时间变化和依赖性，作者设计了一种新的基于频率-时间的增强方法，称为 FTAug，它是在时域进行裁剪和在频域进行频率混合的组合。此外，受互斥学习概念的启发，我们精心设计了双重 Universums作为硬负样本。它是嵌入空间中的一种针对锚点的混合，每次将特定的正样本（锚点）与负样本混合。我们设计的双重 Universums分别在实例级和时间维度上生成，作为特殊的高质量困难负样本，提高对比学习的性能。此外，作者观察到单独的对比学习仅限于捕获一层信息。因此，在论文中，作者联合优化对比学习和时间重建，以捕获和利用分段和实例级别的信息。</p>
+<h3 id="timeurl-框架"><a class="markdownIt-Anchor" href="#timeurl-框架"></a> TimeURL 框架</h3>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZDNkZWFiMjMwYmVkOTA2NmEzZjQyMWMyMjQwODVlZDdfVnpsWnR0WkRXV242aTJFT2ZseFhrRXlrM1RxY2hVMm5fVG9rZW46WHBYdWJQc3hHb0ZXSXl4NjhVYmNvUzk5bmhiXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA" alt="img" /></p>
+<h4 id="问题表述"><a class="markdownIt-Anchor" href="#问题表述"></a> 问题表述</h4>
+<p>目标是学习一个非嵌入线性函数f_θ将x_i投射到 r_i，其中 x_i的维度为 T<em>F，r_i的维度为 T</em>K，K 是表示向量的维度。之后用学习到的表示 r 来完成下游任务。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZTUzZGNiMjZhMDFmOGQ4ZWFkOTFiMjg4MWRkMzA5OWZfTGFycFpNRlJRMWNtMEJ0d0g1TlVST2JvVnhpZnpDUm5fVG9rZW46RzY3dGJvOThvb1hKcUx4TVJGYmNGb1pVbjJiXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA" alt="img" /></p>
+<h4 id="方法介绍"><a class="markdownIt-Anchor" href="#方法介绍"></a> 方法介绍</h4>
+<p>方法介绍。如图 1 所示，我们首先通过 FTAug 分别为原始序列 X和X_M屏蔽序列 X 生成增强集 X’ 和 X’_M。然后我们得到两对原始序列集和增强序列集，第一对（X，X’）用于对比学习，而第二对（X_M，X’_M）用于时间重建。</p>
+<p>之后，我们将上述集合与 fθ 进行映射以获得相应的表示。我们鼓励 R 和 R’ 具有变换一致性，并设计一种重建方法，使用 R_M 和 R_M’ 精确恢复原始数据集 X。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ODJhMjBjMzJkNTA4MWNmODc5NDFkN2MxM2Y3YTdiZWNfNU10WEdlOWUwUFhQams1dkt6WGp3OE9RWDRHV1pvTDZfVG9rZW46RWp3NGJaWUVkb1RaQXN4bUo4WWNJdEEybkliXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA" alt="img" /></p>
+<p>上述模型的有效性是通过以下方式保证的：</p>
+<p>1）使用合适的增强方法进行正对构建（FTAug）</p>
+<p>2）具有一定数量的困难负样本用于模型泛化</p>
+<p>3）通过对比学习和时间重建损失联合优化编码器fθ用于捕获两个级别的信息。</p>
+<h4 id="ftaug-方法"><a class="markdownIt-Anchor" href="#ftaug-方法"></a> FTAug 方法</h4>
+<p>FTAug 方法对比学习的一个关键组成部分是选择适当的增强，这些增强可以施加一些先验来构建可行的正样本，以便编码器可以被训练来学习鲁棒性和判别性的表示（Chen 等人，2020 年；Grill 等人，2020 年；Yue 等人，2022年）。大多数增强策略都是依赖于任务的（Luo et al. 2023），并且可能会引入对数据分布的强烈假设。更严重的是，它们可能会扰乱对于预测等任务至关重要的时间关系和语义一致性。因此，我们选择上下文一致性策略（Yue et al. 2022），它将两个增强上下文中相同时间戳的表示视为正对。我们的 FTAug 结合了频域和时域的优势，通过频率混合和随机裁剪生成增强上下文。</p>
+<h5 id="混频"><a class="markdownIt-Anchor" href="#混频"></a> 混频</h5>
+<p>混频用于通过将经快速傅里叶变换（FFT）运算计算出的一个训练实例 xi 中的一定比例的频率分量替换为同一批次中的另一随机训练实例 x_k 的相同频率分量来产生新的上下文视图。然后我们使用逆 FFT 进行转换以获得新的时域时间序列（Chen et al. 2023）在样本之间交换频率分量不会引入意外的噪声或人为周期性，并且可以提供更可靠的增强来保留时间序列的语义特征数据。</p>
+<h5 id="随机裁剪"><a class="markdownIt-Anchor" href="#随机裁剪"></a> 随机裁剪</h5>
+<p>随机裁剪是上下文一致性策略的关键步骤。对于每个实例 xi，我们随机采样两个重叠时间段 [a1, b1], [a2, b2]，使得 0 &lt; a1 ≤ a2 ≤ b1 ≤ b2 ≤ T 。对比学习和时间重建进一步优化了重叠段[a2，b1]中的表示。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MzM5NzAyY2U1OTZmYWY0ZjM2OWM1NzNiOTNkMGQxMmJfSndpdUNIRWRobzNTcnhhaW9CQjNkM3hIVGI1ZnpyRERfVG9rZW46WW92bmJkOFh3b1pWVnF4UmM2VGNURXdubndjXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA" alt="img" /></p>
+<p>最终，所提出的 FTAug 对各种任务都有帮助，因为它可以保持时间序列的重要时间关系和语义一致性。值得一提的是，FTAug 仅应用于训练过程。</p>
+<h4 id="double-universum学习"><a class="markdownIt-Anchor" href="#double-universum学习"></a> Double Universum学习</h4>
+<p>正如最近的研究（Kalantidis et al. 2020；Robinson et al. 2020；Cai et al. 2020）所揭示的，困难负样本在对比学习中发挥着重要作用，但从未在时间序列领域进行过探索。此外，由于时间序列中的局部平滑性和马尔可夫特性，大多数负样本都是简单负样本，不足以捕获时间信息，因为它们从根本上缺乏驱动对比学习所需的学习信号。作为图 2 中 UEA 档案 (Bagnall et al. 2018) 中 ERing 数据集的真实示例，对于每个正锚点（红色方块），相应的负样本（灰色标记）包含许多简单的负样本和很少的困难负样本，即许多负样本太远，无法用于对比损失。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MTE4MDE3MzJhYmQxMDkzMzY0YjI2YzczNzMxMTM3Y2ZfNk91QjJmUUhnYlNZaXIzWk14a1VKYWpzbXRqS0gzckVfVG9rZW46QkFSYmJiQ0Zub1BFNDN4NzFDd2N2TGNhbmZlXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA" alt="img" /></p>
+<p>我们的double Universums在实例级和时间戳级都是混合形成的Universums（Han and Chen 2023；Vapnik 2006；Chapelle et al. 2007），这是专用于锚点的在嵌入空间中混合，将特定的正特征（锚点）与未标注数据集的负特征混合在一起。</p>
+<p>令 i 为输入时间序列样本的索引，t 为时间戳。 r_i,t 和 r_i,t’ 表示相同时间戳 t 但来自 x_i 的两次增强后的表示。时间戳 t 处第 i 个时间序列的综合时间Universums可以表示为</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NWI1M2E5OTg3N2I3OGZjN2I4YmY4OGNmNWQ3NDlmNDhfRDByQWZGNnR1Q3RKRXh4TG9uR1dkU2JSNjQ5dWVSbUZfVG9rZW46SWVDamJ4ck1hb0hzczN4NGg3NGNhVGpSbmNkXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA" alt="img" /></p>
+<p>其中 t′ 是从 Ω 中随机选择的，Ω 是两个子序列重叠范围内(上面提到的[b1,a2])的时间戳集合，并且 t′≠ t。同时 与用 (i, t) 索引的实例级Universums相似，可表述为</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NDJmNWI1ODYwNDgyMzEzODdkODQxMTQyNGI5ZDhkYzRfYnZLYnBDaGhaNEczRUFwdlA2bjg5dDZjSjFvZ3FtUE5fVG9rZW46SnZMSmJnTWZPb2xla0N4Y0V2ZWM4QzNYbmNlXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA" alt="img" /></p>
+<p>其中j表示batch β中除了i之外的任何其他实例。这里，λ1，λ2 ∈ (0, 0.5]是随机选择的anchor的混合系数，并且λ1，λ2≤0.5保证锚点的贡献总是小于负样本。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NTEzMjQ4MTAzYjY4OWYyNTQ2OWVjMzc1MjgzYmE4Y2FfWWloZVUwQ1o0Vk13OGZvTGxlZFBNTTlkN0N0NmlMWm9fVG9rZW46TTdvTGJZRGIzb3ZXcE14M3pqMWNHZVFGbjdYXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA" alt="img" /></p>
+<p>如图 2(a) 所示，大多数 Universum（蓝色三角形）距离锚点更近，因此可以被视为困难负样本。此外，我们利用代理任务来指示困难负样本的难度 (Kalantidis et al. 2020 ），即 Universums。代理任务性能如图2(b)所示，即在使用和不使用universum在ERing数据集上训练我们的TimesURL时，锚点百分比即正面样本被评价为整体负面。尽管代理任务性能有所下降，但是在 TimesURL 中，线性分类任务的性能进一步提升，从 0.896（没有 Universums）到 0.985（有 Universums），这意味着额外的 Universum 使代理任务更难解决，可以进一步提高下游任务中的模型性能。因此，TimesURL中的Univerums可以被视为高质量的底片。综上所述，我们的Universums可以被视为一种高质量的硬负样本。</p>
+<p>通过与anchor样本混合，将Universum数据落入数据空间中目标区域的可能性降到最低，从而保证了Universum的困难负性。此外，双Universum集包含所有其他有利于学习判别样本信息以提高模型能力的负样本。</p>
+<h4 id="分段级信息的对比学习"><a class="markdownIt-Anchor" href="#分段级信息的对比学习"></a> 分段级信息的对比学习</h4>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZmM1NDI0ZTVmYWRkODU0MWUxM2ZjZjA4MmJhOWNjMWFfQWFwZVZJc2hNTUhrbmo3QnRIY2UxdGFPTTlMdHlzRzJfVG9rZW46WGNnUmJYQ0NOb3FpU054WGo3a2NWalNkbkViXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA" alt="img" /></p>
+<p>我们使用一种简单的方法将double Universums注入对比学习中，分别作为时间和实例对比损失中的附加困难负样本。第 i 个时间序列在时间戳 t 处的两个损失可以表示为</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Zjg1YzVlZmZiOWYxMWE1NTBiODYyM2NhYTEzNmVlZGJfWk9YVFpRZWI0aWs1T1dZU1dVV0c2ZXlxT2xQQ2pERmZfVG9rZW46VWU2d2I2V2wzb2xKbHB4c3hDUmNlYUN2blliXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA" alt="img" /></p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZDAyZTI4NWMyZDVjMDRhZjdiZGMyMDM5OWQzYmJlYjlfakE1WUNDSXlEdFhpUmRQdEJsQnJjUEF6bXpLWWJMS1lfVG9rZW46WDJFTGJRcUMwb0d6ODJ4M21acGM2TFpZbjFkXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA" alt="img" /></p>
+<p>上面|B|表示批量大小。这两种损失是互补的，可以捕获实例特定的特征和时间变化。我们使用分层对比损失（Yue et al. 2022）进行多尺度信息学习，方法是在方程（3）和（4）中沿时间轴对学习到的表示使用最大池化。在这里，我们必须提到，重要的时间变化信息，例如趋势和季节，在多次最大池化操作后会丢失，因此顶层对比实际上无法为下游任务捕获足够的实例级信息</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZTdhODRhODg5YTJmNmY4ODYyMjY1YzA0OTI4ZDMwZTZfU0lkRm11RHp0b3JQZmY3VlBJRGpZNnlGS0daR3NiQjFfVG9rZW46SEFTMmI4Umhob2VhUkp4cUpndGNwMDVvbnNoXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA" alt="img" /></p>
+<h4 id="实例级信息的时间重建"><a class="markdownIt-Anchor" href="#实例级信息的时间重建"></a> 实例级信息的时间重建</h4>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Y2E3YjZlMTM3Nzg5ODA1NDQwMWRjMzNlOWE0ZmQ4MzBfTkZOTXZKQnVOMW00RTBxMDRiRVVsalZ4OWNXY3hCSDlfVG9rZW46U29KZmJlMHlQb0pCcXJ4YzA4ZmM5emhnbkJjXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA" alt="img" /></p>
+<p>自监督学习中的屏蔽自动编码技术已被证明在各个领域都表现良好，例如 NLP 中基于 BERT 的预训练模型（Kenton 和 Toutanova 2019）以及 CV 中的 MAE（He et al. 2022）。此类方法的主要思想是在给定部分观测的情况下重建原始信号，在屏蔽自动编码技术的推动下，我们设计了一个重建模块来保留重要的时间变化信息。我们的方法使用上述嵌入函数 fθ 作为编码器，将屏蔽实例映射到潜在表示，然后从潜在表示重建完整实例。在这里，我们使用随机掩蔽策略。我们的损失函数计算每个时间戳的重建值和原始值之间的均方误差（MSE）。此外，与 BERT 和 MAE 类似，我们仅在等式（6）中的屏蔽时间戳上计算 MSE 损失。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=M2FkYmI0ZmNjNDJjYzExNGVlOTE1Y2U0YzY5OTAyODRfSnBCYXQ0dzNBSThBUWtPU0U2NjY4NmFJVDcydUxxd2NfVG9rZW46SnA0RmJpT1Blb3dIaTh4ZHZoMWNkRzBPbk5jXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA" alt="img" /></p>
+<p>在这里，我们将 m_i ∈ {0, 1}^T ×F 表示为第 i 个实例的观察掩模，其中如果 xi,t 缺失，则 mi,t = 0；如果观察到 xi,t，则 m_i,t = 1，而 ̃ xi 是生成的重建实例。与上面的符号类似，m′ i 、̃ x′ i 和x′ i 具有相同的含义。</p>
+<p>0,1 写反了</p>
+<p>最后，总体损失定义为</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Zjc2YjViM2E0NzIwMmJmZjM5NTIwZWQ4ODNmMDc0ZTBfbFhoWXRmcjVrNXhwS1BCcjZOR3NSdHBXVEptajlIQmhfVG9rZW46VzM3d2JtRmZtb0FMYmN4Z0RnSWNXMUV2bmJjXzE3NDM1MDA5MDk6MTc0MzUwNDUwOV9WNA" alt="img" /></p>
+<p>其中 α 是平衡两个损失的超参数。</p>
+<h2 id="看法"><a class="markdownIt-Anchor" href="#看法"></a> 看法</h2>
+<p>时序数据傅里叶变换到频域，做数据增强，再还原为时序数据的思路很有意思，和之前老师与我讨论的想法重叠了，证明了该方法的有效性。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/04/01/%E3%80%8ALearning%20to%20Embed%20Time%20Series%20Patches%20Independently%E3%80%8B%20%E8%AE%BA%E6%96%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Xu Yang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Hexo">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/04/01/%E3%80%8ALearning%20to%20Embed%20Time%20Series%20Patches%20Independently%E3%80%8B%20%E8%AE%BA%E6%96%87/" class="post-title-link" itemprop="url">未命名</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-04-01 17:58:50 / 修改时间：17:58:03" itemprop="dateCreated datePublished" datetime="2025-04-01T17:58:50+08:00">2025-04-01</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="learning-to-embed-time-series-patches-independently-论文"><a class="markdownIt-Anchor" href="#learning-to-embed-time-series-patches-independently-论文"></a> 《Learning to Embed Time Series Patches Independently》 论文</h1>
+<p>*斜体：*疑问  &amp; 解答 ｜  **加粗：**现象  ｜   下划线：解决方法、创新点</p>
+<h2 id="摘要"><a class="markdownIt-Anchor" href="#摘要"></a> 摘要</h2>
+<p>掩蔽时间序列建模最近作为时间序列的自监督表示学习策略而受到广泛关注。受到计算机视觉中屏蔽图像建模的启发，最近的工作首先对时间序列进行修补和部分屏蔽，然后训练 Transformer 通过从未屏蔽的补丁中预测屏蔽的补丁来捕获补丁之间的依赖关系。然而，我们认为捕获此类补丁依赖关系可能不是时间序列表示学习的最佳策略；相反，学习独立嵌入补丁会产生更好的时间序列表示。具体来说，我们建议使用 1) 简单的补丁重建任务，它自动编码每个补丁而不查看其他补丁，以及 2) 独立嵌入每个补丁的简单的逐补丁 MLP。此外，我们引入互补对比学习来有效地分层捕获相邻时间序列信息。与最先进的基于 Transformer 的模型相比，我们提出的方法提高了时间序列预测和分类性能，同时在参数数量和训练时间方面更加高效。</p>
+<h2 id="1介绍"><a class="markdownIt-Anchor" href="#1介绍"></a> 1.介绍</h2>
+<h3 id="背景"><a class="markdownIt-Anchor" href="#背景"></a> 背景</h3>
+<p>时间序列 (TS) 数据可应用于一系列下游任务，包括预测、分类和异常检测。深度学习在 TS 分析中展现了其优越的性能，其中学习良好的表示对于深度学习的成功至关重要，而自监督学习已成为有效利用未标记数据的一种未来可期的策略。</p>
+<p>值得注意的是，对比学习（CL）和掩模建模（MM）在 TS 分析以及自然语言处理和计算机视觉等其他领域表现出了令人印象深刻的性能。屏蔽时间序列建模 (MTM) 任务部分屏蔽 TS，并使用捕获补丁之间依赖关系的编码器（例如 Transformer）从未屏蔽部分预测屏蔽部分。</p>
+<h3 id="存在问题"><a class="markdownIt-Anchor" href="#存在问题"></a> 存在问题</h3>
+<p>然而，我们认为学习补丁之间的这种依赖关系，例如，根据屏蔽部分预测未屏蔽部分并利用捕获补丁之间依赖关系的架构，对于表示学习可能不是必需的。</p>
+<p><em>作者提出patches依赖关系不是必须的，但在这里却没有给出明确的论证</em></p>
+<h3 id="解决思路"><a class="markdownIt-Anchor" href="#解决思路"></a> 解决思路</h3>
+<p>为此，我们引入了补丁独立性的概念，即在嵌入TS补丁时不考虑TS补丁之间的交互。这个概念是通过两个关键方面实现的：</p>
+<p>1） 预训练任务</p>
+<p>2）模型架构</p>
+<p>首先，我们提出了一个补丁重建任务，可以重建未屏蔽的补丁，这与预测屏蔽补丁的传统 MM 不同。我们将这些任务分类为：</p>
+<p>补丁无关（PI）任务：不需要有关其他补丁的信息来重建每个补丁</p>
+<p>补丁相关（PD）任务：需要有关其他补丁的信息来重建每个补丁</p>
+<p>图 1 展示了 TS 预测的一个简单示例。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZjBiODM3Yjk3ZTlmNmMyOGFiZGE0NGJjZDQwMGQzYjdfc0FlQ3NjWmFMYktnSWg4dDl3UWhMVTNJbjloazVzTFZfVG9rZW46Q25GV2JzaXBPb3BlaEh4b1d3NmNXZ3d0blRjXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p>尽管在 PD 任务上预训练的 Transformer（Nie 等人，2023）无法预测分布偏移下的测试数据，但在 PI 任务上预训练的 Transformer 对此更具有鲁棒性。</p>
+<p>其次，我们采用简单的 PI 架构（例如 MLP），比传统的 PD 架构（例如 Transformer）表现出更好的效率和性能。在本文中，我们提出了时间序列的补丁独立性（PITS），它利用无掩模补丁重建作为 PI 预训练任务，并使用 MLP 作为 PI 架构。最重要的是，我们引入互补对比学习CL 来有效捕获相邻时间序列信息，其中 CL 是使用以互补方式屏蔽原始样本的两个增强视图来执行的。</p>
+<h3 id="效果及贡献"><a class="markdownIt-Anchor" href="#效果及贡献"></a> 效果及贡献</h3>
+<p>我们对各种任务进行了广泛的实验，证明我们提出的方法在标准和迁移学习设置下，在预测和分类任务中都优于最先进的（SOTA）性能。主要贡献总结如下：</p>
+<ul>
+<li>我们认为，在TS表示学习中，独立学习嵌入时间序列补丁在性能和效率方面都优于依赖学习，为了实现补丁独立性，我们提出了 PITS，它对 MTM 进行了两项主要修改：</li>
+</ul>
+<p>1）使任务补丁独立，重建未屏蔽的补丁而不是预测屏蔽的补丁</p>
+<p>2）使编码器补丁独立，消除注意力机制，同时保留 MLP 以忽略编码期间补丁之间的相关性。</p>
+<ul>
+<li>我们引入互补对比学习来有效地分层捕获相邻的 TS 信息，其中正对是通过互补随机掩码形成的。</li>
+<li>我们针对低级预测和高级分类进行了广泛的实验，证明我们的方法提高了各种下游任务的 SOTA 性能。此外，我们发现 PI 任务在管理分布变化方面优于 PD 任务，并且与 PD 架构相比，PI 架构对于补丁大小更具可解释性和鲁棒性。</li>
+</ul>
+<h2 id="2相关工作"><a class="markdownIt-Anchor" href="#2相关工作"></a> 2.相关工作</h2>
+<h3 id="自监督学习"><a class="markdownIt-Anchor" href="#自监督学习"></a> 自监督学习</h3>
+<p>近年来，自监督学习（SSL）因从各个领域的未标记数据中学习强大的表示而受到关注。 SSL 的成功来自于对借口任务的积极研究，这些任务可以在没有监督的情况下预测数据的某个方面。下一个标记预测 (Brown et al., 2020) 和屏蔽标记预测 (Devlin et al., 2018) 常用于自然语言处理，拼图游戏 (Noroozi &amp; Favaro, 2016) 和旋转预测 (Gidaris &amp; Komodakis, 2018) ）常用于计算机视觉。</p>
+<p><strong>最近，对比学习（<strong><strong>CL</strong></strong>）（Hadsell 等，2006）已成为一种有效的借口任务。</strong> CL的关键原则是最大化正对之间的相似性，同时最小化负对之间的相似性（Gao et al., 2021; Chen et al., 2020; Yue et al., 2022）。**另一种具有发展前景的技术是掩模建模，它根据未掩模部分重建掩模补丁训练模型。**例如，在自然语言处理中，模型预测句子中的屏蔽词（Devlin et al., 2018），而在计算机视觉中，它们预测图像中的屏蔽补丁（Baevski et al., 2022；He et al., 2022； Xie 等人，2022）在各自的领域内。</p>
+<h3 id="屏蔽时间序列建模"><a class="markdownIt-Anchor" href="#屏蔽时间序列建模"></a> 屏蔽时间序列建模</h3>
+<p>除了 CL 之外，MM 作为 TS 中 SSL 的借口任务也受到了关注。此任务涉及屏蔽 TS 的一部分并预测缺失值，称为屏蔽时间序列建模 (MTM)。虽然 <strong>CL 在高级分类任务中表现出令人印象深刻的性能，但 MM 在低级预测任务中表现出色</strong>（Yue 等，2022；Nie 等，2023）。 TST（Zerveas et al., 2021）将 MM 范式应用于 TS，旨在重建屏蔽时间戳。 PatchTST（Nie 等人，2023）专注于预测屏蔽子系列级补丁，以捕获本地语义信息并减少内存使用。 SimMTM（Dong et al., 2023）从多个屏蔽 TS 重建原始 TS。 TimeMAE（Cheng 等人，2023）使用两个借口任务（掩码码字分类和掩码表示回归）训练基于变压器的编码器。表1比较了TS中的各种方法，包括我们的方法，从两个标准：预训练方法和下游任务，其中预训练方法中的No（Sup.）表示不使用预训练的监督学习方法。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ODBlYzM0MDM2N2M5NjE2NWE3ZTkwYTRkZTkwZDM0ODRfSGsxWk45M3QxTVh6ZUxaY2JJTVozeXpmQnZXcFh6dlFfVG9rZW46VlI5TmI5bXFDb0lQcUp4QmM0cmN1VDVObm1mXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p>与最近的 MTM 工作不同，我们建议通过自动编码来重建未屏蔽的补丁。自动编码的一个主要问题是容易陷入频繁解的恒等映射（即学不到任何信息，输入什么就映射成什么），使得隐藏层的维度应该小于输入层的维度。为了缓解这个问题，我们在中间全连接（FC）层之后引入了 dropout，这类似于堆叠式去噪自动编码器的情况（Liang &amp; Liu，2015），其中的消融研究可以在图 4 中找到。</p>
+<h3 id="cl-和-mm-的组合"><a class="markdownIt-Anchor" href="#cl-和-mm-的组合"></a> CL 和 MM 的组合</h3>
+<p>最近有人努力将 CL 和 MM 结合起来进行表示学习。在这些工作中，SimMTM（Dong et al., 2023）以对比损失的形式在其目标函数中使用正则化器来解决 MM 任务。然而，它与我们的工作不同，它侧重于 TS 之间的 CL，而我们提出的 CL 在单个 TS 内使用补丁进行操作。</p>
+<h3 id="互补掩蔽"><a class="markdownIt-Anchor" href="#互补掩蔽"></a> 互补掩蔽</h3>
+<p>SdAE（Chen et al., 2022）使用学生分支进行信息重建，使用教师分支生成屏蔽标记的潜在表示，利用互补的多重屏蔽策略来维护分支之间的相关互信息。 TSCAE (Ye et al., 2023) 通过为师生网络引入互补掩码来解决基于 MM 的预训练模型中上下游不匹配的差距，而 CFM (Liao et al., 2022) 则引入了可训练的互补掩码策略用于特征选择。我们提出的互补掩码策略的不同之处在于它不是为蒸馏模型设计的，并且我们的掩码是不可学习的而是随机生成的。</p>
+<blockquote>
+<p><em>在<strong>深度学习</strong>中，蒸馏模型（Knowledge Distillation）是一种技术，用于将一个复杂的模型（通常称为教师模型）的知识转移给一个简化的模型（通常称为学生模型）。这个过程的目标是让学生模型尽可能地模拟教师模型的行为，同时保持更小的模型大小和计算成本。</em></p>
+<p><em>蒸馏模型的基本思想是通过引导学生模型学习教师模型的预测行为，而不是直接让学生模型尝试去<strong>拟合</strong>训练数据</em>*。通常情况下，教师模型是一个大型、准确度较高的模型，而学生模型则是一个轻量级的模型，通常具有较少的参数和更简单的结构。*</p>
+</blockquote>
+<h3 id="用于时间序列预测的线性模型"><a class="markdownIt-Anchor" href="#用于时间序列预测的线性模型"></a> 用于时间序列预测的线性模型</h3>
+<p>Transformer（Vaswani 等人，2017）是一种流行的序列建模架构，它促使基于 Transformer 的时间序列分析解决方案激增（Wen 等人，2022）。 Transformer 的主要优势来自多头自注意力机制，擅长提取广泛序列中的语义相关性。尽管如此，<strong>Zeng 等人最近的工作表明简单的<strong><strong>线性模型</strong></strong>仍然可以提取基于 Transformer 的方法捕获的信息</strong>。受这项工作的启发，我们建议使用一种简单的 MLP 架构，该架构不对时间序列补丁之间的交互进行编码。</p>
+<h2 id="3方法细节"><a class="markdownIt-Anchor" href="#3方法细节"></a> 3.方法细节</h2>
+<h3 id="问题定义"><a class="markdownIt-Anchor" href="#问题定义"></a> 问题定义</h3>
+<p>我们解决了学习时间序列patch 的嵌入函数 fθ 的任务：</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NzFhZjA4MDM3YmNlOWMwZDdhMTQyMDk4YjE3YTcxODZfZld0eVc4bDg0Tm9xZDk5NVVHbnNPaEdQNHNvcVZuREdfVG9rZW46VWV5MmJwNUNzb1RyU1R4ZVZzZGNRQ1QybkhmXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p>输入和输出维度，即补丁输入维度和补丁嵌入维度，分别表示为 P 和 D，即</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZGQ5ZGMxOGE5OWQ1MTkxYTU5Yzk2OTJkZjhiNWFlMzdfZlBiNWVFc3dTam95c3pkV2VmbWsyaXJnZGJGZ2RLQThfVG9rZW46TXZCUGJ6VjNvb3AwNXZ4eFNNS2NndVhUbmp2XzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p>我们的目标是学习 fθ 提取在各种下游任务中表现良好的表示。</p>
+<h4 id="通道独立性和patches独立性"><a class="markdownIt-Anchor" href="#通道独立性和patches独立性"></a> 通道独立性和Patches独立性</h4>
+<p>我们的方法使用通道独立架构，其中所有通道共享相同的模型权重并独立嵌入，即 fθ 独立于 c。与通道相关（PD）的方法相比，这显示了对分布变化的稳健预测（Han 等人，2023）。此外，我们建议使用 PI 架构，其中所有补丁共享相同的模型权重并独立嵌入，即 fθ 独立于 n。我们在图 2(a) 中说明了四种不同的 PI/PD 架构，其中我们将 MLP 用于我们提出的 PITS，因为它的效率和性能分别如表 13 和表 7 所示。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=OGJkODdiZTJjNjJmNWI4YTgwMTI4ZTlhNjI2MzAzYTFfenBlTUlSRk5vZDc5dTBmVldnNjQxalB0bjBka211OHJfVG9rZW46TG14TGJuenBub2paM3l4bHpFbWNZOHBqbkNoXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NjFhMzVjNGRiZGMzZmZmNGExNGNiMDM0ZGEwYzA4NzhfQjhsbHVvaDlPMW1GY2I1UzNxMEhNOE1xQ05CcmNYekFfVG9rZW46UWRpZWJ2clgwb2ZlZW14QkVTOWNvMHZnbkpmXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MzQ2Mjg4NGRkYmYwM2YwYzhhZGJkYzExYTI5MzA2NWRfUk51NDZ5c0ZGemMzcU5RT0NyWFM5U2l3UlBWWGhpMG9fVG9rZW46R09JT2J3enBJb0VKdHV4N3FlUmM5Q2JYbmdnXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p>PITS 的补丁无关策略： (a) 从 PI 和 PD 方面说明了预训练任务和编码器架构。</p>
+<h3 id="31-与补丁无关的任务补丁重建"><a class="markdownIt-Anchor" href="#31-与补丁无关的任务补丁重建"></a> 3.1 与补丁无关的任务：补丁重建</h3>
+<p>与使用未屏蔽补丁预测屏蔽补丁的传统 MM 任务（即 PD 任务）不同，我们提出了补丁重建任务（即 PI 任务），它可以自动编码每个补丁而不查看其他补丁。因此，虽然原始 PD 任务需要捕获补丁依赖关系，但我们提出的任务不需要。分片段后的单变量 TS 可以重建为如下两种不同的方式：</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Njg4MjUzMGJiOGVmNjUxOTZhYTdjZDlmOGUxYjZkNzJfeDFWSmlrcnE0c1M3bXRIZm4yaUp1WkN0TWlkZFhrVmhfVG9rZW46VE5vbWJqdEIzb0lRTVh4QWM0eGNIbmt4bkJiXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p>作者采用了逐补丁式重建，因为这在实验中产生了更好的性能</p>
+<h3 id="32-实现补丁独立性的架构mlp"><a class="markdownIt-Anchor" href="#32-实现补丁独立性的架构mlp"></a> 3.2 实现补丁独立性的架构：MLP</h3>
+<p>虽然通常使用 Transformer 研究 MTM 以捕获补丁之间的依赖关系，但我们认为学习独立嵌入补丁会更好。遵循这个想法，我们建议使用简单的 PI 架构，以便编码器只专注于提取 patch-wise 表示。图 2(a) 显示了 PI/PD 预训练任务和编码器架构的示例。对于 PI 架构，Linear 由单个 FC 层模型组成，MLP 由带有 ReLU 的两层 MLP 组成。对于 PD 架构，MLP-Mixer2（Tolstikhin 等人，2021；Chen 等人，2023）由用于时间混合（N -dim）的单个 FC 层和随后用于补丁混合的两层 MLP（D -dim)，而 Transformer 由一个自注意力层和一个两层 MLP 组成，遵循 Nie 等人的观点。 （2023）。表 13 提供了 MLP 和 Transformer 在参数数量和训练/推理时间方面的效率比较</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NzUwMzZkNTBjZDMyN2FiYjA2ODc5NjE5ODk2YTY0NTlfVnZoNU53YXVZYWk3bHhYTE1oeUR5b3d0Z3J0bFJWMFZfVG9rZW46UlNUemJQVkZub3BQVWp4OGFBc2NTRllkblBiXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZDM2NGUwNTMwN2JhNzA1ODY5NTYyM2E4OWUzODYyZTVfanZoUTdWRDluczk2UGJ5a2p6QkVVTDJvSXFCMTYzSFFfVG9rZW46T0t6YmJ3Wmhab1RRQXp4Y056MGNiVHdEblNnXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<h3 id="33-互补对比学习"><a class="markdownIt-Anchor" href="#33-互补对比学习"></a> 3.3 互补对比学习</h3>
+<p>为了进一步提高学习表示的性能，我们提出了互补 CL 来分层捕获相邻的 TS 信息。 CL需要两个视图来生成正对，我们通过互补掩码策略来实现这一点：对于具有相同长度的时间序列x和掩码m，我们将m ⊙ x和(1 − m) ⊙ x视为两个视图，其中⊙ 是逐元素乘法，我们使用 50% 掩蔽比进行实验。请注意，遮罩的目的是为 CL 生成两个视图；它不会影响所提出的 PI 任务，并且在使用所提出的 PI 架构时不需要额外的前向传播，因此额外的计算成本可以忽略不计。</p>
+<p>图 3 展示了互补 CL 的示例，<em>其中我们通过沿时间轴对块表示进行<strong>最大池化</strong>来分层执行 CL</em>，并计算和聚合在每个级别计算的损失。然后，模型通过对比与另一视图和其他表示的相似度，学习在一个视图中查找缺失的补丁信息，从而使模型能够分层捕获相邻的时序信息。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NjA5OWMwNDNjMjM5YWRiNDg3Yjc4ODAzOWZmOGM1NWJfd2Q0bkVQUTlQd2t2cDY5ZEszdFhkc1hSWTEwRFRaQ0JfVG9rZW46V3VXTGJaYWZNb1ZmVEl4SGp6SmNFQUE4bmlnXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<h3 id="34-目标函数"><a class="markdownIt-Anchor" href="#34-目标函数"></a> 3.4 目标函数</h3>
+<p>如图 2(b) 所示，我们基于表 9 中的消融研究，在第一层执行 对比学习，并通过第二层顶部的附加投影头进行重建。为了区分它们，我们将从 MLP 中的两层获得的表示分别记为 z1 和 z2</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Nzg1YWQyNTMxMTQwMzhlY2M5MTBlYTAzMDViZDg2MTRfdm9mYUxBVnNCdGxHUlA3cjBzdzRsUlpZQ1lUdUVtRUhfVG9rZW46VnlHNGJuSkFRb1laZ3l4VXN6d2NVVGI1blBjXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<h4 id="重建损失"><a class="markdownIt-Anchor" href="#重建损失"></a> 重建损失</h4>
+<p>正如 3.1 节中所讨论的，我们将 z2 输入到 patch-wise 线性投影头中以获得重构结果：</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NjllNmY1MWJjMzAzNmYzMGJlYmJjMzU2YzMyYTZhYjNfWDVkZW5IVVFtZjhSMEk0emxYOGZkN3RTWkFEY1l2a0RfVG9rZW46SGlkaGJ2Q1JmbzRVb1h4cE95UGNuTHVobmpmXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p>那么，重建损失可以写为：</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=M2Q0ZTQwZDhkMTU3YTI3ZjFhZGJjODg3MDU3MTc5ZDdfSDJHVWhNeXlsUjJONVR4dTZXeXVESXI5ck95TXE2TFNfVG9rZW46VnN1Q2J2aWVEb25YTUd4TEs4bWNJUHdHbkRjXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p>其中，如果第一个视图 x(i,c,n) p 被屏蔽，则 m(i,c,n) = 0，否则为 1。正如方程式1中推导的那样。重建任务不受互补掩蔽的影响，即重建两个视图的未遮蔽patches与重建原始patches相同。</p>
+<h4 id="对比损失"><a class="markdownIt-Anchor" href="#对比损失"></a> 对比损失</h4>
+<p>我们为计算时间对比损失时考虑的所有相似性之间的相对相似性建立了一个 softmax 概率。为了简洁起见，将z1拆成两个视图，对应嵌入x。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Y2E1MzRlODg4Zjk3OGFlNjI3ZDg3NWJkN2UzN2VhNDJfZENxcjJRWmFTTFpxNkdSUnlUNFJKYWFONFF0MkVKNUVfVG9rZW46SWFSV2JvcUZ0b3VGcFh4RktSa2NJMFMzbmhmXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p>然后，补丁索引对 (n, n′) 的 softmax 概率定义为：</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NzY2MzRmZTNhM2Q4NzcxMGUxNDRhMDhjYmI0MWFmMjVfV0dFd3JhQVJiVEVqN0IzTkczV0E1clB3aDdTUU9FYW5fVG9rZW46TGFMS2J0Q01tb3JuMnp4MFlCMmNVUkp6bkhiXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=N2NhMDdhYzRiZWU0ZDE2MWQxYmEzZTMzMGZiZTNkNTFfR1FBVnBEZGVyZWRUelZpU0dJUm05T3F3UEYyQjZoenRfVG9rZW46S1R2R2I1REIwb1VaTUd4VXVGdGNWeUFDbjVjXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p>我们使用点积作为相似性度量 ◦。那么，总对比损失可以写为：</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MGJlNTQxNzIzYTFkNWUyZTJkZGY0MDZmNjZmNmNiZTFfR2JKTUQ5dE1wY0cweUx3SHg0U1E5NmdXaFhhU0RRNWdfVG9rZW46SndlQmJFV0dvbzdXQWl4b242dmNiaVZHblllXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p>我们通过最大池化 z(i,c,n) 和维度 n 重复计算分层损失，并进行以下替换，直到 N = 1：</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Y2Q0YzI3YWExODYyOWZjM2I5NTk4NzkxZTAxMGRlYjRfNWpHdG9laDJyeUNaMVZEWEN6RU5rY1UzRExURTRqT3ZfVG9rZW46TTlxYWJMZ2Ixbzc1OGV4UmNycWNub2JPblRmXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p>PITS的最终损失是重建损失和分层对比损失之和：</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YjQzZTg4MTcyOTczYzRlZjE4YWMxNzM4NmIwY2QyMGRfdXFkS1JuZE9OT2VvcjBrVEh6b2ZBWmx5M3dzc2puOG1fVG9rZW46V29WbWJuYUw4b3lncDh4dHBiQmNnbjREbkRmXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<h4 id="实例标准化"><a class="markdownIt-Anchor" href="#实例标准化"></a> 实例标准化</h4>
+<p>为了缓解训练数据和测试数据之间的分布偏移问题，我们用零均值和单位标准差对每个 T时间序列进行归一化（Kim 等人，2021）。具体来说，我们在修补之前对每个 TS 进行标准化，并将平均值和偏差添加回预测的输出。</p>
+<h2 id="4实验效果"><a class="markdownIt-Anchor" href="#4实验效果"></a> 4.实验效果</h2>
+<h4 id="41-实验设置"><a class="markdownIt-Anchor" href="#41-实验设置"></a> 4.1 实验设置</h4>
+<p>任务和评估指标：我们证明了所提出的 PITS 在两个下游任务上的有效性：时间序列预测（TSF）和分类（TSC）任务。为了进行评估，我们主要遵循标准 SSL 框架，在同一数据集上预训练和微调模型，但在一些实验中我们也考虑了域内和跨域迁移学习设置。作为评估指标，我们使用 TSF 的均方误差 (MSE) 和平均绝对误差 (MAE)，以及 TSC 的准确度、精确度、召回率和 F1 分数。</p>
+<h4 id="42-时间序列预测"><a class="markdownIt-Anchor" href="#42-时间序列预测"></a> 4.2 时间序列预测</h4>
+<p>数据集和基线方法</p>
+<p>对于预测任务，我们实验了七个数据集，包括四个 ETT 数据集（ETTh1、ETTh2、ETTm1、ETTm2）、天气、交通和电力（Wu et al., 2021），预测范围为 H ∈ {96, 192, 336、720}。对于基线方法，我们考虑基于 Transformer 的模型，包括 PatchTST (Nie et al., 2023)、SimMTM (Dong et al., 2023)、FEDformer (Zhou et al., 2022) 和 Autoformer (Wu et al., 2022)。 ，2021），以及线性/MLP 模型，包括 DLinear（Zeng 等人，2023）和 TSMixer（Chen 等人，2023）。我们还比较了没有自监督预训练的 PITS 和 PatchTST 3，这本质上只是比较 PI 和 PD 架构。我们遵循 PatchTST、SimMTM 和 TSMixer 的实验设置和基线结果。对于所有超参数调整，我们使用单独的验证数据集，遵循标准协议，将所有数据集按时间顺序分为训练集、验证集和测试集，ETT 数据集的比例为 6:2:2，ETT 数据集的比例为 7:1:2对于其他数据集（Wu et al., 2021）。标准设定。表 2 显示了多变量 TSF 任务的综合结果，表明我们提出的 PITS 在两种设置下都比 PatchTST 具有竞争力，这是基于 SOTA Transformer 的方法，而 PITS 比 PatchTST 更高效。 SimMTM 是一项并行工作，在 SSL 中表现出与我们相似的性能，但在监督学习中明显较差。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZWQ4ZjQ3ZGM3MTk2YWJhN2FiOTMxOTlhNDE5NTUwMmFfejJYT1VkanlTM1I4YmJMYVI3UU1YS3BkSklEN1dWRUJfVG9rZW46UUFxbWJmYndKb2I0MFl4VjVjamM3MkVxbmhoXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p>表 3 比较了三种不同场景下的 PITS 和 PatchTST：微调 (FT)、线性探测 (LP) 和无自监督预训练的监督学习 (Sup.)，其中我们展示了四个层面的平均 MSE。如表 3 所示，在所有场景中，PITS 的平均性能均优于 PatchTST。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NjQ5OGZlMzk3Y2I5ZWI4ODY0ZmVmNGUxNDJmZDg0MzZfMlFkNmZmYkx1QjFST3ZhdnFMeXFCVlgwT2hhNlV4aFpfVG9rZW46V0d6VmJhNDNRb3NENm94a3UzZmM0YlBPblVjXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p>迁移学习，在域内传输中，我们对源数据集和目标数据集使用相同频率的数据集进行实验，而在跨域传输中，我们对源数据集和目标数据集使用不同频率的数据集。表 4 显示了四个层面的平均 MSE 结果，这表明我们提出的 PITS 在大多数情况下超越了 SOTA 方法。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MmViN2I5NjlkZGY1MDAxOGQxMDQyOTcxMzM1ZGM4OGJfOUg1NUV3ekk4TVZhSWdod05TeHNpZ3dRR045WWloSzJfVG9rZW46Umd4Z2JzZXFFb3pKRDR4TFBWQmNacWRXbktmXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<h4 id="43-时间序列分类"><a class="markdownIt-Anchor" href="#43-时间序列分类"></a> 4.3 时间序列分类</h4>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=OTMwNzkyODA0MzkzNDE0M2Y1MzQ3YTVmYzAxN2IwMWNfRk5CV2EyejZ6dkdQaEs0SVNxTU9sRG1BNmF2a3VlTXNfVG9rZW46WXlWb2JoR3Nzb3NkU2l4dUVhT2NWYWZWbnRlXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<h4 id="44-消融实验"><a class="markdownIt-Anchor" href="#44-消融实验"></a> 4.4 消融实验</h4>
+<h5 id="pipd-任务架构的效果"><a class="markdownIt-Anchor" href="#pipd-任务架构的效果"></a> PI/PD 任务/架构的效果</h5>
+<p>为了评估我们提出的 PI 预训练任务和 PI 编码器架构的效果，我们使用通用输入范围 512 和补丁大小 12 进行表 7 中的消融研究。</p>
+<p>回想一下，PD 任务使用未屏蔽的补丁来预测屏蔽的补丁，而 PI 任务会自动编码补丁，PD 架构包括使用全连接层（MLP-Mixer）或自注意力模块（Transformer）的补丁之间的交互，而 PI 架构（Linear，MLP）则不然。如表 7 所示，无论选择哪种架构，PI 预训练都会比 PD 预训练带来更好的 TSF 性能。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YzFmMzNiOGJlMWM3ZjMzMmZhZWYxNDgxYjA0MTRhMTBfMUZnSEJyWXd5cW5kYjhDcDQ3b1RMVW9LellnaUFwV1ZfVG9rZW46UXJPZGJKVzdOb0RVMlN4Sm04ZGN2TEVDblJkXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p>此外，与 PD 架构相比，PI 架构表现出有竞争力的性能，而 PI 架构更加轻量级和高效，如表 13 所示。其中，MLP 在保持效率的同时表现出最佳性能，因此我们在所有实验中都使用 MLP 作为 PITS 的架构。</p>
+<h5 id="隐藏维度和丢失"><a class="markdownIt-Anchor" href="#隐藏维度和丢失"></a> 隐藏维度和丢失</h5>
+<p>PI 任务可能会引起对平凡解决方案的关注：当隐藏维度 D 大于输入维度 P 时，恒等映射完美地重构了输入。这可以通过引入 dropout 来解决，我们在线性投影头之前添加一个 dropout 层。图 4 显示了 MLP 中不同隐藏维度 D 下的四个 ETT 数据集在四个水平线上的平均 MSE，公共输入水平为 512，没有丢失或丢失率为 0.2。请注意，对于此实验，输入维度（patch 大小）为 12，如果 D ≥ 12，则可能出现简单的解决方案。结果证实，使用 dropout 对于学习高维表示是必要的，从而获得更好的性能。基于这个结果，我们在整个实验中调整 D ∈ {32, 64, 128}，而性能与该范围内的 D 值一致。不同退出率的消融研究见附录 K</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NzJlY2MxODNhZTNmZTVlMmJmNjlkYzNhOTFhN2YzYTNfUjNWNHI4U3pvUjhhSFlRU0l1U2JHZ3dWNUlGenNzUnVfVG9rZW46V1dZeGJVSTREb3Y1clh4T2RVSWNhbno2blNmXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<h5 id="各种预训练任务的执行"><a class="markdownIt-Anchor" href="#各种预训练任务的执行"></a> 各种预训练任务的执行</h5>
+<p>除了 1) 重建屏蔽补丁 (Xm) 的 PD 任务和 2) 自动编码未屏蔽补丁 (Xu) 的 PI 任务外，我们还使用其他两个基本任务进行比较：3) 从零填充补丁预测 Xu ( 0) 和 4) 自动编码 0。表 8 显示了四个 ETT 数据集在四个水平线上的平均 MSE，公共输入水平为 512，突出显示使用 PD 任务预训练的模型表现甚至比以 0 作为输入的两个基本任务还糟糕。这强调了 PD 任务的无效性和所提议的 PI 任务的有效性。</p>
+<h5 id="下游任务使用哪种表示形式"><a class="markdownIt-Anchor" href="#下游任务使用哪种表示形式"></a> 下游任务使用哪种表示形式？</h5>
+<p>在SSL中，编码器和特定任务投影头的边界通常是不清楚的。为了确定提取下游任务表示的位置，我们使用 MLP 中中间层的表示进行实验：1）来自第一层的 z1，2）来自第二层的 z2，以及 3）来自附加投影层的 z*2在第二层的上面。表 10 显示了 ETTh1 在四个层面上的 MSE，表明第二层 z2 产生了最好的结果。</p>
+<h5 id="互补-cl-的位置"><a class="markdownIt-Anchor" href="#互补-cl-的位置"></a> 互补 CL 的位置</h5>
+<p>为了评估互补 CL 与 PI 重建的效果，我们对借口任务的选择及其在 MLP 编码器中的位置进行了消融研究：对比和/或重建损失在第一层或第二层上计算，或两者都不计算。表 9 显示了四个 ETT 数据集在四个层面上的平均 MSE。我们观察到PI重建任务是必不可少的，并且当在第一层考虑CL时它是有效的。</p>
+<h5 id="互补cl的分层设计"><a class="markdownIt-Anchor" href="#互补cl的分层设计"></a> 互补CL的分层设计</h5>
+<p>所提出的互补 CL 采用分层结构，以捕获时间序列中的粗粒度和细粒度信息。为了评估这种分层设计的效果，我们考虑三种不同的选项：1）不使用 CL，2）使用非分层 CL，3）使用分层 CL。表 11 显示了四个层面上四个 ETT 数据集的平均 MSE，突出了分层设计带来的性能增益。</p>
+<h5 id="与-patchtst-的比较"><a class="markdownIt-Anchor" href="#与-patchtst-的比较"></a> 与 PatchTST 的比较</h5>
+<p>PITS 可以通过改变预训练任务和编码器架构从 PatchTST 衍生而来。表 12 显示了每个修改如何有助于 ETTh1 数据集的性能改进。请注意，我们对 PatchTST 应用了 50% 的掩模比，这不会影响性能（用*标记）。</p>
+<h2 id="5分析"><a class="markdownIt-Anchor" href="#5分析"></a> 5.分析</h2>
+<h4 id="pi-任务比pd-任务对分布变化具有更强的鲁棒性"><a class="markdownIt-Anchor" href="#pi-任务比pd-任务对分布变化具有更强的鲁棒性"></a> PI 任务比PD 任务对分布变化具有更强的鲁棒性</h4>
+<p>为了评估预训练任务对现实世界数据集中常见的分布变化的鲁棒性（Han 等人，2023），我们生成了 98 个表现出不同程度分布变化的玩具示例，如图 5 左图所示. 偏移程度通过斜率和幅度的变化来表征。图 5 的右侧面板可视化了使用 PD 和 PI 任务训练的模型之间的性能差距，其中水平轴和垂直轴分别对应于训练和测试阶段之间的斜率和幅度差异。结果表明，使用 PI 任务训练的模型对分布变化表现出整体更好的鲁棒性，因为 MSE 差异在所有情况下都是非负的，并且差距随着变化变得更加严重而增加，特别是当斜率翻转或幅度增加时。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MzYwMzI0MmIzOTM0NjZmOGJiNjFkMWYxMjNlZDNhOGNfMjJSZDFTeGhQSjBObUlJa3ZjaDZpYTJMeFQ2SmxYcTlfVG9rZW46WURiVmI5MGVVb2V6bUx4dk1TMWNPcEFMbjNlXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<h4 id="mlp-对-patch-大小的鲁棒性比-transformer-更强"><a class="markdownIt-Anchor" href="#mlp-对-patch-大小的鲁棒性比-transformer-更强"></a> MLP 对 patch 大小的鲁棒性比 Transformer 更强</h4>
+<p>为了评估编码器架构对补丁大小的鲁棒性，我们使用具有不同补丁大小的 ETTh1 来比较 MLP 和 Transformer。图 6 展示了结果，表明 MLP 对于 PI 和 PD 任务都更加稳健，从而在各种补丁大小上始终获得更好的预测性能。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=OWRlOWM4MTZjNTEzZTJhNTUyMmZjMGU5OWUzY2Q4YmJfOHlNanFEdVROT0t0alZtZWptczU1T0d5TXMyamE4T3JfVG9rZW46VXdOdGJObjl2b2NlYVJ4dG90T2M5aE5MbjNnXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<h4 id="mlp-比-transformer-更容易解释"><a class="markdownIt-Anchor" href="#mlp-比-transformer-更容易解释"></a> MLP 比 Transformer 更容易解释</h4>
+<p>PI架构独立处理每个补丁，而PD架构共享所有补丁的信息，导致补丁之间的信息泄漏。这使得 MLP 比 Transformer 更容易解释，因为可视化为下游任务额外引入和学习的线性层的权重矩阵显示了每个补丁对预测的贡献。图 7 说明了两种架构的 ETTm1 的季节性以及在 ETTm1 上训练的下游权重矩阵。虽然 Transformer 顶部线性层的权重矩阵大部分是均匀的，但 MLP 的权重矩阵揭示了季节性模式并强调了最新信息，这凸显了 MLP 比 Transformer 更好地捕获了季节性。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YzM2OTY4OWY1OTg4YTc0Y2RhYjdhZDE1NDQyN2I4MzFfU25EZnM5SDdTUVJPMVY1SEtFdlE1OWZ1RndxTTBaVDFfVG9rZW46UVY4M2JqZk8wbzg2T3d4R3VUQmM4OEpabkhkXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<h4 id="效率分析"><a class="markdownIt-Anchor" href="#效率分析"></a> 效率分析</h4>
+<p>为了证明 PI 架构的效率，我们在 ETTm2 上的参数数量和训练/推理时间方面比较了 PatchTST 和 PITS。如表 13 所示，PITS 的性能优于 PatchTST，参数显着减少，训练和推理速度更快，其中我们预训练 100 个 epoch，并对整个测试数据集进行推理。附录 J 提供了自我监督和监督设置之间的效率比较。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZGQyZGE1MzI0ZjQ4ZDc5MmIwZDVhZGIyZDExYTdhZjdfa2oyMGtXY3N4ZUR5emxTcWdyTm5ydFpMQVpva1AyY21fVG9rZW46VDRmdmJJell4b0VVSXJ4Y1RUWmN6UXNIbmliXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<h4 id="t-sne-可视化"><a class="markdownIt-Anchor" href="#t-sne-可视化"></a> t-SNE 可视化</h4>
+<p>为了评估从 PI 和 PD 任务中获得的表示的质量，我们利用 t-SNE (Van der Maaten &amp; Hinton, 2008) 进行可视化。对于此分析，我们创建了具有 10 个类别的趋势和季节性模式的玩具示例，如图 8 所示。结果表明，从 PI 任务中学习的表示可以更好地区分类别。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MWM0MjE4Y2I5ZTNjNGNiMDYxY2YyODcyY2RhMzg5MTFfcGtyMHcyM1hrbEV4SlBOZ3ZPRXIxNkV1M2hydmtTZDJfVG9rZW46QThuNGJWN0ZRb09LSjV4Qjl0VWNZaXZNbmtjXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<h2 id="6-结论"><a class="markdownIt-Anchor" href="#6-结论"></a> 6 结论</h2>
+<p>本文重新审视了时间序列分析中的掩模建模，重点关注两个关键方面：</p>
+<ol>
+<li>预训练任务</li>
+<li>模型架构。</li>
+</ol>
+<p>与之前主要强调 TS 补丁之间依赖关系的工作相比，我们在两个方面提倡独立于补丁的方法：</p>
+<ol>
+<li>引入补丁重建任务</li>
+<li>采用补丁式 MLP。</li>
+</ol>
+<p>我们的结果表明，与 PD 方法相比，所提出的 PI 方法对分布变化和补丁大小更加稳健，从而实现卓越的性能，同时在预测和分类任务中更加高效。我们希望我们的工作通过简单的预训练任务和各个领域的模型架构来阐明自监督学习的有效性，并为未来的时间序列分析工作提供强有力的基线。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/04/01/%E3%80%8ALearning%20Decomposed%20Spatial%20Relations%20for%20Multi-Variate%20Time-Series%20Modeling%E3%80%8B%E8%AE%BA%E6%96%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Xu Yang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Hexo">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/04/01/%E3%80%8ALearning%20Decomposed%20Spatial%20Relations%20for%20Multi-Variate%20Time-Series%20Modeling%E3%80%8B%E8%AE%BA%E6%96%87/" class="post-title-link" itemprop="url">未命名</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-04-01 17:58:50 / 修改时间：17:58:03" itemprop="dateCreated datePublished" datetime="2025-04-01T17:58:50+08:00">2025-04-01</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="learning-decomposed-spatial-relations-for-multi-variate-time-series-modeling论文"><a class="markdownIt-Anchor" href="#learning-decomposed-spatial-relations-for-multi-variate-time-series-modeling论文"></a> 《Learning Decomposed Spatial Relations for Multi-Variate Time-Series Modeling》论文</h1>
+<p>黄色：现象       红色：疑问      绿色：解答     蓝色：创新点</p>
+<h3 id="动机"><a class="markdownIt-Anchor" href="#动机"></a> 动机</h3>
+<p>目前研究多元时间序列的常见方法是：首先为每个数据集学习一个静态图，然后通过图神经网络利用图结构。</p>
+<p>然而，由于不同样本之间的空间关系可能有很大差异，为所有样本构建一个静态图限制了灵活性并严重降低了实践中的性能。</p>
+<p>可以通过下图理解之前工作的弊端：图1a说明了为整个数据集构建一个静态图，没有考虑到不同样本之间的关系通常有所不同，在一个交通数据集中，有多个传感器采集的时间序列数据，每个传感器对应一个变量，一些因素（例如动态交通流、道路维护或突发事故）会影响交叉口传感器之间的相关性，从而导致不同样本中的动态变量关系。除了这些因素之外，一些共同关系（例如干线交通状况）在样本中保持不变。那由于上面提到的这种动态关系，是否要为每个样本都分别构建一个动态图呢？图1b说明大部分样本具有很高的相似度，分别构建动态图回丢失公共信息并引入额外的噪声。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Yjc3NjBmNzhkMGMyMzY5N2MzMDcyOWUzNTA1MWQ1OTdfNGRPTzNJU3RhbkJWbFRnR0M1YjhCeE91RlZ0a3o5V1dfVG9rZW46UDczc2JoTU1Jb1V1Rnd4TnRBc2NpTHlBbmVmXzE3NDM1MDE0NzE6MTc0MzUwNTA3MV9WNA" alt="img" /></p>
+<h3 id="解决方法"><a class="markdownIt-Anchor" href="#解决方法"></a> 解决方法</h3>
+<p>因此作者提出了一种框架将空间关系分解为适用于所有样本的先验部分（矛盾的一般性）依赖于所有数据的一般信息并适用于所有样本的先验图 和在样本之间变化的动态部分（矛盾的特殊性）跨样本变化并依赖于样本级特征的动态图</p>
+<p>作者称其为最小-最大学习范式，它不仅规范了不同动态图的公共部分，而且保证了样本之间的空间可区分性。</p>
+<p>**图学习模块：**学习变量的的嵌入，其中如果变量有侧面特征，则将其线性变换后初始化嵌入Ep，否则随机初始化嵌入Ep。对于动态图，我们从每个样本的时序数据中提取动态节点嵌入。时间提取函数可以是GRU等，进一步学习嵌入每个变量。</p>
+<p>图中Ep是先验嵌入，Ed是动态节点嵌入。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=OTBkNzlhODY4OWM0YTgxMGQyNDc3ZGE3MzFjNzM2YjhfT1Jpd29qSmdsRGVZUHFUZW44SXhndklHSFloNE1BWEVfVG9rZW46QWtTMGJpakpFb3pDVTF4NUZ5ZWM2YVl2bnlPXzE3NDM1MDE0NzE6MTc0MzUwNTA3MV9WNA" alt="img" /></p>
+<p><strong>生成邻接矩阵</strong></p>
+<p>根据上面得到的Ep和Ed，生成单向（变量依赖关系是有时间顺序的，A影响B）稀疏（只捕获最重要的空间关系）邻接矩阵。获得Ap与Ad</p>
+<p><strong>通过最小-最大学习<strong><strong>范式</strong></strong>进行优化</strong></p>
+<p>为了确保有效且高效的图结构学习，我们期望先验图和动态图包含变量之间不同的空间关系。具体来说，整个数据集中通用的依赖关系应该由先前的图捕获，并且动态图应该仅包含从其自身数据推断出的单个样本特定的依赖关系。为了实现这一目标，我们设计了一种最小-最大学习范式，通过最大化先验图和动态图之间的差异，同时确保它们包含有意义的空间关系。我们首先定义一个度量 D(·,·) 来测量两个图之间的距离。对于最小化阶段，我们推动先验图以最小化与动态图相比的距离，从而鼓励先验图捕获普遍依赖性。对于最大化阶段，我们优化动态图以最大化先验图之间的距离，从而摆脱动态图的共性，只关注特征中样本特定的信息。两相对应的损失函数为</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=OTQ5Y2UwYmRiMTdkZDRkYTc5ZDc4NDhiMGE1Mzg2MmNfT3l1UjR4WlFiRkYwMlE5OTlUS1VQUmZ4WGpKRXhvb1dfVG9rZW46SDRSV2JYeFBzb0J2NzJ4UDVONGNJZ3NjblNmXzE3NDM1MDE0NzE6MTc0MzUwNTA3MV9WNA" alt="img" /></p>
+<p><strong>预测模块</strong></p>
+<p>最终的损失函数为预测损失和最小最大范式学习损失的和</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YmRjYWM5NDYxNzc0NGRmNmEzNDFiMTE4NWRlYzljMjZfMkw2YU1qVTRrQUhkb2UwZ283YVZvWWx2RTM3ZUhsM3JfVG9rZW46U0FvdWJ0TU5Mb0d5WE14QUVSQWNmYjhmbnhmXzE3NDM1MDE0NzE6MTc0MzUwNTA3MV9WNA" alt="img" /></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 

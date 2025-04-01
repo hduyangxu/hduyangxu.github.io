@@ -2,6 +2,69 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://example.com/2025/04/01/%E3%80%8ATS2Vec%20Towards%20Universal%20Representation%20of%20Time%20Series%E3%80%8B%E8%AE%BA%E6%96%87%20AAAI22/</loc>
+    
+    <lastmod>2025-04-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://example.com/2025/04/01/%E3%80%8ATimesURL%20Self-supervised%20Contrastive%20Learning%20for%20Universal%20Time%20Series%20Representation%20Learning%E3%80%8B%E8%AE%BA%E6%96%87/</loc>
+    
+    <lastmod>2025-04-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://example.com/2025/04/01/%E3%80%8ALearning%20to%20Embed%20Time%20Series%20Patches%20Independently%E3%80%8B%20%E8%AE%BA%E6%96%87/</loc>
+    
+    <lastmod>2025-04-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://example.com/2025/04/01/%E3%80%8ALearning%20Decomposed%20Spatial%20Relations%20for%20Multi-Variate%20Time-Series%20Modeling%E3%80%8B%E8%AE%BA%E6%96%87/</loc>
+    
+    <lastmod>2025-04-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://example.com/2025/04/01/%E3%80%8ACycleNet%20Enhancing%20Time%20Series%20Forecasting%20through%20Modeling%20Periodic%20Patterns%E3%80%8B%20%E8%AE%BA%E6%96%87/</loc>
+    
+    <lastmod>2025-04-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://example.com/2025/04/01/%E3%80%8ACost%20Contrastive%20learning%20of%20disentangled%20seasonal-trend%20representations%20for%20time%20series%20forecasting%E3%80%8B%20ICLR22%20%E8%AE%BA%E6%96%87/</loc>
+    
+    <lastmod>2025-04-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://example.com/2025/04/01/%E3%80%8AConnecting%20the%20Dots%20Multivariate%20Time%20Series%20Forecasting%20with%20Graph%20Neural%20Networks%E3%80%8B%20%E8%AE%BA%E6%96%87KDD20/</loc>
+    
+    <lastmod>2025-04-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>http://example.com/2025/03/31/hello-world/</loc>
     
     <lastmod>2025-03-31</lastmod>
@@ -40,7 +103,7 @@
 
   <url>
     <loc>http://example.com/</loc>
-    <lastmod>2025-03-31</lastmod>
+    <lastmod>2025-04-01</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -48,7 +111,7 @@
   
   <url>
     <loc>http://example.com/tags/%E6%A0%87%E7%AD%BE/</loc>
-    <lastmod>2025-03-31</lastmod>
+    <lastmod>2025-04-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
@@ -57,7 +120,7 @@
   
   <url>
     <loc>http://example.com/categories/%E7%B1%BB%E5%88%AB/</loc>
-    <lastmod>2025-03-31</lastmod>
+    <lastmod>2025-04-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>

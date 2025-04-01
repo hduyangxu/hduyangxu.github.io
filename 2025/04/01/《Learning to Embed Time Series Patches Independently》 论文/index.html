@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.22.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="《Learning to Embed Time Series Patches Independently》 论文 *斜体：*疑问  &amp; 解答 ｜  **加粗：**现象  ｜   下划线：解决方法、创新点  摘要 掩蔽时间序列建模最近作为时间序列的自监督表示学习策略而受到广泛关注。受到计算机视觉中屏蔽图像建模的启发，最近的工作首先对时间序列进行修补和部分屏蔽，然后训练 Transforme">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://example.com/2025/04/01/%E3%80%8ALearning%20to%20Embed%20Time%20Series%20Patches%20Independently%E3%80%8B%20%E8%AE%BA%E6%96%87/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="《Learning to Embed Time Series Patches Independently》 论文 *斜体：*疑问  &amp; 解答 ｜  **加粗：**现象  ｜   下划线：解决方法、创新点  摘要 掩蔽时间序列建模最近作为时间序列的自监督表示学习策略而受到广泛关注。受到计算机视觉中屏蔽图像建模的启发，最近的工作首先对时间序列进行修补和部分屏蔽，然后训练 Transforme">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZjBiODM3Yjk3ZTlmNmMyOGFiZGE0NGJjZDQwMGQzYjdfc0FlQ3NjWmFMYktnSWg4dDl3UWhMVTNJbjloazVzTFZfVG9rZW46Q25GV2JzaXBPb3BlaEh4b1d3NmNXZ3d0blRjXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ODBlYzM0MDM2N2M5NjE2NWE3ZTkwYTRkZTkwZDM0ODRfSGsxWk45M3QxTVh6ZUxaY2JJTVozeXpmQnZXcFh6dlFfVG9rZW46VlI5TmI5bXFDb0lQcUp4QmM0cmN1VDVObm1mXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NzFhZjA4MDM3YmNlOWMwZDdhMTQyMDk4YjE3YTcxODZfZld0eVc4bDg0Tm9xZDk5NVVHbnNPaEdQNHNvcVZuREdfVG9rZW46VWV5MmJwNUNzb1RyU1R4ZVZzZGNRQ1QybkhmXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZGQ5ZGMxOGE5OWQ1MTkxYTU5Yzk2OTJkZjhiNWFlMzdfZlBiNWVFc3dTam95c3pkV2VmbWsyaXJnZGJGZ2RLQThfVG9rZW46TXZCUGJ6VjNvb3AwNXZ4eFNNS2NndVhUbmp2XzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=OGJkODdiZTJjNjJmNWI4YTgwMTI4ZTlhNjI2MzAzYTFfenBlTUlSRk5vZDc5dTBmVldnNjQxalB0bjBka211OHJfVG9rZW46TG14TGJuenBub2paM3l4bHpFbWNZOHBqbkNoXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NjFhMzVjNGRiZGMzZmZmNGExNGNiMDM0ZGEwYzA4NzhfQjhsbHVvaDlPMW1GY2I1UzNxMEhNOE1xQ05CcmNYekFfVG9rZW46UWRpZWJ2clgwb2ZlZW14QkVTOWNvMHZnbkpmXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MzQ2Mjg4NGRkYmYwM2YwYzhhZGJkYzExYTI5MzA2NWRfUk51NDZ5c0ZGemMzcU5RT0NyWFM5U2l3UlBWWGhpMG9fVG9rZW46R09JT2J3enBJb0VKdHV4N3FlUmM5Q2JYbmdnXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Njg4MjUzMGJiOGVmNjUxOTZhYTdjZDlmOGUxYjZkNzJfeDFWSmlrcnE0c1M3bXRIZm4yaUp1WkN0TWlkZFhrVmhfVG9rZW46VE5vbWJqdEIzb0lRTVh4QWM0eGNIbmt4bkJiXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NzUwMzZkNTBjZDMyN2FiYjA2ODc5NjE5ODk2YTY0NTlfVnZoNU53YXVZYWk3bHhYTE1oeUR5b3d0Z3J0bFJWMFZfVG9rZW46UlNUemJQVkZub3BQVWp4OGFBc2NTRllkblBiXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZDM2NGUwNTMwN2JhNzA1ODY5NTYyM2E4OWUzODYyZTVfanZoUTdWRDluczk2UGJ5a2p6QkVVTDJvSXFCMTYzSFFfVG9rZW46T0t6YmJ3Wmhab1RRQXp4Y056MGNiVHdEblNnXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NjA5OWMwNDNjMjM5YWRiNDg3Yjc4ODAzOWZmOGM1NWJfd2Q0bkVQUTlQd2t2cDY5ZEszdFhkc1hSWTEwRFRaQ0JfVG9rZW46V3VXTGJaYWZNb1ZmVEl4SGp6SmNFQUE4bmlnXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Nzg1YWQyNTMxMTQwMzhlY2M5MTBlYTAzMDViZDg2MTRfdm9mYUxBVnNCdGxHUlA3cjBzdzRsUlpZQ1lUdUVtRUhfVG9rZW46VnlHNGJuSkFRb1laZ3l4VXN6d2NVVGI1blBjXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NjllNmY1MWJjMzAzNmYzMGJlYmJjMzU2YzMyYTZhYjNfWDVkZW5IVVFtZjhSMEk0emxYOGZkN3RTWkFEY1l2a0RfVG9rZW46SGlkaGJ2Q1JmbzRVb1h4cE95UGNuTHVobmpmXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=M2Q0ZTQwZDhkMTU3YTI3ZjFhZGJjODg3MDU3MTc5ZDdfSDJHVWhNeXlsUjJONVR4dTZXeXVESXI5ck95TXE2TFNfVG9rZW46VnN1Q2J2aWVEb25YTUd4TEs4bWNJUHdHbkRjXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Y2E1MzRlODg4Zjk3OGFlNjI3ZDg3NWJkN2UzN2VhNDJfZENxcjJRWmFTTFpxNkdSUnlUNFJKYWFONFF0MkVKNUVfVG9rZW46SWFSV2JvcUZ0b3VGcFh4RktSa2NJMFMzbmhmXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NzY2MzRmZTNhM2Q4NzcxMGUxNDRhMDhjYmI0MWFmMjVfV0dFd3JhQVJiVEVqN0IzTkczV0E1clB3aDdTUU9FYW5fVG9rZW46TGFMS2J0Q01tb3JuMnp4MFlCMmNVUkp6bkhiXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=N2NhMDdhYzRiZWU0ZDE2MWQxYmEzZTMzMGZiZTNkNTFfR1FBVnBEZGVyZWRUelZpU0dJUm05T3F3UEYyQjZoenRfVG9rZW46S1R2R2I1REIwb1VaTUd4VXVGdGNWeUFDbjVjXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MGJlNTQxNzIzYTFkNWUyZTJkZGY0MDZmNjZmNmNiZTFfR2JKTUQ5dE1wY0cweUx3SHg0U1E5NmdXaFhhU0RRNWdfVG9rZW46SndlQmJFV0dvbzdXQWl4b242dmNiaVZHblllXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Y2Q0YzI3YWExODYyOWZjM2I5NTk4NzkxZTAxMGRlYjRfNWpHdG9laDJyeUNaMVZEWEN6RU5rY1UzRExURTRqT3ZfVG9rZW46TTlxYWJMZ2Ixbzc1OGV4UmNycWNub2JPblRmXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YjQzZTg4MTcyOTczYzRlZjE4YWMxNzM4NmIwY2QyMGRfdXFkS1JuZE9OT2VvcjBrVEh6b2ZBWmx5M3dzc2puOG1fVG9rZW46V29WbWJuYUw4b3lncDh4dHBiQmNnbjREbkRmXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZWQ4ZjQ3ZGM3MTk2YWJhN2FiOTMxOTlhNDE5NTUwMmFfejJYT1VkanlTM1I4YmJMYVI3UU1YS3BkSklEN1dWRUJfVG9rZW46UUFxbWJmYndKb2I0MFl4VjVjamM3MkVxbmhoXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NjQ5OGZlMzk3Y2I5ZWI4ODY0ZmVmNGUxNDJmZDg0MzZfMlFkNmZmYkx1QjFST3ZhdnFMeXFCVlgwT2hhNlV4aFpfVG9rZW46V0d6VmJhNDNRb3NENm94a3UzZmM0YlBPblVjXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MmViN2I5NjlkZGY1MDAxOGQxMDQyOTcxMzM1ZGM4OGJfOUg1NUV3ekk4TVZhSWdod05TeHNpZ3dRR045WWloSzJfVG9rZW46Umd4Z2JzZXFFb3pKRDR4TFBWQmNacWRXbktmXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=OTMwNzkyODA0MzkzNDE0M2Y1MzQ3YTVmYzAxN2IwMWNfRk5CV2EyejZ6dkdQaEs0SVNxTU9sRG1BNmF2a3VlTXNfVG9rZW46WXlWb2JoR3Nzb3NkU2l4dUVhT2NWYWZWbnRlXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YzFmMzNiOGJlMWM3ZjMzMmZhZWYxNDgxYjA0MTRhMTBfMUZnSEJyWXd5cW5kYjhDcDQ3b1RMVW9LellnaUFwV1ZfVG9rZW46UXJPZGJKVzdOb0RVMlN4Sm04ZGN2TEVDblJkXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NzJlY2MxODNhZTNmZTVlMmJmNjlkYzNhOTFhN2YzYTNfUjNWNHI4U3pvUjhhSFlRU0l1U2JHZ3dWNUlGenNzUnVfVG9rZW46V1dZeGJVSTREb3Y1clh4T2RVSWNhbno2blNmXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MzYwMzI0MmIzOTM0NjZmOGJiNjFkMWYxMjNlZDNhOGNfMjJSZDFTeGhQSjBObUlJa3ZjaDZpYTJMeFQ2SmxYcTlfVG9rZW46WURiVmI5MGVVb2V6bUx4dk1TMWNPcEFMbjNlXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=OWRlOWM4MTZjNTEzZTJhNTUyMmZjMGU5OWUzY2Q4YmJfOHlNanFEdVROT0t0alZtZWptczU1T0d5TXMyamE4T3JfVG9rZW46VXdOdGJObjl2b2NlYVJ4dG90T2M5aE5MbjNnXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YzM2OTY4OWY1OTg4YTc0Y2RhYjdhZDE1NDQyN2I4MzFfU25EZnM5SDdTUVJPMVY1SEtFdlE1OWZ1RndxTTBaVDFfVG9rZW46UVY4M2JqZk8wbzg2T3d4R3VUQmM4OEpabkhkXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZGQyZGE1MzI0ZjQ4ZDc5MmIwZDVhZGIyZDExYTdhZjdfa2oyMGtXY3N4ZUR5emxTcWdyTm5ydFpMQVpva1AyY21fVG9rZW46VDRmdmJJell4b0VVSXJ4Y1RUWmN6UXNIbmliXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MWM0MjE4Y2I5ZTNjNGNiMDYxY2YyODcyY2RhMzg5MTFfcGtyMHcyM1hrbEV4SlBOZ3ZPRXIxNkV1M2hydmtTZDJfVG9rZW46QThuNGJWN0ZRb09LSjV4Qjl0VWNZaXZNbmtjXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA">
+<meta property="article:published_time" content="2025-04-01T09:58:50.167Z">
+<meta property="article:modified_time" content="2025-04-01T09:58:03.632Z">
+<meta property="article:author" content="Xu Yang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZjBiODM3Yjk3ZTlmNmMyOGFiZGE0NGJjZDQwMGQzYjdfc0FlQ3NjWmFMYktnSWg4dDl3UWhMVTNJbjloazVzTFZfVG9rZW46Q25GV2JzaXBPb3BlaEh4b1d3NmNXZ3d0blRjXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA">
+
+
+<link rel="canonical" href="http://example.com/2025/04/01/%E3%80%8ALearning%20to%20Embed%20Time%20Series%20Patches%20Independently%E3%80%8B%20%E8%AE%BA%E6%96%87/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2025/04/01/%E3%80%8ALearning%20to%20Embed%20Time%20Series%20Patches%20Independently%E3%80%8B%20%E8%AE%BA%E6%96%87/","path":"2025/04/01/《Learning to Embed Time Series Patches Independently》 论文/","title":""}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title> | Hexo</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Hexo</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#learning-to-embed-time-series-patches-independently-%E8%AE%BA%E6%96%87"><span class="nav-number">1.</span> <span class="nav-text"> 《Learning to Embed Time Series Patches Independently》 论文</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-number">1.1.</span> <span class="nav-text"> 摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.2.</span> <span class="nav-text"> 1.介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.2.1.</span> <span class="nav-text"> 背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%9C%A8%E9%97%AE%E9%A2%98"><span class="nav-number">1.2.2.</span> <span class="nav-text"> 存在问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%80%9D%E8%B7%AF"><span class="nav-number">1.2.3.</span> <span class="nav-text"> 解决思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%88%E6%9E%9C%E5%8F%8A%E8%B4%A1%E7%8C%AE"><span class="nav-number">1.2.4.</span> <span class="nav-text"> 效果及贡献</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E7%9B%B8%E5%85%B3%E5%B7%A5%E4%BD%9C"><span class="nav-number">1.3.</span> <span class="nav-text"> 2.相关工作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0"><span class="nav-number">1.3.1.</span> <span class="nav-text"> 自监督学习</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%8F%E8%94%BD%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E5%BB%BA%E6%A8%A1"><span class="nav-number">1.3.2.</span> <span class="nav-text"> 屏蔽时间序列建模</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cl-%E5%92%8C-mm-%E7%9A%84%E7%BB%84%E5%90%88"><span class="nav-number">1.3.3.</span> <span class="nav-text"> CL 和 MM 的组合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%92%E8%A1%A5%E6%8E%A9%E8%94%BD"><span class="nav-number">1.3.4.</span> <span class="nav-text"> 互补掩蔽</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E4%BA%8E%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E9%A2%84%E6%B5%8B%E7%9A%84%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.3.5.</span> <span class="nav-text"> 用于时间序列预测的线性模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E6%96%B9%E6%B3%95%E7%BB%86%E8%8A%82"><span class="nav-number">1.4.</span> <span class="nav-text"> 3.方法细节</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%AE%9A%E4%B9%89"><span class="nav-number">1.4.1.</span> <span class="nav-text"> 问题定义</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%9A%E9%81%93%E7%8B%AC%E7%AB%8B%E6%80%A7%E5%92%8Cpatches%E7%8B%AC%E7%AB%8B%E6%80%A7"><span class="nav-number">1.4.1.1.</span> <span class="nav-text"> 通道独立性和Patches独立性</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#31-%E4%B8%8E%E8%A1%A5%E4%B8%81%E6%97%A0%E5%85%B3%E7%9A%84%E4%BB%BB%E5%8A%A1%E8%A1%A5%E4%B8%81%E9%87%8D%E5%BB%BA"><span class="nav-number">1.4.2.</span> <span class="nav-text"> 3.1 与补丁无关的任务：补丁重建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#32-%E5%AE%9E%E7%8E%B0%E8%A1%A5%E4%B8%81%E7%8B%AC%E7%AB%8B%E6%80%A7%E7%9A%84%E6%9E%B6%E6%9E%84mlp"><span class="nav-number">1.4.3.</span> <span class="nav-text"> 3.2 实现补丁独立性的架构：MLP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#33-%E4%BA%92%E8%A1%A5%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0"><span class="nav-number">1.4.4.</span> <span class="nav-text"> 3.3 互补对比学习</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#34-%E7%9B%AE%E6%A0%87%E5%87%BD%E6%95%B0"><span class="nav-number">1.4.5.</span> <span class="nav-text"> 3.4 目标函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%87%8D%E5%BB%BA%E6%8D%9F%E5%A4%B1"><span class="nav-number">1.4.5.1.</span> <span class="nav-text"> 重建损失</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%B9%E6%AF%94%E6%8D%9F%E5%A4%B1"><span class="nav-number">1.4.5.2.</span> <span class="nav-text"> 对比损失</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E4%BE%8B%E6%A0%87%E5%87%86%E5%8C%96"><span class="nav-number">1.4.5.3.</span> <span class="nav-text"> 实例标准化</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4%E5%AE%9E%E9%AA%8C%E6%95%88%E6%9E%9C"><span class="nav-number">1.5.</span> <span class="nav-text"> 4.实验效果</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#41-%E5%AE%9E%E9%AA%8C%E8%AE%BE%E7%BD%AE"><span class="nav-number">1.5.0.1.</span> <span class="nav-text"> 4.1 实验设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#42-%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E9%A2%84%E6%B5%8B"><span class="nav-number">1.5.0.2.</span> <span class="nav-text"> 4.2 时间序列预测</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#43-%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E5%88%86%E7%B1%BB"><span class="nav-number">1.5.0.3.</span> <span class="nav-text"> 4.3 时间序列分类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#44-%E6%B6%88%E8%9E%8D%E5%AE%9E%E9%AA%8C"><span class="nav-number">1.5.0.4.</span> <span class="nav-text"> 4.4 消融实验</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#pipd-%E4%BB%BB%E5%8A%A1%E6%9E%B6%E6%9E%84%E7%9A%84%E6%95%88%E6%9E%9C"><span class="nav-number">1.5.0.4.1.</span> <span class="nav-text"> PI&#x2F;PD 任务&#x2F;架构的效果</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%9A%90%E8%97%8F%E7%BB%B4%E5%BA%A6%E5%92%8C%E4%B8%A2%E5%A4%B1"><span class="nav-number">1.5.0.4.2.</span> <span class="nav-text"> 隐藏维度和丢失</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%90%84%E7%A7%8D%E9%A2%84%E8%AE%AD%E7%BB%83%E4%BB%BB%E5%8A%A1%E7%9A%84%E6%89%A7%E8%A1%8C"><span class="nav-number">1.5.0.4.3.</span> <span class="nav-text"> 各种预训练任务的执行</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%8B%E6%B8%B8%E4%BB%BB%E5%8A%A1%E4%BD%BF%E7%94%A8%E5%93%AA%E7%A7%8D%E8%A1%A8%E7%A4%BA%E5%BD%A2%E5%BC%8F"><span class="nav-number">1.5.0.4.4.</span> <span class="nav-text"> 下游任务使用哪种表示形式？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BA%92%E8%A1%A5-cl-%E7%9A%84%E4%BD%8D%E7%BD%AE"><span class="nav-number">1.5.0.4.5.</span> <span class="nav-text"> 互补 CL 的位置</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BA%92%E8%A1%A5cl%E7%9A%84%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.5.0.4.6.</span> <span class="nav-text"> 互补CL的分层设计</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%8E-patchtst-%E7%9A%84%E6%AF%94%E8%BE%83"><span class="nav-number">1.5.0.4.7.</span> <span class="nav-text"> 与 PatchTST 的比较</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5%E5%88%86%E6%9E%90"><span class="nav-number">1.6.</span> <span class="nav-text"> 5.分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#pi-%E4%BB%BB%E5%8A%A1%E6%AF%94pd-%E4%BB%BB%E5%8A%A1%E5%AF%B9%E5%88%86%E5%B8%83%E5%8F%98%E5%8C%96%E5%85%B7%E6%9C%89%E6%9B%B4%E5%BC%BA%E7%9A%84%E9%B2%81%E6%A3%92%E6%80%A7"><span class="nav-number">1.6.0.1.</span> <span class="nav-text"> PI 任务比PD 任务对分布变化具有更强的鲁棒性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mlp-%E5%AF%B9-patch-%E5%A4%A7%E5%B0%8F%E7%9A%84%E9%B2%81%E6%A3%92%E6%80%A7%E6%AF%94-transformer-%E6%9B%B4%E5%BC%BA"><span class="nav-number">1.6.0.2.</span> <span class="nav-text"> MLP 对 patch 大小的鲁棒性比 Transformer 更强</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mlp-%E6%AF%94-transformer-%E6%9B%B4%E5%AE%B9%E6%98%93%E8%A7%A3%E9%87%8A"><span class="nav-number">1.6.0.3.</span> <span class="nav-text"> MLP 比 Transformer 更容易解释</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%88%E7%8E%87%E5%88%86%E6%9E%90"><span class="nav-number">1.6.0.4.</span> <span class="nav-text"> 效率分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#t-sne-%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="nav-number">1.6.0.5.</span> <span class="nav-text"> t-SNE 可视化</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E7%BB%93%E8%AE%BA"><span class="nav-number">1.7.</span> <span class="nav-text"> 6 结论</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Xu Yang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hduyangxu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hduyangxu" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/04/01/%E3%80%8ALearning%20to%20Embed%20Time%20Series%20Patches%20Independently%E3%80%8B%20%E8%AE%BA%E6%96%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Xu Yang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | Hexo">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-04-01 17:58:50 / 修改时间：17:58:03" itemprop="dateCreated datePublished" datetime="2025-04-01T17:58:50+08:00">2025-04-01</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="learning-to-embed-time-series-patches-independently-论文"><a class="markdownIt-Anchor" href="#learning-to-embed-time-series-patches-independently-论文"></a> 《Learning to Embed Time Series Patches Independently》 论文</h1>
+<p>*斜体：*疑问  &amp; 解答 ｜  **加粗：**现象  ｜   下划线：解决方法、创新点</p>
+<h2 id="摘要"><a class="markdownIt-Anchor" href="#摘要"></a> 摘要</h2>
+<p>掩蔽时间序列建模最近作为时间序列的自监督表示学习策略而受到广泛关注。受到计算机视觉中屏蔽图像建模的启发，最近的工作首先对时间序列进行修补和部分屏蔽，然后训练 Transformer 通过从未屏蔽的补丁中预测屏蔽的补丁来捕获补丁之间的依赖关系。然而，我们认为捕获此类补丁依赖关系可能不是时间序列表示学习的最佳策略；相反，学习独立嵌入补丁会产生更好的时间序列表示。具体来说，我们建议使用 1) 简单的补丁重建任务，它自动编码每个补丁而不查看其他补丁，以及 2) 独立嵌入每个补丁的简单的逐补丁 MLP。此外，我们引入互补对比学习来有效地分层捕获相邻时间序列信息。与最先进的基于 Transformer 的模型相比，我们提出的方法提高了时间序列预测和分类性能，同时在参数数量和训练时间方面更加高效。</p>
+<h2 id="1介绍"><a class="markdownIt-Anchor" href="#1介绍"></a> 1.介绍</h2>
+<h3 id="背景"><a class="markdownIt-Anchor" href="#背景"></a> 背景</h3>
+<p>时间序列 (TS) 数据可应用于一系列下游任务，包括预测、分类和异常检测。深度学习在 TS 分析中展现了其优越的性能，其中学习良好的表示对于深度学习的成功至关重要，而自监督学习已成为有效利用未标记数据的一种未来可期的策略。</p>
+<p>值得注意的是，对比学习（CL）和掩模建模（MM）在 TS 分析以及自然语言处理和计算机视觉等其他领域表现出了令人印象深刻的性能。屏蔽时间序列建模 (MTM) 任务部分屏蔽 TS，并使用捕获补丁之间依赖关系的编码器（例如 Transformer）从未屏蔽部分预测屏蔽部分。</p>
+<h3 id="存在问题"><a class="markdownIt-Anchor" href="#存在问题"></a> 存在问题</h3>
+<p>然而，我们认为学习补丁之间的这种依赖关系，例如，根据屏蔽部分预测未屏蔽部分并利用捕获补丁之间依赖关系的架构，对于表示学习可能不是必需的。</p>
+<p><em>作者提出patches依赖关系不是必须的，但在这里却没有给出明确的论证</em></p>
+<h3 id="解决思路"><a class="markdownIt-Anchor" href="#解决思路"></a> 解决思路</h3>
+<p>为此，我们引入了补丁独立性的概念，即在嵌入TS补丁时不考虑TS补丁之间的交互。这个概念是通过两个关键方面实现的：</p>
+<p>1） 预训练任务</p>
+<p>2）模型架构</p>
+<p>首先，我们提出了一个补丁重建任务，可以重建未屏蔽的补丁，这与预测屏蔽补丁的传统 MM 不同。我们将这些任务分类为：</p>
+<p>补丁无关（PI）任务：不需要有关其他补丁的信息来重建每个补丁</p>
+<p>补丁相关（PD）任务：需要有关其他补丁的信息来重建每个补丁</p>
+<p>图 1 展示了 TS 预测的一个简单示例。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZjBiODM3Yjk3ZTlmNmMyOGFiZGE0NGJjZDQwMGQzYjdfc0FlQ3NjWmFMYktnSWg4dDl3UWhMVTNJbjloazVzTFZfVG9rZW46Q25GV2JzaXBPb3BlaEh4b1d3NmNXZ3d0blRjXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p>尽管在 PD 任务上预训练的 Transformer（Nie 等人，2023）无法预测分布偏移下的测试数据，但在 PI 任务上预训练的 Transformer 对此更具有鲁棒性。</p>
+<p>其次，我们采用简单的 PI 架构（例如 MLP），比传统的 PD 架构（例如 Transformer）表现出更好的效率和性能。在本文中，我们提出了时间序列的补丁独立性（PITS），它利用无掩模补丁重建作为 PI 预训练任务，并使用 MLP 作为 PI 架构。最重要的是，我们引入互补对比学习CL 来有效捕获相邻时间序列信息，其中 CL 是使用以互补方式屏蔽原始样本的两个增强视图来执行的。</p>
+<h3 id="效果及贡献"><a class="markdownIt-Anchor" href="#效果及贡献"></a> 效果及贡献</h3>
+<p>我们对各种任务进行了广泛的实验，证明我们提出的方法在标准和迁移学习设置下，在预测和分类任务中都优于最先进的（SOTA）性能。主要贡献总结如下：</p>
+<ul>
+<li>我们认为，在TS表示学习中，独立学习嵌入时间序列补丁在性能和效率方面都优于依赖学习，为了实现补丁独立性，我们提出了 PITS，它对 MTM 进行了两项主要修改：</li>
+</ul>
+<p>1）使任务补丁独立，重建未屏蔽的补丁而不是预测屏蔽的补丁</p>
+<p>2）使编码器补丁独立，消除注意力机制，同时保留 MLP 以忽略编码期间补丁之间的相关性。</p>
+<ul>
+<li>我们引入互补对比学习来有效地分层捕获相邻的 TS 信息，其中正对是通过互补随机掩码形成的。</li>
+<li>我们针对低级预测和高级分类进行了广泛的实验，证明我们的方法提高了各种下游任务的 SOTA 性能。此外，我们发现 PI 任务在管理分布变化方面优于 PD 任务，并且与 PD 架构相比，PI 架构对于补丁大小更具可解释性和鲁棒性。</li>
+</ul>
+<h2 id="2相关工作"><a class="markdownIt-Anchor" href="#2相关工作"></a> 2.相关工作</h2>
+<h3 id="自监督学习"><a class="markdownIt-Anchor" href="#自监督学习"></a> 自监督学习</h3>
+<p>近年来，自监督学习（SSL）因从各个领域的未标记数据中学习强大的表示而受到关注。 SSL 的成功来自于对借口任务的积极研究，这些任务可以在没有监督的情况下预测数据的某个方面。下一个标记预测 (Brown et al., 2020) 和屏蔽标记预测 (Devlin et al., 2018) 常用于自然语言处理，拼图游戏 (Noroozi &amp; Favaro, 2016) 和旋转预测 (Gidaris &amp; Komodakis, 2018) ）常用于计算机视觉。</p>
+<p><strong>最近，对比学习（<strong><strong>CL</strong></strong>）（Hadsell 等，2006）已成为一种有效的借口任务。</strong> CL的关键原则是最大化正对之间的相似性，同时最小化负对之间的相似性（Gao et al., 2021; Chen et al., 2020; Yue et al., 2022）。**另一种具有发展前景的技术是掩模建模，它根据未掩模部分重建掩模补丁训练模型。**例如，在自然语言处理中，模型预测句子中的屏蔽词（Devlin et al., 2018），而在计算机视觉中，它们预测图像中的屏蔽补丁（Baevski et al., 2022；He et al., 2022； Xie 等人，2022）在各自的领域内。</p>
+<h3 id="屏蔽时间序列建模"><a class="markdownIt-Anchor" href="#屏蔽时间序列建模"></a> 屏蔽时间序列建模</h3>
+<p>除了 CL 之外，MM 作为 TS 中 SSL 的借口任务也受到了关注。此任务涉及屏蔽 TS 的一部分并预测缺失值，称为屏蔽时间序列建模 (MTM)。虽然 <strong>CL 在高级分类任务中表现出令人印象深刻的性能，但 MM 在低级预测任务中表现出色</strong>（Yue 等，2022；Nie 等，2023）。 TST（Zerveas et al., 2021）将 MM 范式应用于 TS，旨在重建屏蔽时间戳。 PatchTST（Nie 等人，2023）专注于预测屏蔽子系列级补丁，以捕获本地语义信息并减少内存使用。 SimMTM（Dong et al., 2023）从多个屏蔽 TS 重建原始 TS。 TimeMAE（Cheng 等人，2023）使用两个借口任务（掩码码字分类和掩码表示回归）训练基于变压器的编码器。表1比较了TS中的各种方法，包括我们的方法，从两个标准：预训练方法和下游任务，其中预训练方法中的No（Sup.）表示不使用预训练的监督学习方法。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ODBlYzM0MDM2N2M5NjE2NWE3ZTkwYTRkZTkwZDM0ODRfSGsxWk45M3QxTVh6ZUxaY2JJTVozeXpmQnZXcFh6dlFfVG9rZW46VlI5TmI5bXFDb0lQcUp4QmM0cmN1VDVObm1mXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p>与最近的 MTM 工作不同，我们建议通过自动编码来重建未屏蔽的补丁。自动编码的一个主要问题是容易陷入频繁解的恒等映射（即学不到任何信息，输入什么就映射成什么），使得隐藏层的维度应该小于输入层的维度。为了缓解这个问题，我们在中间全连接（FC）层之后引入了 dropout，这类似于堆叠式去噪自动编码器的情况（Liang &amp; Liu，2015），其中的消融研究可以在图 4 中找到。</p>
+<h3 id="cl-和-mm-的组合"><a class="markdownIt-Anchor" href="#cl-和-mm-的组合"></a> CL 和 MM 的组合</h3>
+<p>最近有人努力将 CL 和 MM 结合起来进行表示学习。在这些工作中，SimMTM（Dong et al., 2023）以对比损失的形式在其目标函数中使用正则化器来解决 MM 任务。然而，它与我们的工作不同，它侧重于 TS 之间的 CL，而我们提出的 CL 在单个 TS 内使用补丁进行操作。</p>
+<h3 id="互补掩蔽"><a class="markdownIt-Anchor" href="#互补掩蔽"></a> 互补掩蔽</h3>
+<p>SdAE（Chen et al., 2022）使用学生分支进行信息重建，使用教师分支生成屏蔽标记的潜在表示，利用互补的多重屏蔽策略来维护分支之间的相关互信息。 TSCAE (Ye et al., 2023) 通过为师生网络引入互补掩码来解决基于 MM 的预训练模型中上下游不匹配的差距，而 CFM (Liao et al., 2022) 则引入了可训练的互补掩码策略用于特征选择。我们提出的互补掩码策略的不同之处在于它不是为蒸馏模型设计的，并且我们的掩码是不可学习的而是随机生成的。</p>
+<blockquote>
+<p><em>在<strong>深度学习</strong>中，蒸馏模型（Knowledge Distillation）是一种技术，用于将一个复杂的模型（通常称为教师模型）的知识转移给一个简化的模型（通常称为学生模型）。这个过程的目标是让学生模型尽可能地模拟教师模型的行为，同时保持更小的模型大小和计算成本。</em></p>
+<p><em>蒸馏模型的基本思想是通过引导学生模型学习教师模型的预测行为，而不是直接让学生模型尝试去<strong>拟合</strong>训练数据</em>*。通常情况下，教师模型是一个大型、准确度较高的模型，而学生模型则是一个轻量级的模型，通常具有较少的参数和更简单的结构。*</p>
+</blockquote>
+<h3 id="用于时间序列预测的线性模型"><a class="markdownIt-Anchor" href="#用于时间序列预测的线性模型"></a> 用于时间序列预测的线性模型</h3>
+<p>Transformer（Vaswani 等人，2017）是一种流行的序列建模架构，它促使基于 Transformer 的时间序列分析解决方案激增（Wen 等人，2022）。 Transformer 的主要优势来自多头自注意力机制，擅长提取广泛序列中的语义相关性。尽管如此，<strong>Zeng 等人最近的工作表明简单的<strong><strong>线性模型</strong></strong>仍然可以提取基于 Transformer 的方法捕获的信息</strong>。受这项工作的启发，我们建议使用一种简单的 MLP 架构，该架构不对时间序列补丁之间的交互进行编码。</p>
+<h2 id="3方法细节"><a class="markdownIt-Anchor" href="#3方法细节"></a> 3.方法细节</h2>
+<h3 id="问题定义"><a class="markdownIt-Anchor" href="#问题定义"></a> 问题定义</h3>
+<p>我们解决了学习时间序列patch 的嵌入函数 fθ 的任务：</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NzFhZjA4MDM3YmNlOWMwZDdhMTQyMDk4YjE3YTcxODZfZld0eVc4bDg0Tm9xZDk5NVVHbnNPaEdQNHNvcVZuREdfVG9rZW46VWV5MmJwNUNzb1RyU1R4ZVZzZGNRQ1QybkhmXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p>输入和输出维度，即补丁输入维度和补丁嵌入维度，分别表示为 P 和 D，即</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZGQ5ZGMxOGE5OWQ1MTkxYTU5Yzk2OTJkZjhiNWFlMzdfZlBiNWVFc3dTam95c3pkV2VmbWsyaXJnZGJGZ2RLQThfVG9rZW46TXZCUGJ6VjNvb3AwNXZ4eFNNS2NndVhUbmp2XzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p>我们的目标是学习 fθ 提取在各种下游任务中表现良好的表示。</p>
+<h4 id="通道独立性和patches独立性"><a class="markdownIt-Anchor" href="#通道独立性和patches独立性"></a> 通道独立性和Patches独立性</h4>
+<p>我们的方法使用通道独立架构，其中所有通道共享相同的模型权重并独立嵌入，即 fθ 独立于 c。与通道相关（PD）的方法相比，这显示了对分布变化的稳健预测（Han 等人，2023）。此外，我们建议使用 PI 架构，其中所有补丁共享相同的模型权重并独立嵌入，即 fθ 独立于 n。我们在图 2(a) 中说明了四种不同的 PI/PD 架构，其中我们将 MLP 用于我们提出的 PITS，因为它的效率和性能分别如表 13 和表 7 所示。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=OGJkODdiZTJjNjJmNWI4YTgwMTI4ZTlhNjI2MzAzYTFfenBlTUlSRk5vZDc5dTBmVldnNjQxalB0bjBka211OHJfVG9rZW46TG14TGJuenBub2paM3l4bHpFbWNZOHBqbkNoXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NjFhMzVjNGRiZGMzZmZmNGExNGNiMDM0ZGEwYzA4NzhfQjhsbHVvaDlPMW1GY2I1UzNxMEhNOE1xQ05CcmNYekFfVG9rZW46UWRpZWJ2clgwb2ZlZW14QkVTOWNvMHZnbkpmXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MzQ2Mjg4NGRkYmYwM2YwYzhhZGJkYzExYTI5MzA2NWRfUk51NDZ5c0ZGemMzcU5RT0NyWFM5U2l3UlBWWGhpMG9fVG9rZW46R09JT2J3enBJb0VKdHV4N3FlUmM5Q2JYbmdnXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p>PITS 的补丁无关策略： (a) 从 PI 和 PD 方面说明了预训练任务和编码器架构。</p>
+<h3 id="31-与补丁无关的任务补丁重建"><a class="markdownIt-Anchor" href="#31-与补丁无关的任务补丁重建"></a> 3.1 与补丁无关的任务：补丁重建</h3>
+<p>与使用未屏蔽补丁预测屏蔽补丁的传统 MM 任务（即 PD 任务）不同，我们提出了补丁重建任务（即 PI 任务），它可以自动编码每个补丁而不查看其他补丁。因此，虽然原始 PD 任务需要捕获补丁依赖关系，但我们提出的任务不需要。分片段后的单变量 TS 可以重建为如下两种不同的方式：</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Njg4MjUzMGJiOGVmNjUxOTZhYTdjZDlmOGUxYjZkNzJfeDFWSmlrcnE0c1M3bXRIZm4yaUp1WkN0TWlkZFhrVmhfVG9rZW46VE5vbWJqdEIzb0lRTVh4QWM0eGNIbmt4bkJiXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p>作者采用了逐补丁式重建，因为这在实验中产生了更好的性能</p>
+<h3 id="32-实现补丁独立性的架构mlp"><a class="markdownIt-Anchor" href="#32-实现补丁独立性的架构mlp"></a> 3.2 实现补丁独立性的架构：MLP</h3>
+<p>虽然通常使用 Transformer 研究 MTM 以捕获补丁之间的依赖关系，但我们认为学习独立嵌入补丁会更好。遵循这个想法，我们建议使用简单的 PI 架构，以便编码器只专注于提取 patch-wise 表示。图 2(a) 显示了 PI/PD 预训练任务和编码器架构的示例。对于 PI 架构，Linear 由单个 FC 层模型组成，MLP 由带有 ReLU 的两层 MLP 组成。对于 PD 架构，MLP-Mixer2（Tolstikhin 等人，2021；Chen 等人，2023）由用于时间混合（N -dim）的单个 FC 层和随后用于补丁混合的两层 MLP（D -dim)，而 Transformer 由一个自注意力层和一个两层 MLP 组成，遵循 Nie 等人的观点。 （2023）。表 13 提供了 MLP 和 Transformer 在参数数量和训练/推理时间方面的效率比较</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NzUwMzZkNTBjZDMyN2FiYjA2ODc5NjE5ODk2YTY0NTlfVnZoNU53YXVZYWk3bHhYTE1oeUR5b3d0Z3J0bFJWMFZfVG9rZW46UlNUemJQVkZub3BQVWp4OGFBc2NTRllkblBiXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZDM2NGUwNTMwN2JhNzA1ODY5NTYyM2E4OWUzODYyZTVfanZoUTdWRDluczk2UGJ5a2p6QkVVTDJvSXFCMTYzSFFfVG9rZW46T0t6YmJ3Wmhab1RRQXp4Y056MGNiVHdEblNnXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<h3 id="33-互补对比学习"><a class="markdownIt-Anchor" href="#33-互补对比学习"></a> 3.3 互补对比学习</h3>
+<p>为了进一步提高学习表示的性能，我们提出了互补 CL 来分层捕获相邻的 TS 信息。 CL需要两个视图来生成正对，我们通过互补掩码策略来实现这一点：对于具有相同长度的时间序列x和掩码m，我们将m ⊙ x和(1 − m) ⊙ x视为两个视图，其中⊙ 是逐元素乘法，我们使用 50% 掩蔽比进行实验。请注意，遮罩的目的是为 CL 生成两个视图；它不会影响所提出的 PI 任务，并且在使用所提出的 PI 架构时不需要额外的前向传播，因此额外的计算成本可以忽略不计。</p>
+<p>图 3 展示了互补 CL 的示例，<em>其中我们通过沿时间轴对块表示进行<strong>最大池化</strong>来分层执行 CL</em>，并计算和聚合在每个级别计算的损失。然后，模型通过对比与另一视图和其他表示的相似度，学习在一个视图中查找缺失的补丁信息，从而使模型能够分层捕获相邻的时序信息。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NjA5OWMwNDNjMjM5YWRiNDg3Yjc4ODAzOWZmOGM1NWJfd2Q0bkVQUTlQd2t2cDY5ZEszdFhkc1hSWTEwRFRaQ0JfVG9rZW46V3VXTGJaYWZNb1ZmVEl4SGp6SmNFQUE4bmlnXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<h3 id="34-目标函数"><a class="markdownIt-Anchor" href="#34-目标函数"></a> 3.4 目标函数</h3>
+<p>如图 2(b) 所示，我们基于表 9 中的消融研究，在第一层执行 对比学习，并通过第二层顶部的附加投影头进行重建。为了区分它们，我们将从 MLP 中的两层获得的表示分别记为 z1 和 z2</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Nzg1YWQyNTMxMTQwMzhlY2M5MTBlYTAzMDViZDg2MTRfdm9mYUxBVnNCdGxHUlA3cjBzdzRsUlpZQ1lUdUVtRUhfVG9rZW46VnlHNGJuSkFRb1laZ3l4VXN6d2NVVGI1blBjXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<h4 id="重建损失"><a class="markdownIt-Anchor" href="#重建损失"></a> 重建损失</h4>
+<p>正如 3.1 节中所讨论的，我们将 z2 输入到 patch-wise 线性投影头中以获得重构结果：</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NjllNmY1MWJjMzAzNmYzMGJlYmJjMzU2YzMyYTZhYjNfWDVkZW5IVVFtZjhSMEk0emxYOGZkN3RTWkFEY1l2a0RfVG9rZW46SGlkaGJ2Q1JmbzRVb1h4cE95UGNuTHVobmpmXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p>那么，重建损失可以写为：</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=M2Q0ZTQwZDhkMTU3YTI3ZjFhZGJjODg3MDU3MTc5ZDdfSDJHVWhNeXlsUjJONVR4dTZXeXVESXI5ck95TXE2TFNfVG9rZW46VnN1Q2J2aWVEb25YTUd4TEs4bWNJUHdHbkRjXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p>其中，如果第一个视图 x(i,c,n) p 被屏蔽，则 m(i,c,n) = 0，否则为 1。正如方程式1中推导的那样。重建任务不受互补掩蔽的影响，即重建两个视图的未遮蔽patches与重建原始patches相同。</p>
+<h4 id="对比损失"><a class="markdownIt-Anchor" href="#对比损失"></a> 对比损失</h4>
+<p>我们为计算时间对比损失时考虑的所有相似性之间的相对相似性建立了一个 softmax 概率。为了简洁起见，将z1拆成两个视图，对应嵌入x。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Y2E1MzRlODg4Zjk3OGFlNjI3ZDg3NWJkN2UzN2VhNDJfZENxcjJRWmFTTFpxNkdSUnlUNFJKYWFONFF0MkVKNUVfVG9rZW46SWFSV2JvcUZ0b3VGcFh4RktSa2NJMFMzbmhmXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p>然后，补丁索引对 (n, n′) 的 softmax 概率定义为：</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NzY2MzRmZTNhM2Q4NzcxMGUxNDRhMDhjYmI0MWFmMjVfV0dFd3JhQVJiVEVqN0IzTkczV0E1clB3aDdTUU9FYW5fVG9rZW46TGFMS2J0Q01tb3JuMnp4MFlCMmNVUkp6bkhiXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=N2NhMDdhYzRiZWU0ZDE2MWQxYmEzZTMzMGZiZTNkNTFfR1FBVnBEZGVyZWRUelZpU0dJUm05T3F3UEYyQjZoenRfVG9rZW46S1R2R2I1REIwb1VaTUd4VXVGdGNWeUFDbjVjXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p>我们使用点积作为相似性度量 ◦。那么，总对比损失可以写为：</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MGJlNTQxNzIzYTFkNWUyZTJkZGY0MDZmNjZmNmNiZTFfR2JKTUQ5dE1wY0cweUx3SHg0U1E5NmdXaFhhU0RRNWdfVG9rZW46SndlQmJFV0dvbzdXQWl4b242dmNiaVZHblllXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p>我们通过最大池化 z(i,c,n) 和维度 n 重复计算分层损失，并进行以下替换，直到 N = 1：</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Y2Q0YzI3YWExODYyOWZjM2I5NTk4NzkxZTAxMGRlYjRfNWpHdG9laDJyeUNaMVZEWEN6RU5rY1UzRExURTRqT3ZfVG9rZW46TTlxYWJMZ2Ixbzc1OGV4UmNycWNub2JPblRmXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p>PITS的最终损失是重建损失和分层对比损失之和：</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YjQzZTg4MTcyOTczYzRlZjE4YWMxNzM4NmIwY2QyMGRfdXFkS1JuZE9OT2VvcjBrVEh6b2ZBWmx5M3dzc2puOG1fVG9rZW46V29WbWJuYUw4b3lncDh4dHBiQmNnbjREbkRmXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<h4 id="实例标准化"><a class="markdownIt-Anchor" href="#实例标准化"></a> 实例标准化</h4>
+<p>为了缓解训练数据和测试数据之间的分布偏移问题，我们用零均值和单位标准差对每个 T时间序列进行归一化（Kim 等人，2021）。具体来说，我们在修补之前对每个 TS 进行标准化，并将平均值和偏差添加回预测的输出。</p>
+<h2 id="4实验效果"><a class="markdownIt-Anchor" href="#4实验效果"></a> 4.实验效果</h2>
+<h4 id="41-实验设置"><a class="markdownIt-Anchor" href="#41-实验设置"></a> 4.1 实验设置</h4>
+<p>任务和评估指标：我们证明了所提出的 PITS 在两个下游任务上的有效性：时间序列预测（TSF）和分类（TSC）任务。为了进行评估，我们主要遵循标准 SSL 框架，在同一数据集上预训练和微调模型，但在一些实验中我们也考虑了域内和跨域迁移学习设置。作为评估指标，我们使用 TSF 的均方误差 (MSE) 和平均绝对误差 (MAE)，以及 TSC 的准确度、精确度、召回率和 F1 分数。</p>
+<h4 id="42-时间序列预测"><a class="markdownIt-Anchor" href="#42-时间序列预测"></a> 4.2 时间序列预测</h4>
+<p>数据集和基线方法</p>
+<p>对于预测任务，我们实验了七个数据集，包括四个 ETT 数据集（ETTh1、ETTh2、ETTm1、ETTm2）、天气、交通和电力（Wu et al., 2021），预测范围为 H ∈ {96, 192, 336、720}。对于基线方法，我们考虑基于 Transformer 的模型，包括 PatchTST (Nie et al., 2023)、SimMTM (Dong et al., 2023)、FEDformer (Zhou et al., 2022) 和 Autoformer (Wu et al., 2022)。 ，2021），以及线性/MLP 模型，包括 DLinear（Zeng 等人，2023）和 TSMixer（Chen 等人，2023）。我们还比较了没有自监督预训练的 PITS 和 PatchTST 3，这本质上只是比较 PI 和 PD 架构。我们遵循 PatchTST、SimMTM 和 TSMixer 的实验设置和基线结果。对于所有超参数调整，我们使用单独的验证数据集，遵循标准协议，将所有数据集按时间顺序分为训练集、验证集和测试集，ETT 数据集的比例为 6:2:2，ETT 数据集的比例为 7:1:2对于其他数据集（Wu et al., 2021）。标准设定。表 2 显示了多变量 TSF 任务的综合结果，表明我们提出的 PITS 在两种设置下都比 PatchTST 具有竞争力，这是基于 SOTA Transformer 的方法，而 PITS 比 PatchTST 更高效。 SimMTM 是一项并行工作，在 SSL 中表现出与我们相似的性能，但在监督学习中明显较差。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZWQ4ZjQ3ZGM3MTk2YWJhN2FiOTMxOTlhNDE5NTUwMmFfejJYT1VkanlTM1I4YmJMYVI3UU1YS3BkSklEN1dWRUJfVG9rZW46UUFxbWJmYndKb2I0MFl4VjVjamM3MkVxbmhoXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p>表 3 比较了三种不同场景下的 PITS 和 PatchTST：微调 (FT)、线性探测 (LP) 和无自监督预训练的监督学习 (Sup.)，其中我们展示了四个层面的平均 MSE。如表 3 所示，在所有场景中，PITS 的平均性能均优于 PatchTST。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NjQ5OGZlMzk3Y2I5ZWI4ODY0ZmVmNGUxNDJmZDg0MzZfMlFkNmZmYkx1QjFST3ZhdnFMeXFCVlgwT2hhNlV4aFpfVG9rZW46V0d6VmJhNDNRb3NENm94a3UzZmM0YlBPblVjXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p>迁移学习，在域内传输中，我们对源数据集和目标数据集使用相同频率的数据集进行实验，而在跨域传输中，我们对源数据集和目标数据集使用不同频率的数据集。表 4 显示了四个层面的平均 MSE 结果，这表明我们提出的 PITS 在大多数情况下超越了 SOTA 方法。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MmViN2I5NjlkZGY1MDAxOGQxMDQyOTcxMzM1ZGM4OGJfOUg1NUV3ekk4TVZhSWdod05TeHNpZ3dRR045WWloSzJfVG9rZW46Umd4Z2JzZXFFb3pKRDR4TFBWQmNacWRXbktmXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<h4 id="43-时间序列分类"><a class="markdownIt-Anchor" href="#43-时间序列分类"></a> 4.3 时间序列分类</h4>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=OTMwNzkyODA0MzkzNDE0M2Y1MzQ3YTVmYzAxN2IwMWNfRk5CV2EyejZ6dkdQaEs0SVNxTU9sRG1BNmF2a3VlTXNfVG9rZW46WXlWb2JoR3Nzb3NkU2l4dUVhT2NWYWZWbnRlXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<h4 id="44-消融实验"><a class="markdownIt-Anchor" href="#44-消融实验"></a> 4.4 消融实验</h4>
+<h5 id="pipd-任务架构的效果"><a class="markdownIt-Anchor" href="#pipd-任务架构的效果"></a> PI/PD 任务/架构的效果</h5>
+<p>为了评估我们提出的 PI 预训练任务和 PI 编码器架构的效果，我们使用通用输入范围 512 和补丁大小 12 进行表 7 中的消融研究。</p>
+<p>回想一下，PD 任务使用未屏蔽的补丁来预测屏蔽的补丁，而 PI 任务会自动编码补丁，PD 架构包括使用全连接层（MLP-Mixer）或自注意力模块（Transformer）的补丁之间的交互，而 PI 架构（Linear，MLP）则不然。如表 7 所示，无论选择哪种架构，PI 预训练都会比 PD 预训练带来更好的 TSF 性能。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YzFmMzNiOGJlMWM3ZjMzMmZhZWYxNDgxYjA0MTRhMTBfMUZnSEJyWXd5cW5kYjhDcDQ3b1RMVW9LellnaUFwV1ZfVG9rZW46UXJPZGJKVzdOb0RVMlN4Sm04ZGN2TEVDblJkXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<p>此外，与 PD 架构相比，PI 架构表现出有竞争力的性能，而 PI 架构更加轻量级和高效，如表 13 所示。其中，MLP 在保持效率的同时表现出最佳性能，因此我们在所有实验中都使用 MLP 作为 PITS 的架构。</p>
+<h5 id="隐藏维度和丢失"><a class="markdownIt-Anchor" href="#隐藏维度和丢失"></a> 隐藏维度和丢失</h5>
+<p>PI 任务可能会引起对平凡解决方案的关注：当隐藏维度 D 大于输入维度 P 时，恒等映射完美地重构了输入。这可以通过引入 dropout 来解决，我们在线性投影头之前添加一个 dropout 层。图 4 显示了 MLP 中不同隐藏维度 D 下的四个 ETT 数据集在四个水平线上的平均 MSE，公共输入水平为 512，没有丢失或丢失率为 0.2。请注意，对于此实验，输入维度（patch 大小）为 12，如果 D ≥ 12，则可能出现简单的解决方案。结果证实，使用 dropout 对于学习高维表示是必要的，从而获得更好的性能。基于这个结果，我们在整个实验中调整 D ∈ {32, 64, 128}，而性能与该范围内的 D 值一致。不同退出率的消融研究见附录 K</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NzJlY2MxODNhZTNmZTVlMmJmNjlkYzNhOTFhN2YzYTNfUjNWNHI4U3pvUjhhSFlRU0l1U2JHZ3dWNUlGenNzUnVfVG9rZW46V1dZeGJVSTREb3Y1clh4T2RVSWNhbno2blNmXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<h5 id="各种预训练任务的执行"><a class="markdownIt-Anchor" href="#各种预训练任务的执行"></a> 各种预训练任务的执行</h5>
+<p>除了 1) 重建屏蔽补丁 (Xm) 的 PD 任务和 2) 自动编码未屏蔽补丁 (Xu) 的 PI 任务外，我们还使用其他两个基本任务进行比较：3) 从零填充补丁预测 Xu ( 0) 和 4) 自动编码 0。表 8 显示了四个 ETT 数据集在四个水平线上的平均 MSE，公共输入水平为 512，突出显示使用 PD 任务预训练的模型表现甚至比以 0 作为输入的两个基本任务还糟糕。这强调了 PD 任务的无效性和所提议的 PI 任务的有效性。</p>
+<h5 id="下游任务使用哪种表示形式"><a class="markdownIt-Anchor" href="#下游任务使用哪种表示形式"></a> 下游任务使用哪种表示形式？</h5>
+<p>在SSL中，编码器和特定任务投影头的边界通常是不清楚的。为了确定提取下游任务表示的位置，我们使用 MLP 中中间层的表示进行实验：1）来自第一层的 z1，2）来自第二层的 z2，以及 3）来自附加投影层的 z*2在第二层的上面。表 10 显示了 ETTh1 在四个层面上的 MSE，表明第二层 z2 产生了最好的结果。</p>
+<h5 id="互补-cl-的位置"><a class="markdownIt-Anchor" href="#互补-cl-的位置"></a> 互补 CL 的位置</h5>
+<p>为了评估互补 CL 与 PI 重建的效果，我们对借口任务的选择及其在 MLP 编码器中的位置进行了消融研究：对比和/或重建损失在第一层或第二层上计算，或两者都不计算。表 9 显示了四个 ETT 数据集在四个层面上的平均 MSE。我们观察到PI重建任务是必不可少的，并且当在第一层考虑CL时它是有效的。</p>
+<h5 id="互补cl的分层设计"><a class="markdownIt-Anchor" href="#互补cl的分层设计"></a> 互补CL的分层设计</h5>
+<p>所提出的互补 CL 采用分层结构，以捕获时间序列中的粗粒度和细粒度信息。为了评估这种分层设计的效果，我们考虑三种不同的选项：1）不使用 CL，2）使用非分层 CL，3）使用分层 CL。表 11 显示了四个层面上四个 ETT 数据集的平均 MSE，突出了分层设计带来的性能增益。</p>
+<h5 id="与-patchtst-的比较"><a class="markdownIt-Anchor" href="#与-patchtst-的比较"></a> 与 PatchTST 的比较</h5>
+<p>PITS 可以通过改变预训练任务和编码器架构从 PatchTST 衍生而来。表 12 显示了每个修改如何有助于 ETTh1 数据集的性能改进。请注意，我们对 PatchTST 应用了 50% 的掩模比，这不会影响性能（用*标记）。</p>
+<h2 id="5分析"><a class="markdownIt-Anchor" href="#5分析"></a> 5.分析</h2>
+<h4 id="pi-任务比pd-任务对分布变化具有更强的鲁棒性"><a class="markdownIt-Anchor" href="#pi-任务比pd-任务对分布变化具有更强的鲁棒性"></a> PI 任务比PD 任务对分布变化具有更强的鲁棒性</h4>
+<p>为了评估预训练任务对现实世界数据集中常见的分布变化的鲁棒性（Han 等人，2023），我们生成了 98 个表现出不同程度分布变化的玩具示例，如图 5 左图所示. 偏移程度通过斜率和幅度的变化来表征。图 5 的右侧面板可视化了使用 PD 和 PI 任务训练的模型之间的性能差距，其中水平轴和垂直轴分别对应于训练和测试阶段之间的斜率和幅度差异。结果表明，使用 PI 任务训练的模型对分布变化表现出整体更好的鲁棒性，因为 MSE 差异在所有情况下都是非负的，并且差距随着变化变得更加严重而增加，特别是当斜率翻转或幅度增加时。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MzYwMzI0MmIzOTM0NjZmOGJiNjFkMWYxMjNlZDNhOGNfMjJSZDFTeGhQSjBObUlJa3ZjaDZpYTJMeFQ2SmxYcTlfVG9rZW46WURiVmI5MGVVb2V6bUx4dk1TMWNPcEFMbjNlXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<h4 id="mlp-对-patch-大小的鲁棒性比-transformer-更强"><a class="markdownIt-Anchor" href="#mlp-对-patch-大小的鲁棒性比-transformer-更强"></a> MLP 对 patch 大小的鲁棒性比 Transformer 更强</h4>
+<p>为了评估编码器架构对补丁大小的鲁棒性，我们使用具有不同补丁大小的 ETTh1 来比较 MLP 和 Transformer。图 6 展示了结果，表明 MLP 对于 PI 和 PD 任务都更加稳健，从而在各种补丁大小上始终获得更好的预测性能。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=OWRlOWM4MTZjNTEzZTJhNTUyMmZjMGU5OWUzY2Q4YmJfOHlNanFEdVROT0t0alZtZWptczU1T0d5TXMyamE4T3JfVG9rZW46VXdOdGJObjl2b2NlYVJ4dG90T2M5aE5MbjNnXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<h4 id="mlp-比-transformer-更容易解释"><a class="markdownIt-Anchor" href="#mlp-比-transformer-更容易解释"></a> MLP 比 Transformer 更容易解释</h4>
+<p>PI架构独立处理每个补丁，而PD架构共享所有补丁的信息，导致补丁之间的信息泄漏。这使得 MLP 比 Transformer 更容易解释，因为可视化为下游任务额外引入和学习的线性层的权重矩阵显示了每个补丁对预测的贡献。图 7 说明了两种架构的 ETTm1 的季节性以及在 ETTm1 上训练的下游权重矩阵。虽然 Transformer 顶部线性层的权重矩阵大部分是均匀的，但 MLP 的权重矩阵揭示了季节性模式并强调了最新信息，这凸显了 MLP 比 Transformer 更好地捕获了季节性。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YzM2OTY4OWY1OTg4YTc0Y2RhYjdhZDE1NDQyN2I4MzFfU25EZnM5SDdTUVJPMVY1SEtFdlE1OWZ1RndxTTBaVDFfVG9rZW46UVY4M2JqZk8wbzg2T3d4R3VUQmM4OEpabkhkXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<h4 id="效率分析"><a class="markdownIt-Anchor" href="#效率分析"></a> 效率分析</h4>
+<p>为了证明 PI 架构的效率，我们在 ETTm2 上的参数数量和训练/推理时间方面比较了 PatchTST 和 PITS。如表 13 所示，PITS 的性能优于 PatchTST，参数显着减少，训练和推理速度更快，其中我们预训练 100 个 epoch，并对整个测试数据集进行推理。附录 J 提供了自我监督和监督设置之间的效率比较。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZGQyZGE1MzI0ZjQ4ZDc5MmIwZDVhZGIyZDExYTdhZjdfa2oyMGtXY3N4ZUR5emxTcWdyTm5ydFpMQVpva1AyY21fVG9rZW46VDRmdmJJell4b0VVSXJ4Y1RUWmN6UXNIbmliXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<h4 id="t-sne-可视化"><a class="markdownIt-Anchor" href="#t-sne-可视化"></a> t-SNE 可视化</h4>
+<p>为了评估从 PI 和 PD 任务中获得的表示的质量，我们利用 t-SNE (Van der Maaten &amp; Hinton, 2008) 进行可视化。对于此分析，我们创建了具有 10 个类别的趋势和季节性模式的玩具示例，如图 8 所示。结果表明，从 PI 任务中学习的表示可以更好地区分类别。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MWM0MjE4Y2I5ZTNjNGNiMDYxY2YyODcyY2RhMzg5MTFfcGtyMHcyM1hrbEV4SlBOZ3ZPRXIxNkV1M2hydmtTZDJfVG9rZW46QThuNGJWN0ZRb09LSjV4Qjl0VWNZaXZNbmtjXzE3NDM1MDA4MjM6MTc0MzUwNDQyM19WNA" alt="img" /></p>
+<h2 id="6-结论"><a class="markdownIt-Anchor" href="#6-结论"></a> 6 结论</h2>
+<p>本文重新审视了时间序列分析中的掩模建模，重点关注两个关键方面：</p>
+<ol>
+<li>预训练任务</li>
+<li>模型架构。</li>
+</ol>
+<p>与之前主要强调 TS 补丁之间依赖关系的工作相比，我们在两个方面提倡独立于补丁的方法：</p>
+<ol>
+<li>引入补丁重建任务</li>
+<li>采用补丁式 MLP。</li>
+</ol>
+<p>我们的结果表明，与 PD 方法相比，所提出的 PI 方法对分布变化和补丁大小更加稳健，从而实现卓越的性能，同时在预测和分类任务中更加高效。我们希望我们的工作通过简单的预训练任务和各个领域的模型架构来阐明自监督学习的有效性，并为未来的时间序列分析工作提供强有力的基线。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/04/01/%E3%80%8ALearning%20Decomposed%20Spatial%20Relations%20for%20Multi-Variate%20Time-Series%20Modeling%E3%80%8B%E8%AE%BA%E6%96%87/" rel="prev" title="">
+                  <i class="fa fa-angle-left"></i> 
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/04/01/%E3%80%8ATimesURL%20Self-supervised%20Contrastive%20Learning%20for%20Universal%20Time%20Series%20Representation%20Learning%E3%80%8B%E8%AE%BA%E6%96%87/" rel="next" title="">
+                   <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Xu Yang</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

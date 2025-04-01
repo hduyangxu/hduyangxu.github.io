@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.22.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="《Connecting the Dots: Multivariate Time Series Forecasting with Graph Neural Networks》 论文KDD20 *斜体：*疑问  &amp; 解答 ｜  **加粗：**现象  ｜   下划线：解决方法、创新点  摘要 多元时间序列建模长期以来一直吸引着来自经济、金融和交通等不同领域的研究人员。多元时间序列预测背后的一个">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://example.com/2025/04/01/%E3%80%8AConnecting%20the%20Dots%20Multivariate%20Time%20Series%20Forecasting%20with%20Graph%20Neural%20Networks%E3%80%8B%20%E8%AE%BA%E6%96%87KDD20/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="《Connecting the Dots: Multivariate Time Series Forecasting with Graph Neural Networks》 论文KDD20 *斜体：*疑问  &amp; 解答 ｜  **加粗：**现象  ｜   下划线：解决方法、创新点  摘要 多元时间序列建模长期以来一直吸引着来自经济、金融和交通等不同领域的研究人员。多元时间序列预测背后的一个">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MTg5ZTBlMDRhNGIwNjlkMDA1OTU1ZGI4Mzk0OTgzZDNfRmhiU3BjRlBrNk9KZFNGTkdreWMzTnpBQzZVa05sOGlfVG9rZW46VUZaNmJjZ0Qwb0h5ZUN4V1Q1T2MxdzRjbnBlXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YTE5YzI0NzAyNmYyZTEwMTk2NjVjNzIyZmZmYzRkYTZfb0N0RVM1MDF2WmNMZ1FEellZdE1VTTF3UVNNUUJRTFFfVG9rZW46UVlpUGJiRE9Ob3NMSFV4cWd4OGNYSk94bnRiXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NTU0MmI0YzUzN2FlYzE3MDQzY2U2YWZlNzVkNjMxZDNfRGduMWN2Smg1MTlJSFdDbDFQb29CMzhiUHJTSzN5R1FfVG9rZW46UHlWSWJCZExhb0lBWVN4dDVYc2NFS2lJbjhkXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZTUzZjNkMGZkODVmNWUyOTVlMWQ3NTQ4MWQ0MzE4M2RfSEZ2Ullacm9oZmlnbVFpUmZCbU1XMGxWSkZTVWlrWHNfVG9rZW46T21uWmJYdXQxb2UwUFJ4bWV2dWN0dmdrbldkXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=OGMxNWQ2MzRmNWU1MzZmY2JjNjc0MjFlZmQwYjZmOTZfbzFQZzBxNHJ3a3p2dTJzTnBudkZiTXl2aTJ5OW9rUkpfVG9rZW46V3BPcGJLUUJSb1N1Tnl4bEg5NWNOam9BblhmXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ODNmZDI3ZDkyZWQyYjNlN2M3MWQxYzgwMWMwYWQyNDdfT0J4dVlxOXJRRHoyaUl1eVd0TlNTTDRTVW1mbHpwV3JfVG9rZW46VUFnZGJkSHBhb1V1Z2x4bkZzT2NKZFU1bmhiXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NzQ1MjNlYWM5Y2UxZjE4M2YyZjNiOTZlZTVmNjY1NjZfaVdwV09la0JocmRjQ2g0NEpQYnk4ZENSWjY4Z0hnNDZfVG9rZW46UTBMdGJaUVZhb29ZNXV4Q3owWmNaVEFIblJiXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZmZhZjA0ZGRiNTI5YjkxZWViYzAwZmYwOGEyMDcyY2RfN0dVNEdRMXNRSjJ5c05MNHRrNk9ralQ4MTFZYWkyWmtfVG9rZW46VWpMWWJRY3pQb1JjYVN4dU1vSGNlOU11bktkXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MTdmZWVmYjQ3NjQ5ZWYyN2FlYjQ0YzE5NjEwNWJlODVfWnFDOWtITjZ4MDB4aFJvYXJ0T0xRQnduZWh1OGR0TWxfVG9rZW46WE5BcWJJejY0b3l1VHh4OWtzcWNwU1JFblBGXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NmQ5ODc5ZTQxOGRkNGJkNjIxOTI3MGQ4NTAxN2JjMGFfQjB6T3FEZ0d1RnRtWEF3VmtiZ0dzVjRNY3psdWxOZktfVG9rZW46SVpYOWJNc3cwb0o5a1R4M1gzeGMyYmNzbnpkXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NzM1N2JkY2RmNDE0MWMxNDFlYWY0MGYzYjI2ZWNlMmVfMW9nellBdWJVam5iVGNrRXk5Q3RqZ01ZNzZ6MW51anhfVG9rZW46V1FoQmJQY1FXb0NFMFB4Y1JmQmNrdG9rbnNnXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Zjc0ZGMwNzNjNDVhNjIzYjU3NTY1NzlhNjI0ZmQwMTNfdzAxRVRtdXY4djNsUE11N2JadzBtcEh1MzA3MEtWemVfVG9rZW46QllyQWJXTGdLb0FyWXR4dEp6emNTNWdqbkJjXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Y2NhYWY4Nzk5ZTZmZWMwM2M5ZmJkMTJkM2M2NDdiNmRfTFhCREVWVHZJajFMbVRkNzBSZGozdmRNOEVXaDgxY3RfVG9rZW46T2lUeWJBa3FQb2hFOWd4VUM2dGM4dDZ0bnhoXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=OWZhODI2NjE1ZThiYjg1MTM2NTQ0N2Y4NGRhMGM4ZDJfRGZDbTd2aW91bjQwVW10bWpxbkNFaDRldjM4bzF1ZFNfVG9rZW46WHZBb2JFbU9ub2FsUFF4WEE0dmNzRzlHbjRLXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NGI5NzA0YWFkOTAwMDFhNTcwNDdhMzEwMTEyNzJkNjhfcE1rcm1BRGRlek5SUU0xM3RqT3VxY0psWG5nYkJ2MkVfVG9rZW46RW9DRGJ3N2N3b204ZXl4dUN3WmN1VUNHblJkXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MWZjODE1OWEzNmFiNWM3NWQyZWQ2M2I4Nzk4MWRmZmVfMFMxNlRYcjVZQVlNRXJ5Z3htMnFYSVdvNm5DSW5iT2NfVG9rZW46WVlkbmI2QkN0b0c2TGN4SzJ3S2MzMW1rbnNiXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MWNmNjQ4YjllMjlkOWQ3YWVmOTNmYjgxNmQ2NzM4OTBfRkpNUmtWOXRrTDZLckdiOWRTYzljUVcxeUw4dFlRTUJfVG9rZW46T1dZM2JHQjlXb0N4NEl4bXowZGNhemEybnZjXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MGExNjU1MzI2YzQ3NDcyMDg0YmY2MTg1ZjBkM2RhOGNfVncxdGZFSnBUU05oUllob09MRUlqbHNVNnVXU2F3OTFfVG9rZW46RWhyc2JuQ0tFb09jWjl4blRJVmNRZUlFbmRoXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=N2U1NzJhYzlmYmZhNjEyNGNkMzQ4OGEwNTVmOGNhNTNfUmpwVHJ5V0x5VlRpenVvaWZEbUhBaklYcHVWSnNjNVVfVG9rZW46T00wMWJxOVBRbzczTWN4cTB2bmN2Tnlubk1iXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA">
+<meta property="article:published_time" content="2025-04-01T09:58:50.186Z">
+<meta property="article:modified_time" content="2025-04-01T09:58:02.759Z">
+<meta property="article:author" content="Xu Yang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MTg5ZTBlMDRhNGIwNjlkMDA1OTU1ZGI4Mzk0OTgzZDNfRmhiU3BjRlBrNk9KZFNGTkdreWMzTnpBQzZVa05sOGlfVG9rZW46VUZaNmJjZ0Qwb0h5ZUN4V1Q1T2MxdzRjbnBlXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA">
+
+
+<link rel="canonical" href="http://example.com/2025/04/01/%E3%80%8AConnecting%20the%20Dots%20Multivariate%20Time%20Series%20Forecasting%20with%20Graph%20Neural%20Networks%E3%80%8B%20%E8%AE%BA%E6%96%87KDD20/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2025/04/01/%E3%80%8AConnecting%20the%20Dots%20Multivariate%20Time%20Series%20Forecasting%20with%20Graph%20Neural%20Networks%E3%80%8B%20%E8%AE%BA%E6%96%87KDD20/","path":"2025/04/01/《Connecting the Dots Multivariate Time Series Forecasting with Graph Neural Networks》 论文KDD20/","title":""}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title> | Hexo</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Hexo</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#connecting-the-dots-multivariate-time-series-forecasting-with-graph-neural-networks-%E8%AE%BA%E6%96%87kdd20"><span class="nav-number">1.</span> <span class="nav-text"> 《Connecting the Dots: Multivariate Time Series Forecasting with Graph Neural Networks》 论文KDD20</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-number">1.1.</span> <span class="nav-text"> 摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.2.</span> <span class="nav-text"> 1.介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.2.1.</span> <span class="nav-text"> 背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%9C%A8%E9%97%AE%E9%A2%98"><span class="nav-number">1.2.2.</span> <span class="nav-text"> 存在问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%80%9D%E8%B7%AF"><span class="nav-number">1.2.3.</span> <span class="nav-text"> 解决思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%88%E6%9E%9C%E5%8F%8A%E8%B4%A1%E7%8C%AE"><span class="nav-number">1.2.4.</span> <span class="nav-text"> 效果及贡献</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E8%83%8C%E6%99%AF"><span class="nav-number">1.3.</span> <span class="nav-text"> 2.背景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#21%E5%A4%9A%E5%85%83%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E9%A2%84%E6%B5%8B"><span class="nav-number">1.3.1.</span> <span class="nav-text"> 2.1多元时间序列预测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#22%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="nav-number">1.3.2.</span> <span class="nav-text"> 2.2图神经网络</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%AE%9A%E4%B9%89"><span class="nav-number">1.4.</span> <span class="nav-text"> 问题定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95-mtgnn%E6%A1%86%E6%9E%B6"><span class="nav-number">1.5.</span> <span class="nav-text"> 解决方法 MTGNN框架</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#41-%E6%A8%A1%E5%9E%8B%E6%9E%B6%E6%9E%84"><span class="nav-number">1.5.1.</span> <span class="nav-text"> 4.1 模型架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#42%E5%9B%BE%E5%AD%A6%E4%B9%A0%E5%B1%82"><span class="nav-number">1.5.2.</span> <span class="nav-text"> 4.2图学习层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#43-%E5%9B%BE%E5%8D%B7%E7%A7%AF%E6%A8%A1%E5%9D%97"><span class="nav-number">1.5.3.</span> <span class="nav-text"> 4.3 图卷积模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#44-%E6%97%B6%E9%97%B4%E5%8D%B7%E7%A7%AF%E6%A8%A1%E5%9D%97"><span class="nav-number">1.5.4.</span> <span class="nav-text"> 4.4 时间卷积模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#45-%E8%B7%B3%E8%B7%83%E8%BF%9E%E6%8E%A5%E5%B1%82%E5%92%8C%E8%BE%93%E5%87%BA%E6%A8%A1%E5%9D%97"><span class="nav-number">1.5.5.</span> <span class="nav-text"> 4.5 跳跃连接层和输出模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#46%E5%BB%BA%E8%AE%AE%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AE%97%E6%B3%95"><span class="nav-number">1.5.6.</span> <span class="nav-text"> 4.6建议的学习算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E6%95%88%E6%9E%9C"><span class="nav-number">1.6.</span> <span class="nav-text"> 实验效果</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Xu Yang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hduyangxu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hduyangxu" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/04/01/%E3%80%8AConnecting%20the%20Dots%20Multivariate%20Time%20Series%20Forecasting%20with%20Graph%20Neural%20Networks%E3%80%8B%20%E8%AE%BA%E6%96%87KDD20/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Xu Yang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | Hexo">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-04-01 17:58:50 / 修改时间：17:58:02" itemprop="dateCreated datePublished" datetime="2025-04-01T17:58:50+08:00">2025-04-01</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="connecting-the-dots-multivariate-time-series-forecasting-with-graph-neural-networks-论文kdd20"><a class="markdownIt-Anchor" href="#connecting-the-dots-multivariate-time-series-forecasting-with-graph-neural-networks-论文kdd20"></a> 《Connecting the Dots: Multivariate Time Series Forecasting with Graph Neural Networks》 论文KDD20</h1>
+<p>*斜体：*疑问  &amp; 解答 ｜  **加粗：**现象  ｜   下划线：解决方法、创新点</p>
+<h2 id="摘要"><a class="markdownIt-Anchor" href="#摘要"></a> 摘要</h2>
+<p>多元时间序列建模长期以来一直吸引着来自经济、金融和交通等不同领域的研究人员。多元时间序列预测背后的一个基本假设是其变量相互依赖，但仔细观察后，可以公平地说，现有方法未能充分利用变量对之间的潜在空间依赖性。与此同时，近年来，图神经网络（GNN）在处理关系依赖性方面表现出了强大的能力。 GNN 需要明确定义的图结构来进行信息传播，这意味着它们不能直接应用于事先未知依赖关系的多元时间序列。在本文中，我们提出了一种专门为多元时间序列数据设计的通用图神经网络框架。我们的方法通过图学习模块自动提取变量之间的单向关系，可以轻松地将变量属性等外部知识集成到其中。进一步提出了一种新颖的混合跳跃传播层和扩张的初始层来捕获时间序列内的空间和时间依赖性。图学习、图卷积和时间卷积模块在端到端框架中联合学习。实验结果表明，我们提出的模型在 4 个基准数据集中的 3 个上优于最先进的基线方法，并在两个提供额外结构信息的流量数据集上实现了与其他方法相当的性能。</p>
+<h2 id="1介绍"><a class="markdownIt-Anchor" href="#1介绍"></a> 1.介绍</h2>
+<h3 id="背景"><a class="markdownIt-Anchor" href="#背景"></a> 背景</h3>
+<p>现代社会受益于各种传感器来记录温度、价格、交通速度、用电量和许多其他形式数据的变化。不同传感器记录的时间序列可以形成多元时间序列数据并且可以互连。例如，每日气温升高可能会导致用电量增加。为了捕捉一组动态变化变量的系统趋势systematic trends over a group of dynamically changing variables，多元时间序列预测问题已经被研究了至少六十年。它在经济、金融、生物信息学和交通领域有着巨大的应用。</p>
+<h3 id="存在问题"><a class="markdownIt-Anchor" href="#存在问题"></a> 存在问题</h3>
+<p>多元时间序列预测方法本质上假设变量之间存在相互依赖性。换句话说，<strong>每个变量不仅取决于其历史值，还取决于其他变量</strong>。然而，现有的方法并没有有效地利用变量之间潜在的相互依赖性。统计方法，例如<strong>向量<strong><strong>自回归模型</strong></strong>（VAR）和高斯过程模型（GP）</strong>，假设变量之间存在线性相关性。统计方法的模型复杂性随着变量数量呈二次方增长。他们<strong>面临着大量变量<strong><strong>过度拟合</strong></strong>的问题</strong>。最近开发的基于深度学习的方法，包括 LSTNet [12] 和 TPA-LSTM [19]，能够有效捕获非线性模式。 LSTNet 使用一维卷积神经网络将短期局部信息编码为低维向量，并通过循环神经网络对向量进行解码。 TPA-LSTM 通过循环神经网络处理输入，并使用卷积神经网络来计算多个步骤的注意力分数。 LSTNet 和 TPA-LSTM <strong>没有明确地对变量之间的成对依赖关系进行建模，这削弱了模型的可解释性</strong>。</p>
+<p>图是一种特殊的数据形式，描述不同实体之间的关系。最近，图神经网络由于其排列不变性、局部连通性和组合性而在处理图数据方面取得了巨大成功。通过结构传播信息，图神经网络允许图中的每个节点了解其邻居上下文。多元时间序列预测可以自然地从图的角度来看。多元时间序列中的变量可以被视为图中的节点，它们通过隐藏的依赖关系相互关联。因此，使用图神经网络对多元时间序列数据进行建模可能是一种有前途的方法，可以在利用时间序列之间的相互依赖性的同时保留其时间轨迹。</p>
+<p>最适合多元时间序列的图神经网络类型是时空图神经网络。时空图神经网络以多元时间序列和外部图结构作为输入，旨在预测多元时间序列的未来值或标签。与不利用结构信息的方法相比，时空图神经网络取得了显着的改进。然而，由于以下挑战，这些方法仍然不足以建模多元时间序列。</p>
+<p>• 挑战1：<strong>未知的****图结构</strong>。现有的 GNN 方法严重依赖于预定义的图结构来执行时间序列预测。在大多数情况下，多元时间序列没有明确的图形结构。变量之间的关系必须从数据中发现，而不是作为基本事实知识提供。</p>
+<p>• 挑战2：<strong>图学习和****GNN</strong> <strong>学习，<strong><strong>图结构</strong></strong>应实时更新</strong>。尽管图结构可用，但大多数 GNN 方法仅关注消息传递（GNN 学习），而忽略了图结构不是最优的、应在训练期间更新的事实。接下来的问题是如何在端到端框架中同时学习时间序列的图结构和 GNN。</p>
+<h3 id="解决思路"><a class="markdownIt-Anchor" href="#解决思路"></a> 解决思路</h3>
+<p>在本文中，我们提出了一种克服这些挑战的新方法。如图 1 所示，我们的框架由三个核心组件组成：图学习层、图卷积模块和时间卷积模块。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MTg5ZTBlMDRhNGIwNjlkMDA1OTU1ZGI4Mzk0OTgzZDNfRmhiU3BjRlBrNk9KZFNGTkdreWMzTnpBQzZVa05sOGlfVG9rZW46VUZaNmJjZ0Qwb0h5ZUN4V1Q1T2MxdzRjbnBlXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p>对于挑战 1，我们提出了一种新颖的图学习层，它根据数据自适应地提取稀疏图邻接矩阵。此外，我们开发了一个图卷积模块来解决变量之间的空间依赖性，给定图学习层计算的邻接矩阵。这是专门为有向图设计的，避免了图卷积网络中经常出现的过度平滑问题。最后，我们提出了一个时间卷积模块，通过修改的一维卷积捕获时间模式。它既可以发现具有多个频率的时间模式，也可以处理很长的序列。</p>
+<p>由于所有参数都可以通过梯度下降来学习，因此所提出的框架能够对多元时间序列数据进行建模，并以<em>端到端的方式</em>同时学习内部图结构（针对挑战 2）。为了降低解决高度非凸优化问题的难度并减少处理大图时的内存占用，我们提出了一种学习算法，该算法使用<em>课程学习策略</em>来寻找更好的局部最优值，并在训练期间将多元时间序列分成子组。这里的优点是我们提出的框架通常适用于小图和大图、短时间序列和长时间序列、有或没有外部定义的图结构。</p>
+<blockquote>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YTE5YzI0NzAyNmYyZTEwMTk2NjVjNzIyZmZmYzRkYTZfb0N0RVM1MDF2WmNMZ1FEellZdE1VTTF3UVNNUUJRTFFfVG9rZW46UVlpUGJiRE9Ob3NMSFV4cWd4OGNYSk94bnRiXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+</blockquote>
+<h3 id="效果及贡献"><a class="markdownIt-Anchor" href="#效果及贡献"></a> 效果及贡献</h3>
+<p>• 据我们所知，这是首次利用图神经网络从基于图的角度对多元时间序列数据进行研究。</p>
+<p>• 我们提出了一种新颖的图学习模块来学习变量之间隐藏的空间依赖性。我们的方法为 GNN 模型打开了一扇新的大门，可以在没有显式图结构的情况下处理数据。</p>
+<p>• 我们提出了一个用于建模多元时间序列数据和学习图结构的联合框架。我们的框架比任何现有的时空图神经网络更通用，因为它可以处理带有或不带有预定义图结构的多元时间序列。</p>
+<p>• 实验结果表明，我们的方法在 4 个基准数据集中的 3 个上优于最先进的方法，并在提供额外结构信息的两个流量数据集上实现了与其他 GNN 相当的性能。</p>
+<h2 id="2背景"><a class="markdownIt-Anchor" href="#2背景"></a> 2.背景</h2>
+<h3 id="21多元时间序列预测"><a class="markdownIt-Anchor" href="#21多元时间序列预测"></a> 2.1多元时间序列预测</h3>
+<p>时间序列预测已经被研究了很长时间。大多数现有方法都遵循统计方法。自回归积分移动平均 (ARIMA) [1] 概括了一系列线性模型，包括自回归 (AR)、移动平均 (MA) 和自回归移动平均 (ARMA)。向量自回归模型 (VAR) 扩展了 AR 模型以捕获多个时间序列之间的线性相互依赖性。类似地，矢量自回归移动平均模型（VARMA）被提出作为 ARMA 模型的多元版本。高斯过程 (GP) 作为一种贝叶斯方法，对多元变量在函数上的分布进行建模。 GP 可以自然地应用于对多元时间序列数据进行建模[5]。尽管统计模型因其简单性和可解释性而被广泛用于时间序列预测，但它们对平稳过程做出了强有力的假设，并且不能很好地扩展到多元时间序列数据。基于深度学习的方法不受平稳假设的影响，是捕获非线性的有效方法。赖等人。 [12] 和施等人。 [19]是前两个为多元时间序列预测而设计的基于深度学习的模型。他们使用卷积神经网络来捕获变量之间的局部依赖性，并使用循环神经网络来保留长期的时间依赖性。卷积神经网络将变量之间的相互作用封装到全局隐藏状态中。因此，他们无法充分利用变量对之间的潜在依赖关系。</p>
+<h3 id="22图神经网络"><a class="markdownIt-Anchor" href="#22图神经网络"></a> 2.2图神经网络</h3>
+<p>图神经网络在处理网络中实体之间的空间依赖性方面取得了巨大成功。图神经网络假设节点的状态取决于其邻居的状态。为了捕获这种类型的空间依赖性，人们通过消息传递[7]、信息传播[11]和图卷积[10]开发了各种图神经网络。它们共享相似的角色，本质上是通过将信息从节点的邻居传递到节点本身来捕获节点的高级表示。最近，我们看到了一种称为时空图神经网络的图神经网络的出现。这种形式的神经网络最初是为了解决交通预测 [3, 13, 21, 23, 26] 和基于骨架的动作识别 [18, 22] 的问题而提出的。时空图神经网络的输入是具有外部图结构的多元时间序列，该外部图结构描述了多元时间序列中变量之间的关系。对于时空图神经网络，节点之间的空间依赖性由图卷积捕获，而历史状态之间的时间依赖性由循环神经网络 [13, 17] 或一维卷积 [22, 23] 保留。尽管现有的时空图神经网络与不使用图结构的方法相比取得了显着的改进，但由于缺乏预定义的图和通用框架，它们无法有效地处理纯多元时间序列数据。</p>
+<h2 id="问题定义"><a class="markdownIt-Anchor" href="#问题定义"></a> 问题定义</h2>
+<p>在本文中，我们重点关注多元时间序列预测的任务。</p>
+<p>令 zt ∈ RN 表示维度为 N 的多元变量在时间步 t 的值，其中 zt [i] ∈ R 表示第 i 个变量在时间步 t 的值。给定多变量变量的一系列历史 P 时间步观测值，X = {zt1, zt2, ···, ztP }</p>
+<p>我们的目标是预测 Y = {ztP+Q } 的 Q 步距值，或未来值的序列 Y = {ztP+1, ztP+2, · · · , ztP+Q }。</p>
+<p>更一般地，输入信号可以与其他辅助特征相结合，例如一天中的时间、一周中的一天和季节中的一天。将输入信号与辅助特征连接起来，我们假设输入为 X = {St1, St2, ···, StP }，其中 Sti ∈ RN ×D ，D 是特征维度，Sti 的第一列等于 zti ，并且其余的都是辅助功能。我们的目标是通过 l2 正则化最小化绝对损失来构建从 X 到 Y 的映射 f (·)。</p>
+<p>图描述了网络中实体之间的关系。下面我们给出与图相关的概念的正式定义。</p>
+<p>定义 3.1（图）。图的形式为 G = (V , E)，其中 V 是节点集，E 是边集。我们使用 N 来表示图中的节点数。</p>
+<p>定义 3.2（节点邻域）。设 v ∈ V 表示节点，e = (v, u) ε E 表示从 u 到 v 的边。节点 v 的邻域定义为 N (v) = {u ∈ V |(v, u) ε E}。</p>
+<p>定义 3.3（邻接矩阵）。邻接矩阵是图的数学表示，表示为 A ∈ RN ×N，其中 Ai j = c &gt; 0 if (vi, v j ) ε E 且 Ai j = 0 if (vi, v j ) ∉ E。</p>
+<p>从基于图的角度来看，我们将多元时间序列中的变量视为图中的节点。我们使用图邻接矩阵来描述节点之间的关系。在大多数情况下，图邻接矩阵不是由多元时间序列数据给出的，而是由我们的模型学习的。</p>
+<h2 id="解决方法-mtgnn框架"><a class="markdownIt-Anchor" href="#解决方法-mtgnn框架"></a> 解决方法 MTGNN框架</h2>
+<h3 id="41-模型架构"><a class="markdownIt-Anchor" href="#41-模型架构"></a> 4.1 模型架构</h3>
+<p>我们首先详细阐述我们模型的总体框架。如图 2 所示，</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NTU0MmI0YzUzN2FlYzE3MDQzY2U2YWZlNzVkNjMxZDNfRGduMWN2Smg1MTlJSFdDbDFQb29CMzhiUHJTSzN5R1FfVG9rZW46UHlWSWJCZExhb0lBWVN4dDVYc2NFS2lJbjhkXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p>最高层的 MTGNN 由图学习层、m 个图卷积模块、m 个时间卷积模块和一个输出模块组成。为了发现节点之间隐藏的关联，图学习层计算图邻接矩阵，该矩阵随后用作所有图卷积模块的输入。图卷积模块与时间卷积模块交织以分别捕获空间和时间依赖性。图 3 演示了时间卷积模块和图卷积模块如何相互协作。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZTUzZjNkMGZkODVmNWUyOTVlMWQ3NTQ4MWQ0MzE4M2RfSEZ2Ullacm9oZmlnbVFpUmZCbU1XMGxWSkZTVWlrWHNfVG9rZW46T21uWmJYdXQxb2UwUFJ4bWV2dWN0dmdrbldkXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p>为了避免梯度消失问题，将时间卷积模块的输入添加到图卷积模块的输出中。在每个时间卷积模块之后添加跳跃连接。为了获得最终输出，输出模块将隐藏特征投影到所需的输出维度。更详细地说，我们模型的核心组件如下所示：</p>
+<h3 id="42图学习层"><a class="markdownIt-Anchor" href="#42图学习层"></a> 4.2图学习层</h3>
+<p>图学习层自适应地学习图邻接矩阵，以捕获时间序列数据之间的隐藏关系。为了构建图，现有研究通过距离度量来测量节点对之间的相似性，例如<em>点积和<strong>欧几里得距离</strong>[13]</em>。这不可避免地导致时间和空间复杂度较高的问题，O(N 2)。这意味着计算和内存成本随着图大小的增加呈二次方增长。这限制了模型处理更大图的能力。为了解决这个限制，我们采用采样方法，<em>仅计算节点子集之间的成对关系</em>。这消除了每个小批量中的计算和内存瓶颈。更多详细信息将在第 4.6 节中提供。</p>
+<p>另一个问题是现有的距离度量通常是对称的或双向的。在多元时间序列预测中，我们期望一个节点的状况的变化会引起另一个节点的状况（例如交通流量）的变化。因此，学习到的关系应该是单向的。我们提出的图学习层专门设计用于提取单向关系，如下所示：</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=OGMxNWQ2MzRmNWU1MzZmY2JjNjc0MjFlZmQwYjZmOTZfbzFQZzBxNHJ3a3p2dTJzTnBudkZiTXl2aTJ5OW9rUkpfVG9rZW46V3BPcGJLUUJSb1N1Tnl4bEg5NWNOam9BblhmXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p>其中<em>E1，E2表示随机初始化的节点嵌入（E1和E2的维度是什么？）</em>，在训练期间是可学习的，θ1，θ2是模型参数，α是用于控制激活函数饱和率的超参数，argtopk（·）返回前k个最大值。我们提出的图邻接矩阵的非对称特性通过等式 3 实现。<em>减法项和</em> <em>ReLU</em> <em>激活函数对邻接矩阵进行<strong>正则化</strong>，以便如果 Avu 为正，则其对角对应 Auv 将为零</em>。公式5-6是一种使邻接矩阵稀疏，同时减少后续图卷积的计算成本的策略。对于每个节点，我们选择其前 k 个最接近的节点作为其邻居。在保留连接节点的权重的同时，我们将非连接节点的权重设置为零。</p>
+<p>**合并外部数据。**图学习层的输入不限于节点嵌入。在给定每个节点属性的外部知识的情况下，我们还可以设置E1 = E2 = Z，其中Z是静态节点特征矩阵。一些作品考虑了捕获动态空间依赖性 [8, 18]。换句话说，它们根据时间输入动态调整两个连接节点的权重。然而，当我们需要同时学习图结构时，假设动态空间依赖使得模型极难收敛。我们的方法的优点是我们可以在训练数据集期间学习稳定且可解释的节点关系。</p>
+<p>一旦模型在在线学习版本中进行训练，我们的图邻接矩阵也可以随着新的训练数据更新模型参数而改变。</p>
+<h3 id="43-图卷积模块"><a class="markdownIt-Anchor" href="#43-图卷积模块"></a> 4.3 图卷积模块</h3>
+<p>图卷积模块旨在将节点的信息与其邻居的信息融合，以处理图中的空间依赖性。图卷积模块由两个mixhop传播层组成，分别处理通过每个节点的流入和流出信息。通过将两个混合跳传播层的输出相加获得净流入信息。图 4 显示了图卷积模块和混合跳传播层的架构。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ODNmZDI3ZDkyZWQyYjNlN2M3MWQxYzgwMWMwYWQyNDdfT0J4dVlxOXJRRHoyaUl1eVd0TlNTTDRTVW1mbHpwV3JfVG9rZW46VUFnZGJkSHBhb1V1Z2x4bkZzT2NKZFU1bmhiXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p>混合跳传播层。给定图邻接矩阵，我们提出混合跳传播层来处理空间相关节点上的信息流。所提出的混合跳传播层由两个步骤组成——信息传播步骤和信息选择步骤。我们首先给出这两个步骤的数学形式，然后说明我们的动机。信息传播步骤定义如下：</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NzQ1MjNlYWM5Y2UxZjE4M2YyZjNiOTZlZTVmNjY1NjZfaVdwV09la0JocmRjQ2g0NEpQYnk4ZENSWjY4Z0hnNDZfVG9rZW46UTBMdGJaUVZhb29ZNXV4Q3owWmNaVEFIblJiXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p>其中β是超参数，控制保留根节点原始状态的比例。信息选择步骤定义如下</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZmZhZjA0ZGRiNTI5YjkxZWViYzAwZmYwOGEyMDcyY2RfN0dVNEdRMXNRSjJ5c05MNHRrNk9ralQ4MTFZYWkyWmtfVG9rZW46VWpMWWJRY3pQb1JjYVN4dU1vSGNlOU11bktkXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p>其中K是传播深度，Hin表示上一层输出的输入隐藏状态，Hout表示当前层的输出隐藏状态，</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MTdmZWVmYjQ3NjQ5ZWYyN2FlYjQ0YzE5NjEwNWJlODVfWnFDOWtITjZ4MDB4aFJvYXJ0T0xRQnduZWh1OGR0TWxfVG9rZW46WE5BcWJJejY0b3l1VHh4OWtzcWNwU1JFblBGXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p>在图 4b 中，我们演示了所提出的混合跳传播层中的信息传播步骤和信息选择步骤。它首先水平传播信息，垂直选择信息。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NmQ5ODc5ZTQxOGRkNGJkNjIxOTI3MGQ4NTAxN2JjMGFfQjB6T3FEZ0d1RnRtWEF3VmtiZ0dzVjRNY3psdWxOZktfVG9rZW46SVpYOWJNc3cwb0o5a1R4M1gzeGMyYmNzbnpkXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p>​</p>
+<blockquote>
+<p>随机游走就是每次从邻居中随机选一个点，但最终会到达最远的点，在多层图卷积之后，每个节点的隐藏状态都会趋于相同。</p>
+</blockquote>
+<p>为了解决这个问题，Klicpera 等人提出了解决方案。 [11]，我们在传播过程中保留了一定比例的节点原始状态，以便传播的节点状态既可以保留局部性，又可以探索深层邻域。然而，如果我们只应用公式 7，一些节点信息将会丢失。<strong>在不存在空间<strong><strong>依赖性</strong></strong>的极端情况下，聚合邻域信息只会给每个节点添加无用的噪声</strong>。因此，引入信息选择步骤来过滤掉每一跳产生的重要信息。根据等式8，参数矩阵W(k)充当特征选择器。当给定的图结构不存在空间依赖性时，公式 8 仍然能够通过将所有 k &gt; 0 的 W(k) 调整为 0 来保留原始节点自身信息。</p>
+<p><strong>与现有工作的连接。</strong>[9] 和 [2] 已经探讨了 mix-hop 的想法。卡普尔等人。 [9]连接来自不同跃点的信息。陈等人。 [2]提出了一种注意机制来对不同跳之间的信息进行加权。他们都应用GCN来进行信息传播。然而，由于 <em>GCN 面临过度平滑问题</em></p>
+<blockquote>
+<p>过度平滑问题是GCN中的一个关键挑战，通常由于信息在多层传播时过度融合，导致节点的特征趋向相似，失去区分度。随着网络层数的增加，节点特征变得越来越接近，影响了模型的性能和学习能力。为了避免这一问题，可以采用跳跃连接、注意力机制等方法来提高模型的表达能力，保留节点之间的差异性。</p>
+</blockquote>
+<p>来自更高跳数的信息可能无法有效贡献，甚至可能对整体性能产生负面影响。为了避免这种情况，我们的方法在本地和邻里信息之间保持平衡。此外，卡普尔等人 *[9]表明他们提出的具有两个混合跳层的模型能够表示两个连续跳之间的增量差异。*我们的方法只需一个混合跳传播层即可达到相同的效果。假设 K = 2、W(0) = 0、W(1) = −1、W(2) = 1，则</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NzM1N2JkY2RmNDE0MWMxNDFlYWY0MGYzYjI2ZWNlMmVfMW9nellBdWJVam5iVGNrRXk5Q3RqZ01ZNzZ6MW51anhfVG9rZW46V1FoQmJQY1FXb0NFMFB4Y1JmQmNrdG9rbnNnXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p>从这个角度来看，与串联方法相比，使用求和可以更有效地表示不同跳的所有线性交互。</p>
+<h3 id="44-时间卷积模块"><a class="markdownIt-Anchor" href="#44-时间卷积模块"></a> 4.4 时间卷积模块</h3>
+<p>时间卷积模块应用一组标准扩张一维卷积滤波器来提取高级时间特征。该模块由两个扩展的初始层组成。一个扩张的初始层后面是一个正切双曲激活函数并起到过滤器的作用。另一层后面是 sigmoid 激活函数，用作控制过滤器可以传递到下一个模块的信息量的门。图 5 显示了时间卷积模块和扩张初始层的架构。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Zjc0ZGMwNzNjNDVhNjIzYjU3NTY1NzlhNjI0ZmQwMTNfdzAxRVRtdXY4djNsUE11N2JadzBtcEh1MzA3MEtWemVfVG9rZW46QllyQWJXTGdLb0FyWXR4dEp6emNTNWdqbkJjXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p>**扩张的初始层。**时间卷积模块通过一维卷积滤波器捕获时间序列数据的顺序模式。为了提出一个能够发现不同范围的时间模式并处理很长序列的时间卷积模块，我们提出了扩张初始层，它结合了卷积神经网络中两种广泛应用的策略，即使用多个尺寸的过滤器[20]并应用扩张卷积[24]。</p>
+<p>首先，选择正确的内核大小对于卷积网络来说是一个具有挑战性的问题。滤波器尺寸可能太大而无法巧妙地表示短期信号模式，或者太小而无法充分发现长期信号模式。在图像处理中，一种广泛采用的策略称为初始策略，它将具有三种不同内核大小（1 × 1、3 × 3 和 5 × 5）的 2D 卷积滤波器的输出连接起来。从 2D 图像转向 1D 时间序列，该集合1 × 1、1 × 3 和 1 × 5 滤波器尺寸不适合时间信号的性质。由于时间信号往往具有几个固有周期，例如 7、12、24、28 和 60，因此滤波器大小为 1 × 1、1 × 3 和 1 × 5 的初始层堆栈不能很好地包含这些周期。或者，我们提出一个由四种滤波器大小组成的时间初始层，即1 × 2、1 × 3、1 × 6 和 1 × 7。上述周期都可以通过这些滤波器尺寸的组合来覆盖。例如，为了表示周期 12，模型可以将输入传递通过来自第一时间起始层的 1 × 7 滤波器，然后通过来自第二时间起始层的 1 × 6 滤波器。</p>
+<p>其次，卷积网络的感受野大小随着网络深度和滤波器内核大小呈线性增长。考虑一个具有 m 个核大小为 c 的一维卷积层的卷积网络，卷积网络的感受野大小为</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=Y2NhYWY4Nzk5ZTZmZWMwM2M5ZmJkMTJkM2M2NDdiNmRfTFhCREVWVHZJajFMbVRkNzBSZGozdmRNOEVXaDgxY3RfVG9rZW46T2lUeWJBa3FQb2hFOWd4VUM2dGM4dDZ0bnhoXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p>要处理很长的序列，需要非常深的网络或非常大的过滤器。我们采用扩张卷积来降低模型复杂度。扩张卷积以特定频率对下采样输入运行标准卷积滤波器。例如，当膨胀因子为 2 时，它会对每两步采样的输入应用标准卷积。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=OWZhODI2NjE1ZThiYjg1MTM2NTQ0N2Y4NGRhMGM4ZDJfRGZDbTd2aW91bjQwVW10bWpxbkNFaDRldjM4bzF1ZFNfVG9rZW46WHZBb2JFbU9ub2FsUFF4WEE0dmNzRzlHbjRLXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p>按照[14]，我们让每层的膨胀因子以 q (q &gt; 1) 的比率呈指数增长。假设初始扩张因子为 1，则核大小为 c 的 m 层扩张卷积网络的感受野大小为</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NGI5NzA0YWFkOTAwMDFhNTcwNDdhMzEwMTEyNzJkNjhfcE1rcm1BRGRlek5SUU0xM3RqT3VxY0psWG5nYkJ2MkVfVG9rZW46RW9DRGJ3N2N3b204ZXl4dUN3WmN1VUNHblJkXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p>这表明网络的感受野大小也随着隐藏层数量以 q 的速度增加而呈指数增长。因此，使用这种扩张策略可以捕获比不使用这种扩张策略更长的序列。</p>
+<p>形式上，结合初始和扩张，我们提出了扩张初始层，如图 5b 所示。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MWZjODE1OWEzNmFiNWM3NWQyZWQ2M2I4Nzk4MWRmZmVfMFMxNlRYcjVZQVlNRXJ5Z3htMnFYSVdvNm5DSW5iT2NfVG9rZW46WVlkbmI2QkN0b0c2TGN4SzJ3S2MzMW1rbnNiXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p>给定一个 1D 序列输入 z ∈ RT 和由</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MWNmNjQ4YjllMjlkOWQ3YWVmOTNmYjgxNmQ2NzM4OTBfRkpNUmtWOXRrTDZLckdiOWRTYzljUVcxeUw4dFlRTUJfVG9rZW46T1dZM2JHQjlXb0N4NEl4bXowZGNhemEybnZjXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p>组成的滤波器，我们的扩张初始层采用以下形式：</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MGExNjU1MzI2YzQ3NDcyMDg0YmY2MTg1ZjBkM2RhOGNfVncxdGZFSnBUU05oUllob09MRUlqbHNVNnVXU2F3OTFfVG9rZW46RWhyc2JuQ0tFb09jWjl4blRJVmNRZUlFbmRoXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p><em>其中，四个滤波器的输出根据最大滤波器截断为相同长度并在通道维度上连接，z ★ f1×k 表示的扩张卷积定义为</em></p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=N2U1NzJhYzlmYmZhNjEyNGNkMzQ4OGEwNTVmOGNhNTNfUmpwVHJ5V0x5VlRpenVvaWZEbUhBaklYcHVWSnNjNVVfVG9rZW46T00wMWJxOVBRbzczTWN4cTB2bmN2Tnlubk1iXzE3NDM1MDEwNDQ6MTc0MzUwNDY0NF9WNA" alt="img" /></p>
+<p>其中 d 是膨胀因子。</p>
+<h3 id="45-跳跃连接层和输出模块"><a class="markdownIt-Anchor" href="#45-跳跃连接层和输出模块"></a> 4.5 跳跃连接层和输出模块</h3>
+<p>跳跃连接层本质上是 1 × Li 标准卷积，其中 Li 是第 i 个跳跃连接层的输入的序列长度。它将跳跃到输出模块的信息标准化为具有相同的序列长度1。输出模块由两个1×1标准卷积层组成，将输入的通道维度转换为所需的输出维度。如果我们只想预测未来的某个步骤，则所需的输出维度为 1。当我们想预测 Q 个连续步骤时，所需的输出维度为 Q。</p>
+<h3 id="46建议的学习算法"><a class="markdownIt-Anchor" href="#46建议的学习算法"></a> 4.6建议的学习算法</h3>
+<p>我们提出了一种学习算法来增强我们的模型处理大图并稳定在更好的局部最优的能力。对图进行训练通常需要将所有节点中间状态存储到内存中。如果图很大，就会面临内存溢出的问题。与我们最相关的是Chiang等人。 [4]提出了一种子图训练算法来解决内存瓶颈。他们应用图聚类算法将图划分为子图，并在划分的子图上训练图卷积网络。在我们的问题中，基于节点的拓扑信息对节点进行聚类是不切实际的，因为我们的模型同时学习潜在的图结构。或者，在每次迭代中，我们将节点随机分成几组，并让算法根据采样的节点学习子图结构。这为每个节点提供了与一组中的另一个节点分配的完全可能性，以便可以计算和更新这两个节点之间的相似性得分。附带的好处是，如果我们将节点分成 s 个组，则可以在每次迭代中将图学习层的时间和空间复杂度从 O (N 2) 降低到 (N /s)2。训练后，由于所有节点嵌入都经过良好训练，因此可以构建全局图以充分利用空间关系。尽管它的计算成本很高，可以在进行预测之前并行预先计算邻接矩阵。</p>
+<p>我们提出的算法的第二个考虑是促进我们的模型稳定在更好的局部最优中。在多步预测任务中，我们观察到长期预测在模型性能方面往往比短期预测取得更大的改进。我们认为原因是我们的模型总共预测了多个步骤，并且长期预测产生的损失比短期预测高得多。因此，为了最大限度地减少总体损失，该模型更加注重提高长期预测的准确性。为了解决这个问题，我们提出了多步骤预测任务的课程学习策略。该算法从解决最简单的问题开始，仅预测下一步。模型找到一个好的起点是非常有利的。随着迭代次数的增加，我们逐渐增加模型的预测长度，使模型能够逐步学习困难的任务。涵盖所有这些，我们的算法在算法 1 中给出。我们模型的进一步复杂性分析可以在附录 A.1 中找到。</p>
+<h2 id="实验效果"><a class="markdownIt-Anchor" href="#实验效果"></a> 实验效果</h2>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/04/01/%E3%80%8ATS2Vec%20Towards%20Universal%20Representation%20of%20Time%20Series%E3%80%8B%E8%AE%BA%E6%96%87%20AAAI22/" rel="prev" title="">
+                  <i class="fa fa-angle-left"></i> 
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/04/01/%E3%80%8ACost%20Contrastive%20learning%20of%20disentangled%20seasonal-trend%20representations%20for%20time%20series%20forecasting%E3%80%8B%20ICLR22%20%E8%AE%BA%E6%96%87/" rel="next" title="">
+                   <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Xu Yang</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

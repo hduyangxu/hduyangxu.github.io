@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.22.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="《CycleNet: Enhancing Time Series Forecasting through Modeling Periodic Patterns》 论文 *斜体：*疑问  &amp; 解答 ｜  **加粗：**现象  ｜   下划线：解决方法、创新点  摘要 时间序列数据中存在的稳定周期性模式是进行长期预测的基础。在本文中，我们开创了对这种周期性进行显式建模的探索，以提高模型在长期">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://example.com/2025/04/01/%E3%80%8ACycleNet%20Enhancing%20Time%20Series%20Forecasting%20through%20Modeling%20Periodic%20Patterns%E3%80%8B%20%E8%AE%BA%E6%96%87/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="《CycleNet: Enhancing Time Series Forecasting through Modeling Periodic Patterns》 论文 *斜体：*疑问  &amp; 解答 ｜  **加粗：**现象  ｜   下划线：解决方法、创新点  摘要 时间序列数据中存在的稳定周期性模式是进行长期预测的基础。在本文中，我们开创了对这种周期性进行显式建模的探索，以提高模型在长期">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YTdmYjdiYjMzM2E3Y2ZiOWE2ZTMxMDFkNWJhNDliODJfZ0J3eUs4ZUpwU2UxaU5FVzI5NEkyN3RDZzZ3OXNBVDZfVG9rZW46QmlNNmJLOFlyb3V2Z014N3l6RWNxbWk3bk1kXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YjQxYjE1NWQxYWVjZTRkNGI4MTdlOGJiMjMzNjkzOGJfZm8ya2JwYmJkTGNJclpyU2pDSVo1aXVKMzRzTzlOY29fVG9rZW46TmhQbGJEUHM0b25aUEl4R1pZVGN6TmlVblhnXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NDM1NzQ2ZGNlMmFkMzg4YjNmNzAwYzdkYzlhNmU3YWFfSml0dXIxYlNKenNoR3Y3Q3RIQW1xdWtkbU9MbVZuc3FfVG9rZW46SlpiRmJxYmp0b0JpRWJ4cTN3MmNaSVhibmJoXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZjNkZWEwODdhYzI0NDk0ZWMyOTJkMTg4Mjc0ODQxNGRfd1FIZ1NyNHpJZUJvRDI1dFh3VlJzZ2NYaFZ2eW9VbmVfVG9rZW46UUtYdmI2UzY3b0JUT1l4V2dlRGNWNXlSblRkXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NGU5OThmMDI0ZjM2NTIxMTQzZWExOGM0NmMzNWNjNTBfTnpUa3B0NVo3eGZoWVhDWWRtNGtMV1RXM2VYNGx0WERfVG9rZW46TVhkZmJiZGI1b2pJQ1V4ZUs0UWNIQk1ibkNnXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MGEwZDBiMGNjMzNkMmI0NzUyMjEwNzMzMmYyODU5ODVfRG9lVHphQjFIWEEzNlJaek4yZDNPU3MyaE55U0RJWEZfVG9rZW46U2tiV2JxdXN1b2F6b2t4SkVGWWNVSXk5blE0XzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NzJiOTgxMzg2MmJhNTUxM2VlOGVmNzNhMmYzZjA5ZGVfY2FUSUp1d2thTzdqUzJUQ2tZWllsRzNPellLTUNIWTZfVG9rZW46QmZRemJ0QWRZb0JmVzV4ZzRhRWM0MkxBbnhkXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NGRiMDgxNzA3ODQ0NTYyZWFlYWFmODZlODdlOTU1NWJfbXJXVkxqNlJSdHZPSHBrWTBDdDhRdkpZSzE5WVlaUGhfVG9rZW46VkJIdmI4SHFjb2p4N0N4YTUxYmNqVXhrblhmXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NjgwOTFhZWNkZDEwZDFiMWIzNzMwOTlkN2RhNDQ3MWRfV1BwUGI3TlplM2hGUUxNNE44b2hIWFpnVDJ5Z2xvSUpfVG9rZW46QmM5WmJZeEc1bzFaVFN4UE4wZGMyOUpFbnFjXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MmI2MWMzNmM5MTE4YzY4Njc2NGI1MDY5MzU3ZmM4YWNfazlrdWd5NnU3TXMwOElYZWNMamlUYVRJMG1TaUlWVUlfVG9rZW46RExaOWJjWkYxbzRsRzF4Q3diMGM2UFNHbllnXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NDQ5NjdkYTE3ZThjN2JhYjA3N2YxOGZmMzRhMTA3MDRfQVFqU251NnN3dWFWN095aml2NXBJQ0hPZk5zVGtibWdfVG9rZW46RU1nVGJyNHlPbzMwSjF4MHdtZmMybzdwblFlXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YWVmM2I3NDM0Y2M4MDQwZjhjMzk5MzRlNzU2ZWU5NThfM2RIU3BseE1uQmVXTDN1dkNNZE1YelB4TXBuZnd6Z3RfVG9rZW46WHFmYmJwckpSb2FYbnR4dVdIcWNhR3lNbkNPXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NDNkZThmYjc1OTQxOTgwMmIzMTI3NDk5YzEyOWZlYmJfNldub3RDRjA4VDBuQ2ZCUFd5WGNVb2lWS001S1gxOUZfVG9rZW46UHJsV2JWYzdyb2F4VGF4UzlKZGNXeTlobkdSXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=N2I4OTY3NzZkZWViZDcxYmZmY2Y5OGVjNDRlODc5MTRfVXI1dkNDV05BakpUZndhc2dac2o5M0pkRXBwcXFXbVFfVG9rZW46TnJLVmJuNmR3b1J2ZU54NmpMcGNpeklpbmlkXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MTBjYmQ5YTA4NzhlMzg0ZDZkNDZmNWU2MjQ2YjUyMzZfU2RrWUNEWm1aU2lOZ0VLV215aWZka1hidVhJRE5nWTRfVG9rZW46WGhDT2J1c3RPb1RjWWl4VlBYNGNxaXJyblZnXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=OGI1MmM2MDYyYWQ4OTI3YjU3M2YwMWEzYjkxZjVmMTVfRjBPTmhhc1FpekNQMUR4VzVMM1BmNFVkVEhydDBQSmZfVG9rZW46TGxyU2JpUkFLbzRIa3N4UnRTTGNKRWM1bldoXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MzcwMzQzZTEwOGY3NTg4MmQzYWM1MjhlYTg3NGNhMmNfY1c3M1hzM25GakoxRGExNVMxVFZJNmF0MWhjM0FjdGRfVG9rZW46TTF4VWI2Y2Uwb3lnSDl4UUhkV2NFQkQ3bjZFXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA">
+<meta property="og:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=OTRjNzk1YzFmZGUxYjUzNzhjNGMyNDExNTVlZGE4NjNfMXBEYlBSVGd1ZzRhSVdTV2FYQlNwZGdMT3Z2RklHaGhfVG9rZW46TnlEaWI0QXhPb2ZqbzJ4OGpKemM5dmp3bkpiXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA">
+<meta property="article:published_time" content="2025-04-01T09:58:50.192Z">
+<meta property="article:modified_time" content="2025-04-01T09:58:03.298Z">
+<meta property="article:author" content="Xu Yang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YTdmYjdiYjMzM2E3Y2ZiOWE2ZTMxMDFkNWJhNDliODJfZ0J3eUs4ZUpwU2UxaU5FVzI5NEkyN3RDZzZ3OXNBVDZfVG9rZW46QmlNNmJLOFlyb3V2Z014N3l6RWNxbWk3bk1kXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA">
+
+
+<link rel="canonical" href="http://example.com/2025/04/01/%E3%80%8ACycleNet%20Enhancing%20Time%20Series%20Forecasting%20through%20Modeling%20Periodic%20Patterns%E3%80%8B%20%E8%AE%BA%E6%96%87/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2025/04/01/%E3%80%8ACycleNet%20Enhancing%20Time%20Series%20Forecasting%20through%20Modeling%20Periodic%20Patterns%E3%80%8B%20%E8%AE%BA%E6%96%87/","path":"2025/04/01/《CycleNet Enhancing Time Series Forecasting through Modeling Periodic Patterns》 论文/","title":""}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title> | Hexo</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Hexo</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#cyclenet-enhancing-time-series-forecasting-through-modeling-periodic-patterns-%E8%AE%BA%E6%96%87"><span class="nav-number">1.</span> <span class="nav-text"> 《CycleNet: Enhancing Time Series Forecasting through Modeling Periodic Patterns》 论文</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-number">1.1.</span> <span class="nav-text"> 摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.2.</span> <span class="nav-text"> 1.介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.2.1.</span> <span class="nav-text"> 背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%9C%A8%E9%97%AE%E9%A2%98"><span class="nav-number">1.2.2.</span> <span class="nav-text"> 存在问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%80%9D%E8%B7%AF"><span class="nav-number">1.2.3.</span> <span class="nav-text"> 解决思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%88%E6%9E%9C%E5%8F%8A%E8%B4%A1%E7%8C%AE"><span class="nav-number">1.2.4.</span> <span class="nav-text"> 效果及贡献</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E7%9B%B8%E5%85%B3%E5%B7%A5%E4%BD%9C"><span class="nav-number">1.3.</span> <span class="nav-text"> 2.相关工作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95-cyclenet"><span class="nav-number">1.4.</span> <span class="nav-text"> 3.解决方法 CycleNet</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#31-residual-cycle-forecasting"><span class="nav-number">1.4.0.1.</span> <span class="nav-text"> 3.1 Residual cycle forecasting</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#32-instance-normalization-%E5%AE%9E%E4%BE%8B%E6%A0%87%E5%87%86%E5%8C%96"><span class="nav-number">1.4.0.2.</span> <span class="nav-text"> 3.2 Instance normalization 实例标准化</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4%E5%AE%9E%E9%AA%8C%E6%95%88%E6%9E%9C"><span class="nav-number">1.5.</span> <span class="nav-text"> 4.实验效果</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#41%E8%AE%BE%E5%AE%9A"><span class="nav-number">1.5.0.1.</span> <span class="nav-text"> 4.1设定</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#42%E4%B8%BB%E8%A6%81%E7%BB%93%E6%9E%9C"><span class="nav-number">1.5.0.2.</span> <span class="nav-text"> 4.2主要结果</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#43%E6%95%88%E7%8E%87%E5%88%86%E6%9E%90"><span class="nav-number">1.5.0.3.</span> <span class="nav-text"> 4.3效率分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#44-%E6%B6%88%E8%9E%8D%E7%A0%94%E7%A9%B6%E4%B8%8E%E5%88%86%E6%9E%90"><span class="nav-number">1.5.0.4.</span> <span class="nav-text"> 4.4 消融研究与分析</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E8%AE%A8%E8%AE%BA"><span class="nav-number">1.6.</span> <span class="nav-text"> 5 讨论</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%BD%9C%E5%9C%A8%E7%9A%84%E9%99%90%E5%88%B6"><span class="nav-number">1.6.0.1.</span> <span class="nav-text"> 潜在的限制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%AA%E6%9D%A5%E5%B7%A5%E4%BD%9C%E8%BF%9B%E4%B8%80%E6%AD%A5%E5%BB%BA%E6%A8%A1%E9%80%9A%E9%81%93%E9%97%B4%E5%85%B3%E7%B3%BB"><span class="nav-number">1.6.0.2.</span> <span class="nav-text"> 未来工作：进一步建模通道间关系</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E6%80%BB%E7%BB%93"><span class="nav-number">1.7.</span> <span class="nav-text"> 6 总结</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Xu Yang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hduyangxu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hduyangxu" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/04/01/%E3%80%8ACycleNet%20Enhancing%20Time%20Series%20Forecasting%20through%20Modeling%20Periodic%20Patterns%E3%80%8B%20%E8%AE%BA%E6%96%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Xu Yang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | Hexo">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-04-01 17:58:50 / 修改时间：17:58:03" itemprop="dateCreated datePublished" datetime="2025-04-01T17:58:50+08:00">2025-04-01</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="cyclenet-enhancing-time-series-forecasting-through-modeling-periodic-patterns-论文"><a class="markdownIt-Anchor" href="#cyclenet-enhancing-time-series-forecasting-through-modeling-periodic-patterns-论文"></a> 《CycleNet: Enhancing Time Series Forecasting through Modeling Periodic Patterns》 论文</h1>
+<p>*斜体：*疑问  &amp; 解答 ｜  **加粗：**现象  ｜   下划线：解决方法、创新点</p>
+<h2 id="摘要"><a class="markdownIt-Anchor" href="#摘要"></a> 摘要</h2>
+<p>时间序列数据中存在的稳定周期性模式是进行长期预测的基础。在本文中，我们开创了对这种周期性进行显式建模的探索，以提高模型在长期时间序列预测（LTSF）任务中的性能。具体来说，我们引入了残余周期预测（RCF）技术，该技术利用可学习的循环来对序列中固有的周期性模式进行建模，然后对建模周期的残余分量进行预测。将 RCF 与线性层或浅层 MLP 相结合形成了本文提出的简单而强大的方法，称为 CycleNet。 CycleNet 在电力、天气和能源等多个领域实现了最先进的预测精度，同时通过减少 90% 以上的所需参数数量来提供显着的效率优势。此外，作为一种新颖的即插即用技术，RCF还可以显着提高现有模型（包括PatchTST和iTransformer）的预测精度。</p>
+<h2 id="1介绍"><a class="markdownIt-Anchor" href="#1介绍"></a> 1.介绍</h2>
+<h3 id="背景"><a class="markdownIt-Anchor" href="#背景"></a> 背景</h3>
+<p>时间序列预测 (TSF) 在天气预报、交通和能源管理等各个领域发挥着至关重要的作用，为早期预警提供见解并促进主动规划。特别是，长期（例如，跨越几天或几个月）的准确预测提供了更多的便利，称为长期时间序列预测（LTSF）[59,56,17,42,6]。</p>
+<h3 id="存在问题"><a class="markdownIt-Anchor" href="#存在问题"></a> 存在问题</h3>
+<p>然而，<strong>实现长期预测的原则在于理解数据中固有的周期性[32]。与短期预测不同，长期预测不能仅仅依赖于最近的时间信息（包括平均值、趋势等）</strong>。例如，用户未来三十天的用电量不仅与其过去几天的用电量模式相关。在这种情况下，长期依赖性，或者换句话说，数据中潜在的稳定周期性，可以作为进行长期预测的实际基础[32]。这就是为什么现有模型强调其提取具有长期依赖性的特征的能力。 Informer [59]、Autoformer [51] 和 PatchTST [40] 等模型利用 Transformer 的长距离建模能力来解决 LTSF 任务。 ModernTCN [38] 采用大型卷积核来增强 TCN 捕获长程依赖性的能力，而 SegRNN [31] 使用分段迭代来改进 RNN 方法对长序列的处理。如果模型能够准确捕获长期依赖性，它就可以从历史长序列中精确提取周期性模式，从而实现更准确的长期预测。</p>
+<p>然而，   如果构建深度复杂模型的目的仅仅是为了更好地从远程依赖性中提取周期性特征，为什么不直接对模式进行建模呢？如图 1 所示，电力数据表现出清晰的每日周期性模式（除了可能的每周模式）。我们可以使用全球共享的每日片段来表示电力消耗的周期性模式。通过重复这个每日片段N次，我们可以连续地表示N天用电量序列的循环分量。</p>
+<h3 id="解决思路"><a class="markdownIt-Anchor" href="#解决思路"></a> 解决思路</h3>
+<p>基于上述动机，我们在本文中率先对数据中的周期性模式进行显式建模，以增强模型在 LTSF 任务上的性能。具体来说，我们提出了剩余周期预测（RCF）技术。它涉及使用可学习的循环周期对时间序列数据中固有的周期性模式进行显式建模，然后预测建模周期的剩余分量。将 RCF 技术与单层线性或双层 MLP 相结合，形成了 CycleNet，这是一种简单但功能强大的方法。</p>
+<h3 id="效果及贡献"><a class="markdownIt-Anchor" href="#效果及贡献"></a> 效果及贡献</h3>
+<p>CycleNet 在多个领域实现了一致的最先进性能，并提供了显着的效率优势。总之，本文贡献：</p>
+<p>• 我们确定了长期预测领域中共享周期性模式的存在，并提出对这些模式的显式建模，以增强模型在 LTSF 任务上的性能。</p>
+<p>• 从技术上讲，我们引入了RCF 技术，该技术利用可学习的循环周期对时间序列数据内的固有周期性模式进行显式建模，然后预测建模周期的剩余分量。 RCF 技术显着增强了基本（或现有）模型的性能。</p>
+<p>• 将RCF 与线性层或浅层MLP 结合使用，形成了所提出的简单而强大的方法，称为CycleNet。 CycleNet 在多个领域实现了一致的最先进性能，并提供了显着的效率优势。</p>
+<h2 id="2相关工作"><a class="markdownIt-Anchor" href="#2相关工作"></a> 2.相关工作</h2>
+<p>事实上，利用周期性信息来提高模型预测精度并不是一个新概念。特别是，许多研究引入了一系列季节性趋势分解（STD）技术，使模型能够更好地利用周期性信息。 Autoformer [51]、FEDformer [60] 和 DLinear [56] 等流行模型利用经典的 STD 方法将原始时间序列分解为两个同等大小的子序列：季节性和趋势分量，然后独立建模。这些经典的 STD 方法通常使用基本移动平均 (MOV) 内核来执行滑动聚合以获得趋势分量。最近，Leddam [55] 提出用可学习分解（LD）内核替换 STD 中的传统 MOV 内核，从而提高性能。此外，DEPTS [8]将序列的周期性视为相对于时间的参数化函数，并通过其周期性和局部块逐层学习周期性和残余分量。 SparseTSF [32]是最近的另一项工作，利用跨时期稀疏预测技术来解耦周期和趋势，以极低的成本实现了令人印象深刻的性能。</p>
+<p>本文提出的 RCF 技术本质上可以被认为是 STD 方法的一种。与现有技术的主要区别在于它使用可学习的循环周期对独立序列内的全局周期模式进行显式建模。所提出的 RCF 技术概念简单、计算高效，并且可以显着提高预测精度。进一步提出的 CycleNet 将 RCF 技术与简单的主干网络相结合，是一种基于线性或 MLP 的模型，简单、高效且功能强大，适用于时间序列预测。为了正确定位 CycleNet，我们在附录 A 中详细回顾了不同类别的时间序列预测方法（包括基于 Transformer 的、基于 RNN 的等）的发展。</p>
+<h2 id="3解决方法-cyclenet"><a class="markdownIt-Anchor" href="#3解决方法-cyclenet"></a> 3.解决方法 CycleNet</h2>
+<p>给定具有 D 个变量或通道的时间序列 X，时间序列预测的目标是根据过去 L 个观测值预测未来的 H 步，数学上表示为</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YTdmYjdiYjMzM2E3Y2ZiOWE2ZTMxMDFkNWJhNDliODJfZ0J3eUs4ZUpwU2UxaU5FVzI5NEkyN3RDZzZ3OXNBVDZfVG9rZW46QmlNNmJLOFlyb3V2Z014N3l6RWNxbWk3bk1kXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<p>事实上，时间序列中固有的周期性是准确预测的基础，特别是在大范围内进行预测时，例如 96-720 步（对应于几天或几个月）。为了提高模型在长期预测任务上的性能，我们提出了剩余周期预测（RCF）技术。它结合了线性层或浅层 MLP，形成了一个简单而强大的方法 CycleNet，如图 2 所示，详细的伪代码在附录 B.1 中提供。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YjQxYjE1NWQxYWVjZTRkNGI4MTdlOGJiMjMzNjkzOGJfZm8ya2JwYmJkTGNJclpyU2pDSVo1aXVKMzRzTzlOY29fVG9rZW46TmhQbGJEUHM0b25aUEl4R1pZVGN6TmlVblhnXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<p>CycleNet 架构。 CycleNet/Linear 和 CycleNet/MLP 分别代表使用单层 Linear 模型和双层 MLP 模型作为 CycleNet 的主干。这里，D = 3。</p>
+<h4 id="31-residual-cycle-forecasting"><a class="markdownIt-Anchor" href="#31-residual-cycle-forecasting"></a> 3.1 Residual cycle forecasting</h4>
+<p>RCF 技术包括两个步骤：第一步涉及通过独立通道内的可学习循环来对序列的周期性模式进行建模，第二步需要预测建模周期的剩余分量。</p>
+<p><strong>Periodic patterns modeling周期性模式建模</strong></p>
+<p>对于具有先验周期长度 W 的 D 个通道，我们首先生成可学习的循环周期 Q ∈ RW ×D，全部初始化为零。这些循环在通道内全局共享，这意味着通过执行循环复制，我们可以获得相同长度的序列X的循环分量C。这些长度为 W 的循环周期 Q 与用于预测的骨干模块一起经历梯度反向传播训练，产生学习表示（与最初初始化的零不同），揭示序列内的内部循环模式。</p>
+<blockquote>
+<p><strong>举例说明</strong></p>
+<p>假设我们有一个电力消耗的时间序列数据集，它有7个通道（比如代表7天的电力消耗），每个通道的长度为24小时（代表一天中的每小时）。如果我们确定了电力消耗的日循环模式（即每天的电力消耗模式是相似的），那么：</p>
+<ol>
+<li><strong>初始化Q</strong>：我们首先创建一个长度为24的向量Q，这个向量包含了一天中每小时的电力消耗模式。这个向量是可学习的，意味着它会在训练过程中根据数据进行调整。</li>
+<li><strong>循环复制Q</strong>：由于我们有7天的数据，我们将Q复制7次，以生成一个长度为168的向量C，这个向量代表了一周内每小时的电力消耗模式。</li>
+<li><strong>全局共享</strong>：这个C向量对于所有的通道都是相同的，因为我们假设电力消耗的日循环模式在整个数据集中是一致的。这就是“全局共享”的含义。</li>
+</ol>
+<p>通过这种方式，我们可以将复杂的时间序列数据分解为易于管理和预测的周期性部分（C）和非周期性部分（残差分量）。这种方法有助于模型更准确地捕捉和预测时间序列数据中的周期性变化。</p>
+</blockquote>
+<p>这里，周期长度W取决于数据集的先验特征，并且应该设置为数据集中的最大稳定周期。考虑到需要长期预测的场景通常表现出突出的、明确的周期（例如，用电量和交通数据表现出清晰的每日和每周周期），确定具体的周期长度是可用且简单的。此外，可以通过自相关函数 (ACF) [39] 进一步检查数据集的周期，如附录 B.2 所示。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NDM1NzQ2ZGNlMmFkMzg4YjNmNzAwYzdkYzlhNmU3YWFfSml0dXIxYlNKenNoR3Y3Q3RIQW1xdWtkbU9MbVZuc3FfVG9rZW46SlpiRmJxYmp0b0JpRWJ4cTN3MmNaSVhibmJoXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<p><strong>Residual</strong> <strong>forecastin</strong> <strong>残差****预测</strong></p>
+<p>对建模周期的剩余部分进行的预测（称为剩余预测）如下：</p>
+<p>1.从原始输入中去除循环分量 以获得残差分量。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=ZjNkZWEwODdhYzI0NDk0ZWMyOTJkMTg4Mjc0ODQxNGRfd1FIZ1NyNHpJZUJvRDI1dFh3VlJzZ2NYaFZ2eW9VbmVfVG9rZW46UUtYdmI2UzY3b0JUT1l4V2dlRGNWNXlSblRkXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<p>2.将 残差分量通过主干网络，以获得残差分量的预测</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NGU5OThmMDI0ZjM2NTIxMTQzZWExOGM0NmMzNWNjNTBfTnpUa3B0NVo3eGZoWVhDWWRtNGtMV1RXM2VYNGx0WERfVG9rZW46TVhkZmJiZGI1b2pJQ1V4ZUs0UWNIQk1ibkNnXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<p>3.将预测的残差分量与循环分量相加，得到预测序列</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MGEwZDBiMGNjMzNkMmI0NzUyMjEwNzMzMmYyODU5ODVfRG9lVHphQjFIWEEzNlJaek4yZDNPU3MyaE55U0RJWEZfVG9rZW46U2tiV2JxdXN1b2F6b2t4SkVGWWNVSXk5blE0XzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<p>需要注意的是，由于循环分量C是由Q的循环复制导出的虚拟序列，因此我们无法直接获得上述子序列ct−L+1:t 和ct+1:t+H 。因此，如图 3 所示，需要对循环 Q 进行适当的对齐和重复以获得等效的子序列：</p>
+<p>(i) 将 Q 左移 t mod W 位置以获得 Q(t)。这里，t mod W 可以被视为当前序列样本在 Q 内的相对位置索引。</p>
+<p>(ii) 重复 Q(t) ⌊L/W ⌋ 次并连接 Q(t) 0:L mod W 。在数学上，这两个等价子序列可以表示为：</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NzJiOTgxMzg2MmJhNTUxM2VlOGVmNzNhMmYzZjA5ZGVfY2FUSUp1d2thTzdqUzJUQ2tZWllsRzNPellLTUNIWTZfVG9rZW46QmZRemJ0QWRZb0JmVzV4ZzRhRWM0MkxBbnhkXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NGRiMDgxNzA3ODQ0NTYyZWFlYWFmODZlODdlOTU1NWJfbXJXVkxqNlJSdHZPSHBrWTBDdDhRdkpZSzE5WVlaUGhfVG9rZW46VkJIdmI4SHFjb2p4N0N4YTUxYmNqVXhrblhmXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<p><strong>Backbone主干网络</strong></p>
+<p>将原来的预测任务转化为循环残差分量建模，可以作为正常的序列建模。因此，任何现有的时间序列预测模型都可以用作骨干。在本文中，我们的目标是提出并研究一种通过显式建模周期（即 RCF）来增强时间序列预测的方法。因此，我们选择最基本的主干，即单层 Linear 和双层 MLP，形成我们简单但强大的方法，CycleNet/Linear 和 CycleNet/MLP。这里，每个通道利用相同的骨干网和参数共享进行建模，这也称为通道独立策略[13]</p>
+<h4 id="32-instance-normalization-实例标准化"><a class="markdownIt-Anchor" href="#32-instance-normalization-实例标准化"></a> 3.2 Instance normalization 实例标准化</h4>
+<p>时间序列数据的统计特性（例如均值）通常会随时间变化，这称为分布变化。这可能会导致在历史训练集上训练的模型在应用于未来数据时表现不佳。为了解决这个问题，最近的研究引入了实例标准化策略，例如 RevIN [45,22,26]。 iTransformer [37]、PatchTST [40] 和 SparseTSF [32] 等主流方法已广泛采用类似的技术来增强性能。为了提高 CycleNet 的鲁棒性，我们还采用了类似的可选策略（参见附录 C.4 中的完整消融研究）。具体来说，我们从 CycleNet 输入和输出步骤之外的模型内部表示中删除了不同的统计属性：</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NjgwOTFhZWNkZDEwZDFiMWIzNzMwOTlkN2RhNDQ3MWRfV1BwUGI3TlplM2hGUUxNNE44b2hIWFpnVDJ5Z2xvSUpfVG9rZW46QmM5WmJZeEc1bzFaVFN4UE4wZGMyOUpFbnFjXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<p>其中 μ 和 σ 分别表示输入窗口的平均值和标准差，ε 是用于数值稳定性的小常数。此方法与排除可学习仿射参数的 RevIN 版本一致 [22]。</p>
+<p><strong>3.3****Loss function</strong> <strong>损失函数</strong></p>
+<p>为了与当前主流方法保持一致，CycleNet默认使用均方误差（MSE）作为损失函数，以确保与其他方法的公平比较，公式为：</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MmI2MWMzNmM5MTE4YzY4Njc2NGI1MDY5MzU3ZmM4YWNfazlrdWd5NnU3TXMwOElYZWNMamlUYVRJMG1TaUlWVUlfVG9rZW46RExaOWJjWkYxbzRsRzF4Q3diMGM2UFNHbllnXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<h2 id="4实验效果"><a class="markdownIt-Anchor" href="#4实验效果"></a> 4.实验效果</h2>
+<h4 id="41设定"><a class="markdownIt-Anchor" href="#41设定"></a> 4.1设定</h4>
+<p><strong>Datasets</strong></p>
+<p>我们利用了广泛采用的基准数据集，包括 ETT 系列 [59]、天气、交通、电力和太阳能 [24]。对数据集的预处理操作，例如数据集分割和标准化方法，与之前的工作保持一致（例如，Autoformer [51]，iTransformer [37]等）。</p>
+<p>数据集的信息如表1所示。请注意，这些数据集都表现出稳定的循环模式，例如每日和每周，这构成了执行长期预测的现实基础。结合数据集的采样频率，我们可以推断出数据集的最大周期长度，例如ETTh1为24，Electricity为168。这些手动推断的周期长度可以通过 ACF 分析进一步确认，其详细信息在附录 B.2 中提供。 CycleNet 的超参数 W 默认设置为匹配表 1 中的循环长度。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NDQ5NjdkYTE3ZThjN2JhYjA3N2YxOGZmMzRhMTA3MDRfQVFqU251NnN3dWFWN095aml2NXBJQ0hPZk5zVGtibWdfVG9rZW46RU1nVGJyNHlPbzMwSjF4MHdtZmMybzdwblFlXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<p><strong>Baselines</strong></p>
+<p>我们将 CycleNet 与近年来最先进的模型进行了比较，包括 iTransformer [37]、PatchTST [40]、Crossformer [58]、TiDE [5]、TimesNet [52]、DLinear [56]、SCINet [34] 、FEDformer [60]、Autoformer [51]。为了全面评估 CycleNet 的性能，采用了均方误差（MSE）和平均绝对误差（MAE）指标。</p>
+<p><strong>Environments</strong></p>
+<p>本文中的所有实验均使用 PyTorch [41] 实现，使用 Adam [23] 优化器进行训练，并在具有 24 GB 内存的单个 NVIDIA GeForce RTX 4090 GPU 上执行</p>
+<h4 id="42主要结果"><a class="markdownIt-Anchor" href="#42主要结果"></a> 4.2主要结果</h4>
+<p>表2显示了CycleNet与其他模型在多变量LTSF任务上的比较结果。总体而言，CycleNet 实现了最先进的性能（除了 Traffic 数据集），其中 CycleNet/MLP 总体排名第一，CycleNet/Linear 总体排名第二。由于 MLP 与 Linear 相比具有非线性映射能力，CycleNet/MLP 在电力和太阳能等高维数据集（即具有超过 100 个通道的数据集）上表现更好。综上所述，在 RCF 技术的支持下，即使是非常简单基础的模型（即 Linear 和 MLP）也能达到目前最好的性能，超越其他深度模型。这充分体现了RCF技术的优势。</p>
+<p>表 2：多元长期时间序列预测结果。回溯长度 L 固定为 96，结果是 H ∈ {96, 192, 336, 720} 的所有预测范围的平均。附录 C.2 提供了完整的结果和更长回溯长度的更多比较结果。其他模型的结果来自iTransformer [37]和TimeMixer [48]。最好的结果以粗体突出显示，次好的结果用下划线突出显示。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=YWVmM2I3NDM0Y2M4MDQwZjhjMzk5MzRlNzU2ZWU5NThfM2RIU3BseE1uQmVXTDN1dkNNZE1YelB4TXBuZnd6Z3RfVG9rZW46WHFmYmJwckpSb2FYbnR4dVdIcWNhR3lNbkNPXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<p>此外，我们可以观察到 CycleNet 在 Traffic 数据集上的性能不如 iTransformer，后者使用反向 Transformer 对时间序列数据中的多元关系进行建模。这是因为交通数据集表现出时空特征和时间滞后特征，其中某个检测点的交通流量显着影响邻近检测点的未来值。在这种情况下，需要对足够的渠道间关系进行建模，而 iTransformer 可以实现这一点。相比之下，CycleNet 独立地对每个通道的时间依赖性进行建模，因此在这种情况下它会遇到缺点。然而，CycleNet 在 Traffic 数据集上仍然明显优于其他基线，这证明了 CycleNet 的竞争力。此外，我们在附录 C.5 中包含了对 CycleNet 在交通场景中的更多分析，包括对 PEMS 数据集结果的完整比较。</p>
+<h4 id="43效率分析"><a class="markdownIt-Anchor" href="#43效率分析"></a> 4.3效率分析</h4>
+<p>所提出的 RCF 技术作为即插即用模块，需要最小的开销，仅需要额外的 W × D 可学习参数，并且不需要额外的乘法累加运算（MAC）。 CycleNet 的主干，即单层 Linear 和双层 MLP，与其他多层堆叠模型相比也显着轻量级。表3展示了CycleNet与其他主流模型的效率对比，其中CycleNet表现出显着的优势。特别是，与同样具有强大的长期依赖性建模和非线性学习能力的 iTransformer 相比，CycleNet/MLP 的参数和 MAC 数量少了十倍以上。至于CycleNet/Linear，它与DLinear共享相同的单层线性主干，它的参数和MAC也更少。不过，就训练速度而言，DLinear 仍然比 CycleNet/Linear 快。这是因为 RCF 技术需要将循环周期与每个数据样本对齐，这会产生额外的 CPU 时间。总体而言，考虑到RCF技术带来的预测精度的显着提升，CycleNet实现了性能和效率之间的最佳平衡。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=NDNkZThmYjc1OTQxOTgwMmIzMTI3NDk5YzEyOWZlYmJfNldub3RDRjA4VDBuQ2ZCUFd5WGNVb2lWS001S1gxOUZfVG9rZW46UHJsV2JWYzdyb2F4VGF4UzlKZGNXeTlobkdSXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<h4 id="44-消融研究与分析"><a class="markdownIt-Anchor" href="#44-消融研究与分析"></a> 4.4 消融研究与分析</h4>
+<p><strong>RCF的有效性</strong></p>
+<p>为了研究 RCF 的有效性，我们对两个具有显着周期性的数据集：电力和交通数据集进行了全面的消融实验。结果如表4所示。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=N2I4OTY3NzZkZWViZDcxYmZmY2Y5OGVjNDRlODc5MTRfVXI1dkNDV05BakpUZndhc2dac2o5M0pkRXBwcXFXbVFfVG9rZW46TnJLVmJuNmR3b1J2ZU54NmpMcGNpeklpbmlkXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<p>首先，当将基本的 Linear 和 MLP 主干（默认情况下均使用实例归一化）与 RCF 技术相结合时，可以观察到预测精度显着提高（大约 10% 到 20%）。这表明 CycleNet 的成功很大程度上归功于 RCF 技术，而不是主干网本身或实例标准化策略。总体而言，无论是否应用RCF技术，MLP的性能都强于Linear。这表明，在使用通道无关策略（跨每个通道共享参数）对高维数据集进行建模时，非线性映射能力是必要的，这与之前的研究结果一致[26]。</p>
+<p>其次，我们进一步验证了RCF是否可以提高现有模型的预测精度，因为RCF本质上是一种即插即用的灵活技术。据观察，结合 RCF 仍然可以提高现有复杂设计的深度堆叠模型的性能（大约 5% 到 10%），例如 PatchTST [40] 和 iTransformer [37]。即使对于已经采用基于 MOV 的经典 STD 技术的 DLinear，RCF 也能够提供大约 20% 的改进。这进一步说明了RCF的有效性和可移植性。</p>
+<p>然而，观察到一个有趣的现象：当 PatchTST 和 iTransformer 与 RCF 结合时，虽然 MAE 降低了，但 MSE 却增加了。这背后最重要的原因是，流量数据集中存在极值点，可能会影响 RCF 的有效性，而 RCF 从根本上依赖于学习数据集中的历史平均周期。我们在附录 C.5 中进一步详细分析了这种现象，并提出了改进 RCF 技术的潜在方向。</p>
+<p><strong>不同<strong><strong>STD</strong></strong>技术的比较</strong></p>
+<p>所提出的 RCF 技术本质上是一种更强大的 STD 方法。与从有限回溯窗口分解周期性（季节性）分量的现有方法不同，RCF 从训练集中学习全局周期性分量。在这里，我们使用纯线性模型作为主干（不应用任何实例归一化策略），将 RCF 与现有 STD 技术的有效性进行比较。比较包括来自 Leddam [55] 的 LD、来自 DLinear [56] 的 MOV 和来自 SparseTSF [32] 的稀疏技术。如表 5 所示，RCF 显着优于其他 STD 方法，特别是在具有强周期性的数据集上，例如电力和太阳能。相比之下，其他 STD 方法并没有表现出比纯线性模型显着的优势。</p>
+<p>这有几个原因。首先，基于MOV和LD的STD方法通过在回溯窗口内滑动聚合来实现趋势估计，这存在固有的问题[27, 26]：</p>
+<p>（i）移动平均的滑动窗口需要大于最大值季节性成分的周期；否则，分解可能不完整（特别是当周期长度超过回溯序列长度时，可能导致分解不可能）。</p>
+<p>(ii)在序列样本的边缘需要进行补零以获得同等大小的移动平均序列，导致序列边缘失真。至于稀疏技术，作为一种轻量级的分解方法，它更多地依赖于较长的回溯窗口和实例归一化策略来保证足够的性能。</p>
+<p>此外，这些在回溯窗口内解耦趋势和季节性的方法本质上相当于无约束或弱约束线性回归[44]，这意味着在完全训练收敛后，基于线性的模型与这些方法相结合在理论上相当于纯线性回归。线性模型。相比之下，RCF技术获得的周期分量是从训练集中全局估计的，使其超越了有限长度回溯窗口的限制，因此，其能力超出了标准线性回归。</p>
+<p>表 5：不同 STD 技术的比较。为了直接比较 STD 的效果，这里使用的配置与 DLinear [56] 一致，具有足够的回溯窗口长度 336，并且没有额外的实例归一化策略。因此，这里的 CLinear 指的是不带 RevIN 的 CycleNet/Linear。报告的结果是 H ∈ {96, 192, 336, 720} 的所有预测范围的平均值，完整结果可在附录 C.3 中找到。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MTBjYmQ5YTA4NzhlMzg0ZDZkNDZmNWU2MjQ2YjUyMzZfU2RrWUNEWm1aU2lOZ0VLV215aWZka1hidVhJRE5nWTRfVG9rZW46WGhDT2J1c3RPb1RjWWl4VlBYNGNxaXJyblZnXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<p><strong>超参数****W的影响</strong></p>
+<p>超参数 W 决定了 RCF 技术中可学习循环 Q 的长度。原则上，它必须匹配数据中的最大主周期长度，才能正确建模序列的周期性模式。我们在表 6 中研究了不同数据集在不同 W 设置下的 CycleNet/Linear 模型的性能。当将超参数 W 正确设置为数据集的最大周期长度（即表 1 中预先推断的周期长度）时， RCF 可以发挥重要作用，与未正确设置的情况相比，会产生很大的性能差距。这表明有必要推断和设置正确的 W 以使 RCF 正常运行。此外，当W设置不正确时，模型的性能几乎与根本不使用RCF时相同。这表明即使在最坏的情况下，RCF也不会带来显着的负面影响。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=OGI1MmM2MDYyYWQ4OTI3YjU3M2YwMWEzYjkxZjVmMTVfRjBPTmhhc1FpekNQMUR4VzVMM1BmNFVkVEhydDBQSmZfVG9rZW46TGxyU2JpUkFLbzRIa3N4UnRTTGNKRWM1bldoXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<p><strong>学习到的周期性模式的可视化</strong></p>
+<p>RCF 技术的目的是利用可学习的循环周期 Q（初始化为零）对时间序列数据中的周期性模式进行建模。与主干网络共同训练后，循环可以代表序列的固有周期性模式。图 4 说明了从不同数据集和通道中学习到的不同周期性模式。例如，图4（c）显示了太阳能光伏发电的每日运行模式，而图4（d）显示了交通流量的每周运行模式，以工作日的早上为高峰。从全局序列中学习到的这些周期性模式为预测模型提供了重要的补充信息，特别是当回溯窗口的长度有限并且当循环长度很长时可能无法提供足够的循环信息。</p>
+<p>此外，尽管同一数据集中不同通道的周期长度相同，但具体的周期模式不同，如图 4(e-h) 所示。特别是，图4（f）显示了工作日家庭用电量的间歇性周期性，而其他的则在各自的渠道中表现出相对均匀的工作日模式。这凸显了对每个通道的周期模式单独建模的必要性。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=MzcwMzQzZTEwOGY3NTg4MmQzYWM1MjhlYTg3NGNhMmNfY1c3M1hzM25GakoxRGExNVMxVFZJNmF0MWhjM0FjdGRfVG9rZW46TTF4VWI2Y2Uwb3lnSDl4UUhkV2NFQkQ3bjZFXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<p>总之，这些发现表明，RCF 技术可以有效地学习时间序列数据中固有的周期性模式，是促成 CycleNet 最先进性能的关键解释因素。此外，我们在附录 C.1 中包含了进一步的分析，展示了在不同配置下学习到的 RCF 周期性模式，以更好地说明 RCF 是如何运行的。</p>
+<p><img src="https://d0qdj50547d.feishu.cn/space/api/box/stream/download/asynccode/?code=OTRjNzk1YzFmZGUxYjUzNzhjNGMyNDExNTVlZGE4NjNfMXBEYlBSVGd1ZzRhSVdTV2FYQlNwZGdMT3Z2RklHaGhfVG9rZW46TnlEaWI0QXhPb2ZqbzJ4OGpKemM5dmp3bkpiXzE3NDM1MDA2MTk6MTc0MzUwNDIxOV9WNA" alt="img" /></p>
+<p><strong>不同回望长度的性能</strong></p>
+<p>回顾长度决定了可以利用的历史信息的丰富程度。理论上，它越大，模型性能应该越好，特别是对于能够捕获长期依赖关系的模型。图5显示了不同模型在不同回溯长度下的性能。可以看出，CycleNet 以及 iTransformer [37]、PatchTST [40] 和 DLinear [56] 等当前最先进模型的代表，都通过更长的回溯长度实现了更好的性能。这表明这些模型都具有强大的长期依赖性建模能力。</p>
+<p>值得强调的是（i）在电力数据集上，CycleNet 在任何预测长度上都优于当前最先进的模型； (ii) 在交通数据集上，与 iTransformer 等强大的现有多元预测模型相比，CycleNet 仍然存在不足。这表明，在周期性较强但没有额外时空关系的场景下，充分利用周期性成分足以实现高精度预测。然而，在需要对变量之间的关系进行彻底建模的更复杂场景中，简单的独立于通道的策略与基本主干相结合（例如 CycleNet）仍然难以完全满足需求。因此，在附录C.5中，我们进一步分析了当前RCF技术在时空场景（例如流量域）中的局限性，并指出了未来改进的潜在方向。最后，我们还在附录 C.2 中使用更长的回溯窗口对 CycleNet 与现有模型在完整数据集上进行了比较。</p>
+<h2 id="5-讨论"><a class="markdownIt-Anchor" href="#5-讨论"></a> 5 讨论</h2>
+<h4 id="潜在的限制"><a class="markdownIt-Anchor" href="#潜在的限制"></a> 潜在的限制</h4>
+<p>CycleNet 在以突出且明确的周期性模式为特征的 LTSF 场景中展示了其功效。然而，CycleNet 有几个潜在的局限性值得在此讨论：</p>
+<p>• 周期长度不稳定：CycleNet 可能不适合周期长度（或频率）随时间变化的数据集，例如心电图（ECG）数据，因为 CycleNet 只能学习固定长度的周期。</p>
+<p>• 不同通道的周期长度：当数据集中的不同通道表现出不同长度的周期时，CycleNet 可能会遇到挑战，因为它默认对具有相同周期长度 W 的所有通道进行建模。鉴于 CycleNet 的通道独立建模策略，一种潜在的解决方案是根据周期长度拆分数据集来预处理数据集，或者将每个通道独立建模为单独的数据集。</p>
+<p>• 异常值的影响：如果数据集包含显着的异常值，CycleNet 的性能可能会受到影响。这是因为RCF的基本工作原理是学习数据集中的历史平均周期。当存在显着的异常值时，RCF 学习到的循环中某个点的平均值可能会被夸大，导致周期性分量和残差分量的估计不准确，从而影响预测过程。</p>
+<p>• 长期周期建模：RCF 技术对于建模中期稳定周期（例如每日或每周）非常有效。然而，考虑更长的依赖性（例如每年的周期）给 RCF 技术带来了更具挑战性的任务。虽然理论上CycleNet的W可以设置为年周期长度来建模年周期，但最大的困难在于收集足够长的历史数据来训练完整的年周期，这可能需要数十年的数据。在这种情况下，未来的研究需要开发更先进的技术来专门解决长程循环建模。</p>
+<h4 id="未来工作进一步建模通道间关系"><a class="markdownIt-Anchor" href="#未来工作进一步建模通道间关系"></a> 未来工作：进一步建模通道间关系</h4>
+<p>RCF 技术增强了模型对时间序列数据周期性建模的能力，但没有明确考虑多个变量之间的关系。在一些变量之间存在空间和时间依赖性的时空场景中，这些关系至关重要。例如，iTransformer [37] 和 SOFTS [12] 等最近的研究表明，适当地建模通道间关系可以提高流量场景中的性能。然而，直接将 RCF 技术应用于 iTransformer 并不会带来显着的改进（至少对于 MSE 指标而言），如表 4 所示。我们相信，设计一种结合 CycleNet 的更合理的多元建模方法可能是有前景和有价值的，并且我们将其留待未来探索。</p>
+<h2 id="6-总结"><a class="markdownIt-Anchor" href="#6-总结"></a> 6 总结</h2>
+<p>本文揭示了时间序列数据中固有周期性模式的存在，并开创了对这种周期性进行显式建模以提高时间序列预测模型性能的探索。从技术上讲，我们提出了残余循环预测（RCF）技术，该技术通过循环对序列中的共享周期模式进行建模，并通过主干预测残余循环分量。此外，我们还介绍了简单而强大的 LTSF 方法 CycleNet/Linear 和 CycleNet/MLP，它们分别将单层 Linear 和双层 MLP 与 RCF 技术结合起来。大量的实验证明了 RCF 技术的有效性，而 CycleNet 作为一种新颖而简单的方法，取得了最先进的结果，并具有显着的效率优势。本文的研究结果强调了周期性作为准确时间序列预测的关键特征的重要性，在建模过程中应给予更多重视。最后，将 CycleNet 与有效的渠道间关系建模方法相结合是一个有前途且有价值的未来研究方向。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/04/01/%E3%80%8ACost%20Contrastive%20learning%20of%20disentangled%20seasonal-trend%20representations%20for%20time%20series%20forecasting%E3%80%8B%20ICLR22%20%E8%AE%BA%E6%96%87/" rel="prev" title="">
+                  <i class="fa fa-angle-left"></i> 
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Xu Yang</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
